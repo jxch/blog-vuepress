@@ -67,10 +67,10 @@ System.out.println(s1 == s2);
 // 当然我们这里没有考虑GC，但这些对象确实存在或存在过
 ```
 
-![image](static/JVM-常量池-字符串常量池-JDK1.7+.png)
+![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)
 
 
-![image](static/JVM-常量池-字符串常量池-JDK1.6.png)
+![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)
 
 ```java
 String s0="zhuge"; 

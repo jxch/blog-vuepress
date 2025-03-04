@@ -31,7 +31,7 @@ export default defineUserConfig({
       "/docs/architect/": [
         {
           text: "JVM",
-          children: ["jvm/JVM-常量池"],
+          children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
         },
       ]
     },
