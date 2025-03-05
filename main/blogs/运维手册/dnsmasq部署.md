@@ -1,5 +1,5 @@
 ---
-title: dnsmasq-部署
+title: dnsmasq 部署
 date: 2025/03/05
 tags:
  - dnsmasq
