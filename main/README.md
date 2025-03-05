@@ -4,7 +4,7 @@ modules:
   - BannerBrand
   - Blog
   - MdContent
-  - Footer
+  # - Footer
 bannerBrand:
   bgImage: '/bg.svg'
   title: 花近高楼伤客心
