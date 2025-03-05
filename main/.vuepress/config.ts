@@ -33,7 +33,7 @@ export default defineUserConfig({
         {
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
-        },{
+        }, {
           text: "Redis",
           children: ["redis/Redis-持久化"],
         },
@@ -42,7 +42,7 @@ export default defineUserConfig({
     navbar: [
       { text: "首页", link: "/" },
       { text: "文章", link: "/categories/bianmabiji/1.html" },
-      { text: "标签", link: "/tags/VBS/1.html" },
+      { text: "标签", link: "/tags/PowerShell/1.html" },
       {
         text: "文档",
         children: [
@@ -50,12 +50,13 @@ export default defineUserConfig({
           { text: "操盘手", link: "/docs/trader/trader" },
         ],
       },
+      { text: "打赏", link: "/docs/others/donate" },
     ],
     bulletin: {
       body: [
         {
           type: "text",
-          content: `🎉🎉🎉 reco 主题 2.x 已经接近 Beta 版本，在发布 Latest 版本之前不会再有大的更新，大家可以尽情尝鲜了，并且希望大家在 QQ 群和 GitHub 踊跃反馈使用体验，我会在第一时间响应。`,
+          content: `如有错误的地方，欢迎指正！<br/>如有技术问题，欢迎交流！`,
           style: "font-size: 12px;",
         },
         {
@@ -69,9 +70,8 @@ export default defineUserConfig({
           type: "text",
           content: `
           <ul>
-            <li>QQ群1：1037296104</li>
-            <li>QQ群2：1061561395</li>
-            <li>QQ群3：962687802</li>
+            <li><a target="_blank" href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331">架构师：961215331<a/></li>
+            <li><a target="_blank" href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984">操盘手：966469984<a/></li>
           </ul>`,
           style: "font-size: 12px;",
         },
@@ -86,8 +86,9 @@ export default defineUserConfig({
           type: "text",
           content: `
           <ul>
-            <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/issues">Issues<a/></li>
-            <li><a href="https://github.com/vuepress-reco/vuepress-theme-reco-next/discussions/1">Discussions<a/></li>
+            <li><a target="_blank" href="https://github.com/jxch">GitHub 主页<a/></li>
+            <li><a target="_blank" href="https://github.com/jxch-study">Study 项目<a/></li>
+            <li><a target="_blank" href="https://github.com/jxch-capital">Capitals 项目<a/></li>
           </ul>`,
           style: "font-size: 12px;",
         },
