@@ -4,7 +4,7 @@ date: 2025/03/05
 tags:
  - MYSQL
 categories:
- - 编码笔记
+ - 运维手册
 ---
 
 ::: tip
