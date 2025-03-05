@@ -12,9 +12,10 @@ export default defineUserConfig({
     logo: "/logo.png",
     author: "姜希成",
     authorAvatar: "/head.png",
-    docsRepo: "https://github.com/vuepress-reco/vuepress-theme-reco-next",
+    docsRepo: "https://github.com/jxch/blog-vuepress",
     docsBranch: "main",
-    docsDir: "example",
+    docsDir: "main",
+    colorMode: 'dark',
     lastUpdatedText: "",
     // series 为原 sidebar
     series: {
@@ -39,15 +40,14 @@ export default defineUserConfig({
       ]
     },
     navbar: [
-      { text: "Home", link: "/" },
-      { text: "Categories", link: "/categories/reco/1.html" },
-      { text: "Tags", link: "/tags/tag1/1.html" },
+      { text: "首页", link: "/" },
+      { text: "文章", link: "/categories/bianmabiji/1.html" },
+      { text: "标签", link: "/tags/VBS/1.html" },
       {
-        text: "Docs",
+        text: "文档",
         children: [
           { text: "架构师", link: "/docs/architect/architect" },
-          { text: "vuepress-reco", link: "/docs/theme-reco/theme" },
-          { text: "vuepress-theme-reco", link: "/blogs/other/guide" },
+          { text: "操盘手", link: "/docs/trader/trader" },
         ],
       },
     ],
