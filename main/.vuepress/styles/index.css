@@ -1,0 +1,8 @@
+.custom-container.info .custom-container-title, .custom-container.info > svg {
+    color: rgb(93 234 108) !important;
+}
+
+.custom-container.info {
+    border-color: rgb(93 232 146) !important;
+    background-color: rgb(93 232 123 / 5%) !important;
+}

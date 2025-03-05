@@ -32,6 +32,9 @@ export default defineUserConfig({
         {
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
+        },{
+          text: "Redis",
+          children: ["redis/Redis-持久化"],
         },
       ]
     },

@@ -3,6 +3,12 @@ title: JVM-常量池
 date: 2025/03/04
 ---
 
+::: tip 介绍
+1. Class 常量池与运行时常量池
+2. 字符串常量池
+3. 八种基本类型的包装类和对象池
+:::
+
 ## Class 常量池与运行时常量池
 
 - Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用
@@ -116,7 +122,9 @@ String str1 = new StringBuilder("ja").append("va").toString();
 System.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了
 ```
 
-### String是不可变的
+::: info 注意
+String是不可变的
+:::
 
 ```java
 String s = "a" + "b" + "c"; //就等价于String s = "abc";
