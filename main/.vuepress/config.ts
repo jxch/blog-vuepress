@@ -40,7 +40,41 @@ export default defineUserConfig({
           { text: "操盘手", link: "/docs/trader/trader" },
         ],
       },
+      { text: "博客", link: "/posts" },
+      { text: "归档", link: "/timeline" },
+      { text: "链接", link: "/friendship-link" },
       { text: "打赏", link: "/docs/others/donate" },
+    ],
+    friendshipLinks: [
+      {
+        title: 'Capitals',
+        logo: 'https://avatars.githubusercontent.com/u/54167020?s=200&v=4',
+        link: 'https://jiangxicheng.online/capitals/'
+      },{
+        title: '博客园',
+        logo: 'https://avatars.githubusercontent.com/u/54167020?s=200&v=4',
+        link: 'https://www.cnblogs.com/xch-jiang'
+      },{
+        title: 'CSDN',
+        logo: 'https://g.csdnimg.cn/static/logo/favicon32.ico',
+        link: 'https://blog.csdn.net/jxch____'
+      },{
+        title: 'Github',
+        logo: 'https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg',
+        link: 'https://github.com/jxch'
+      },{
+        title: 'Github-Capitals',
+        logo: 'https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg',
+        link: 'https://github.com/jxch-capital'
+      },{
+        title: 'QQ群-架构师-961215331',
+        logo: 'https://qzonestyle.gtimg.cn/qzone/qzact/act/external/tiqq/logo.png',
+        link: 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331'
+      },{
+        title: 'QQ群-操盘手-966469984',
+        logo: 'https://qzonestyle.gtimg.cn/qzone/qzact/act/external/tiqq/logo.png',
+        link: 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984'
+      },
     ],
     bulletin: {
       body: [
