@@ -1,4 +1,5 @@
-.custom-container.info .custom-container-title, .custom-container.info > svg {
+.custom-container.info .custom-container-title,
+.custom-container.info>svg {
     color: rgb(93 234 108) !important;
 }
 
@@ -6,3 +7,19 @@
     border-color: rgb(93 232 146) !important;
     background-color: rgb(93 232 123 / 5%) !important;
 }
+
+/* 针对包含高亮项的 <section> 设置高亮样式 */
+.DocSearch-Hits>ul>li[aria-selected="true"] {
+    background-color: #f0f0f0;
+    /* 高亮背景颜色 */
+}
+
+.DocSearch-Hits>ul>li[aria-selected="true"]~section {
+    border-left: 4px solid #0066ff;
+    /* 给左侧添加高亮边框 */
+}
+
+.DocSearch-Hit-source[aria-selected="true"] {
+    padding-left: 12px;
+}
+
