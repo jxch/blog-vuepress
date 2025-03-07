@@ -29,6 +29,12 @@ export default defineUserConfig({
           text: "Redis",
           children: ["redis/Redis-持久化"],
         },
+      ],
+      "/docs/trader/": [
+        {
+          text: "期权",
+          children: ["options/期权交易策略"],
+        },
       ]
     },
     navbar: [
