@@ -26,7 +26,10 @@ mysqlsh
 \connect username@host
 \js
 util.dumpTables("asktrue_exam", ["project_exam_student_result"], "E:\\DB\\asktrue")
-util.dumpSchemas(["staffcloud_crm", "staffcloud_oa", "staffcloud_perf", "staffcloud_salary", "staffcloud_staff", "staffcloud_study", "user_system"], "E:\\DB\\staffcloud");
+util.dumpSchemas(["staffcloud_crm", "staffcloud_oa"], "E:\\DB\\staffcloud");
+
+// 移除 definer，比如创建该库的用户名
+util.dumpSchemas(["staffcloud_crm", "staffcloud_oa"], "E:\\DB\\staffcloud", {compatibility:["strip_definers"]});
 ```
 
 ## 导入

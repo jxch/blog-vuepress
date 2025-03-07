@@ -202,10 +202,33 @@
     "type": "content"
   },
   {
+    "title": "Linux 添加 Swap 交换空间",
+    "path": "/blogs/yunweishouce/LinuxtianjiaSwapjiaohuankongjian.html",
+    "url": "/blogs/yunweishouce/LinuxtianjiaSwapjiaohuankongjian.html",
+    "content": "---\r\ntitle: Linux 添加 Swap 交换空间\r\ndate: 2025/03/07\r\ntags:\r\n - Linux\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## 添加交换空间\r\n\r\n```bash\r\nmkdir /swap\r\n\r\n# 创建交换空间文件\r\nfallocate -l 2G /swap/swapfile1\r\n# 或者使用 dd 命令\r\ndd if=/dev/zero of=/swap/swapfile1 bs=1024 count=2097152\r\n\r\n# 启用并挂载交换空间\r\nchmod 600 /swap/swapfile1\r\nmkswap /swap/swapfile1\r\nswapon /swap/swapfile1\r\necho \"/swap/swapfile1 swap swap defaults 0 0\" | sudo tee -a /etc/fstab\r\n\r\n# 查看是否挂载成功\r\nswapon --show\r\nfree -h\r\n```\r\n\r\n## 删除交换空间\r\n```bash\r\n# 卸载交换空间\r\nswapoff -v /swap/swapfile1\r\n\r\n# 删除挂载交换空间的配置\r\nvi /etc/fstab\r\nrm /swap/swapfile1\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Linux 添加 Swap 交换空间",
+      "lvl1": "添加交换空间",
+      "lvl2": "删除交换空间"
+    },
+    "frontmatter": {
+      "title": "Linux 添加 Swap 交换空间",
+      "date": "2025/03/07",
+      "tags": [
+        "Linux"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "MYSQL 数据导出导入",
     "path": "/blogs/yunweishouce/MYSQLshujudaochudaoru.html",
     "url": "/blogs/yunweishouce/MYSQLshujudaochudaoru.html",
-    "content": "---\r\ntitle: MYSQL 数据导出导入\r\ndate: 2025/03/05\r\ntags:\r\n - MYSQL\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip\r\n1. 安装 mysqlsh\r\n2. 导出数据\r\n3. 导入数据（需要开启性能模式）\r\n:::\r\n\r\n## 安装 mysqlsh\r\n\r\n```shell\r\nwinget install Oracle.MySQLShell\r\nmysqlsh\r\n```\r\n\r\n## 导出\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.dumpTables(\"asktrue_exam\", [\"project_exam_student_result\"], \"E:\\\\DB\\\\asktrue\")\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\", \"staffcloud_perf\", \"staffcloud_salary\", \"staffcloud_staff\", \"staffcloud_study\", \"user_system\"], \"E:\\\\DB\\\\staffcloud\");\r\n```\r\n\r\n## 导入\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.loadDump(\"E:\\\\DB\\\\asktrue\\\\project_exam_student_result\", {threads: 4});\r\n```\r\n\r\n::: info 需要开启性能模式\r\n开启性能模式：`performance_schema=ON`\r\n:::\r\n\r\n",
+    "content": "---\r\ntitle: MYSQL 数据导出导入\r\ndate: 2025/03/05\r\ntags:\r\n - MYSQL\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip\r\n1. 安装 mysqlsh\r\n2. 导出数据\r\n3. 导入数据（需要开启性能模式）\r\n:::\r\n\r\n## 安装 mysqlsh\r\n\r\n```shell\r\nwinget install Oracle.MySQLShell\r\nmysqlsh\r\n```\r\n\r\n## 导出\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.dumpTables(\"asktrue_exam\", [\"project_exam_student_result\"], \"E:\\\\DB\\\\asktrue\")\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\");\r\n\r\n// 移除 definer，比如创建该库的用户名\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\", {compatibility:[\"strip_definers\"]});\r\n```\r\n\r\n## 导入\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.loadDump(\"E:\\\\DB\\\\asktrue\\\\project_exam_student_result\", {threads: 4});\r\n```\r\n\r\n::: info 需要开启性能模式\r\n开启性能模式：`performance_schema=ON`\r\n:::\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "MYSQL 数据导出导入",
