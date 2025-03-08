@@ -249,6 +249,30 @@
     "type": "content"
   },
   {
+    "title": "V2fly Shadowsocks 等翻墙服务部署",
+    "path": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
+    "url": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
+    "content": "---\r\ntitle: V2fly Shadowsocks 等翻墙服务部署\r\ndate: 2025/03/08\r\ntags:\r\n - 翻墙\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## docker swarm 部署\r\n\r\n```yml\r\nservices:\r\n  shadowsocks: \r\n    image: shadowsocks/shadowsocks-libev \r\n    restart: unless-stopped\r\n    ports: \r\n      - 12346:12346\r\n      - 12346:12346/udp \r\n    configs: \r\n      - source: shadowsocks_config\r\n        target: /etc/shadowsocks-libev/config.json \r\n    environment:\r\n      - DNS_ADDRS=8.8.8.8,8.8.4.4\r\n    command: ss-server -c /etc/shadowsocks-libev/config.json \r\n  v2fly:\r\n    image: v2fly/v2fly-core\r\n    restart: unless-stopped\r\n    ports:\r\n      - 12345:12345\r\n    configs: \r\n      - source: v2fly_config\r\n        target: /etc/v2ray/config.json\r\n    entrypoint: [\"v2ray\", \"run\",  \"-c\", \"/etc/v2ray/config.json\"]\r\n\r\n\r\nconfigs:\r\n  shadowsocks_config:\r\n    file: /root/server/config/shadowsocks/config.json \r\n  v2fly_config:\r\n    file: /root/server/config/v2fly/config.json\r\n```\r\n\r\n## shadowsocks config.json\r\n\r\n```json\r\n{\r\n    \"server\":\"0.0.0.0\",\r\n    \"server_port\":12346,\r\n    \"password\":\"cb497633-adea-463f-b560-8f012094bbef\",\r\n    \"timeout\":3000,\r\n    \"method\":\"aes-256-gcm\",\r\n    \"fast_open\":false,\r\n    \"mode\":\"tcp_and_udp\"\r\n}\r\n\r\n```\r\n\r\n## v2fly config.json\r\n\r\n```json\r\n{\r\n    \"log\": {\r\n        \"access\": \"/var/log/v2ray/access.log\",\r\n        \"error\": \"/var/log/v2ray/error.log\",\r\n        \"loglevel\": \"warning\"\r\n    },\r\n    \"inbound\": {\r\n        \"port\": 12345,\r\n        \"protocol\": \"vmess\",\r\n        \"settings\": {\r\n            \"clients\": [\r\n                {\r\n                    \"id\": \"uuid\",\r\n                    \"level\": 1,\r\n                    \"alterId\": 0\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"outbound\": {\r\n        \"protocol\": \"freedom\",\r\n        \"settings\": {}\r\n    },\r\n    \"inboundDetour\": [],\r\n    \"outboundDetour\": [\r\n        {\r\n            \"protocol\": \"blackhole\",\r\n            \"settings\": {},\r\n            \"tag\": \"blocked\"\r\n        }\r\n    ],\r\n    \"routing\": {\r\n        \"strategy\": \"rules\",\r\n        \"settings\": {\r\n            \"rules\": [\r\n                {\r\n                    \"type\": \"field\",\r\n                    \"ip\": [\r\n                        \"0.0.0.0/8\",\r\n                        \"10.0.0.0/8\",\r\n                        \"100.64.0.0/10\",\r\n                        \"127.0.0.0/8\",\r\n                        \"169.254.0.0/16\",\r\n                        \"172.16.0.0/12\",\r\n                        \"192.0.0.0/24\",\r\n                        \"192.0.2.0/24\",\r\n                        \"192.168.0.0/16\",\r\n                        \"198.18.0.0/15\",\r\n                        \"198.51.100.0/24\",\r\n                        \"203.0.113.0/24\",\r\n                        \"::1/128\",\r\n                        \"fc00::/7\",\r\n                        \"fe80::/10\"\r\n                    ],\r\n                    \"outboundTag\": \"blocked\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}\r\n\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "V2fly Shadowsocks 等翻墙服务部署",
+      "lvl1": "docker swarm 部署",
+      "lvl2": "shadowsocks config.json",
+      "lvl3": "v2fly config.json"
+    },
+    "frontmatter": {
+      "title": "V2fly Shadowsocks 等翻墙服务部署",
+      "date": "2025/03/08",
+      "tags": [
+        "翻墙"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Windows 使用 Diskpart 永久固定 USB 盘符",
     "path": "/blogs/yunweishouce/WINshiyongDiskpartyongjiugudingUSBpanfu.html",
     "url": "/blogs/yunweishouce/WINshiyongDiskpartyongjiugudingUSBpanfu.html",
@@ -273,15 +297,16 @@
     "title": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
     "path": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
     "url": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
-    "content": "---\r\ntitle: Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问\r\ndate: 2025/03/05\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n1. `win+R` 输入 `ncpa.cpl`，按回车\r\n2. 右键需要操作的 VPN 设备，点击`属性`\r\n3. 点击`网络`选项卡，双击 `TCP/IPv4`，点击`高级`\r\n4. 取消勾选：`在远程网络上使用默认网关`\r\n5. 连接VPN\r\n6. 管理员模式打开 `powershell` 或 `cmd`\r\n7. 输入命令 `ipconfig /all` 回车，查看需要操作的VPN（如PPP连接）的IP地址，如`192.168.33.19`\r\n8. 添加永久静态路由：`route add 172.16.0.0 mask 255.255.0.0  192.168.33.19 -p` \r\n   - 将 `172.16.0.0` 网段，子网掩码为 `255.255.0.0` 的所有流量通过 `192.168.33.19` 接口访问，而 `192.168.33.19` 正是该VPN的接口\r\n\r\n## Powershell 脚本\r\n\r\n```powershell\r\n# auto-vpn-route.ps1\r\n\r\nparam([String]$vpn, [String]$ip, [String]$mask)\r\n\r\n$vpn_ipv4 = (Get-NetIPAddress | Where-Object {$_.InterfaceAlias -eq $vpn}).IPAddress\r\n\r\nWrite-Host \"vpn: $vpn; vpn-ipv4: $vpn_ipv4\"\r\nIf([String]::IsNullOrEmpty($vpn_ipv4)) {\r\n    Write-Warning \"请连接 VPN：$vpn\"\r\n} Else {\r\n    Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n    route delete $ip\r\n    Write-Host \"route add $ip mask $mask $vpn_ipv4\" -ForegroundColor DarkGray\r\n    route add $ip mask $mask $vpn_ipv4\r\n\r\n    If([String]::IsNullOrEmpty((route print | Select-String -Pattern \"\\s0.0.0.0\" | Select-String $vpn_ipv4))) {\r\n        Write-Host \"操作完成！可使用 route print | select-string $ip 查询路由表是否修改。\"\r\n    } Else {\r\n        Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n        route delete $ip\r\n        Write-Warning \"请去控制面板关闭 $vpn 网卡的默认网关功能\" \r\n        Write-Warning \"参见：ncpa.cpl -> $vpn -> 属性 -> 网络 -> (TCP/IPv4) -> 高级 -> 在远程网络上使用默认网关\" \r\n        Write-Warning \"重新连接 $vpn\"\r\n    }\r\n}\r\n```\r\n\r\n```powershell\r\n.\\auto-vpn-route.ps1 -vpn 云开发 -ip 172.0.0.0 -mask 255.0.0.0\r\n```\r\n\r\n",
+    "content": "---\r\ntitle: Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问\r\ndate: 2025/03/08\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## 操作方法\r\n\r\n1. `win+R` 输入 `ncpa.cpl`，按回车\r\n2. 右键需要操作的 VPN 设备，点击`属性`\r\n3. 点击`网络`选项卡，双击 `TCP/IPv4`，点击`高级`\r\n4. 取消勾选：`在远程网络上使用默认网关`\r\n5. 连接VPN\r\n6. 管理员模式打开 `powershell` 或 `cmd`\r\n7. 输入命令 `ipconfig /all` 回车，查看需要操作的VPN（如PPP连接）的IP地址，如`192.168.33.19`\r\n8. 添加永久静态路由：`route add 172.16.0.0 mask 255.255.0.0  192.168.33.19 -p` \r\n   - 将 `172.16.0.0` 网段，子网掩码为 `255.255.0.0` 的所有流量通过 `192.168.33.19` 接口访问，而 `192.168.33.19` 正是该VPN的接口\r\n\r\n::: info\r\n该方法的原理是，仅让特定网段的流量走VPN，其他流量依然走本地默认路由\r\n:::\r\n\r\n## Powershell 脚本\r\n\r\n```powershell\r\n# auto-vpn-route.ps1\r\n\r\nparam([String]$vpn, [String]$ip, [String]$mask)\r\n\r\n$vpn_ipv4 = (Get-NetIPAddress | Where-Object {$_.InterfaceAlias -eq $vpn}).IPAddress\r\n\r\nWrite-Host \"vpn: $vpn; vpn-ipv4: $vpn_ipv4\"\r\nIf([String]::IsNullOrEmpty($vpn_ipv4)) {\r\n    Write-Warning \"请连接 VPN：$vpn\"\r\n} Else {\r\n    Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n    route delete $ip\r\n    Write-Host \"route add $ip mask $mask $vpn_ipv4\" -ForegroundColor DarkGray\r\n    route add $ip mask $mask $vpn_ipv4\r\n\r\n    If([String]::IsNullOrEmpty((route print | Select-String -Pattern \"\\s0.0.0.0\" | Select-String $vpn_ipv4))) {\r\n        Write-Host \"操作完成！可使用 route print | select-string $ip 查询路由表是否修改。\"\r\n    } Else {\r\n        Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n        route delete $ip\r\n        Write-Warning \"请去控制面板关闭 $vpn 网卡的默认网关功能\" \r\n        Write-Warning \"参见：ncpa.cpl -> $vpn -> 属性 -> 网络 -> (TCP/IPv4) -> 高级 -> 在远程网络上使用默认网关\" \r\n        Write-Warning \"重新连接 $vpn\"\r\n    }\r\n}\r\n```\r\n\r\n```powershell\r\n.\\auto-vpn-route.ps1 -vpn 云开发 -ip 172.0.0.0 -mask 255.0.0.0\r\n```\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
-      "lvl1": "Powershell 脚本"
+      "lvl1": "操作方法",
+      "lvl2": "Powershell 脚本"
     },
     "frontmatter": {
       "title": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
-      "date": "2025/03/05",
+      "date": "2025/03/08",
       "tags": [
         "Windows"
       ],
@@ -308,21 +333,6 @@
     "type": "content"
   },
   {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "感谢打赏",
     "path": "/docs/others/donate.html",
     "url": "/docs/others/donate.html",
@@ -333,6 +343,21 @@
     },
     "frontmatter": {
       "title": "感谢打赏",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "操盘手学习笔记"
+    },
+    "frontmatter": {
+      "title": "操盘手学习笔记",
       "date": "2025/03/05"
     },
     "type": "content"
