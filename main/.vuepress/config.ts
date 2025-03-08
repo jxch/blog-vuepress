@@ -35,7 +35,13 @@ export default defineUserConfig({
           text: "期权",
           children: ["options/期权交易策略", "options/期权交易策略收益图表"],
         },
-      ]
+      ],
+      "/docs/it/": [
+        {
+          text: "计算机图形学",
+          children: ["计算机图形学/边缘填充算法"],
+        },
+      ],
     },
     navbar: [
       { text: "首页", link: "/" },
@@ -46,6 +52,7 @@ export default defineUserConfig({
         children: [
           { text: "架构师", link: "/docs/architect/architect" },
           { text: "操盘手", link: "/docs/trader/trader" },
+          { text: "计算机", link: "/docs/it/it" },
         ],
       },
       { text: "博客", link: "/posts" },
