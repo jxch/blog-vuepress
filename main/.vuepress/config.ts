@@ -33,7 +33,7 @@ export default defineUserConfig({
       "/docs/trader/": [
         {
           text: "期权",
-          children: ["options/期权交易策略"],
+          children: ["options/期权交易策略", "options/期权交易策略收益图表"],
         },
       ]
     },
