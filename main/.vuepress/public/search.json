@@ -116,16 +116,16 @@
     "type": "content"
   },
   {
-    "title": "Docker Swarm 将服务迁移到特定标签的节点上",
-    "path": "/blogs/yunweishouce/DockerSwarmjiangfuwuqianyidaotedingbiaoqiandejiedianshang.html",
-    "url": "/blogs/yunweishouce/DockerSwarmjiangfuwuqianyidaotedingbiaoqiandejiedianshang.html",
-    "content": "---\r\ntitle: Docker Swarm 将服务迁移到特定标签的节点上\r\ndate: 2025/03/05\r\ntags:\r\n - Docker\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip \r\n1. 给节点打标签\r\n2. 给服务加约束\r\n:::\r\n\r\n```shell\r\n# 给节点打标签\r\ndocker node update --label-add memory=high NODE_ID\r\n\r\n# 给服务添加约束，他就会自动调度到特定标签的节点上\r\ndocker service update --constraint-add 'node.labels.memory == high' SERVICE_ID\r\n```\r\n",
+    "title": "Docker Swarm 将服务部署到指定标签的节点上",
+    "path": "/blogs/yunweishouce/DockerSwarmjiangfuwubushudaozhidingbiaoqiandejiedianshang.html",
+    "url": "/blogs/yunweishouce/DockerSwarmjiangfuwubushudaozhidingbiaoqiandejiedianshang.html",
+    "content": "---\r\ntitle: Docker Swarm 将服务部署到指定标签的节点上\r\ndate: 2025/03/05\r\ntags:\r\n - Docker\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip \r\n1. 给节点打标签\r\n2. 给服务加约束\r\n:::\r\n\r\n```shell\r\n# 给节点打标签\r\ndocker node update --label-add memory=high NODE_ID\r\n\r\n# 给服务添加约束，他就会自动调度到特定标签的节点上\r\ndocker service update --constraint-add 'node.labels.memory == high' SERVICE_ID\r\n```\r\n\r\n\r\n```yml\r\nservices:\r\n  app:\r\n    image: app-images\r\n    deploy:\r\n      placement:\r\n        constraints:\r\n          - node.labels.memory == high\r\n```\r\n",
     "lang": "zh-CN",
     "hierarchy": {
-      "lvl0": "Docker Swarm 将服务迁移到特定标签的节点上"
+      "lvl0": "Docker Swarm 将服务部署到指定标签的节点上"
     },
     "frontmatter": {
-      "title": "Docker Swarm 将服务迁移到特定标签的节点上",
+      "title": "Docker Swarm 将服务部署到指定标签的节点上",
       "date": "2025/03/05",
       "tags": [
         "Docker"
@@ -270,6 +270,28 @@
     "type": "content"
   },
   {
+    "title": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
+    "path": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
+    "url": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
+    "content": "---\r\ntitle: Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问\r\ndate: 2025/03/05\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n1. `win+R` 输入 `ncpa.cpl`，按回车\r\n2. 右键需要操作的 VPN 设备，点击`属性`\r\n3. 点击`网络`选项卡，双击 `TCP/IPv4`，点击`高级`\r\n4. 取消勾选：`在远程网络上使用默认网关`\r\n5. 连接VPN\r\n6. 管理员模式打开 `powershell` 或 `cmd`\r\n7. 输入命令 `ipconfig /all` 回车，查看需要操作的VPN（如PPP连接）的IP地址，如`192.168.33.19`\r\n8. 添加永久静态路由：`route add 172.16.0.0 mask 255.255.0.0  192.168.33.19 -p` \r\n   - 将 `172.16.0.0` 网段，子网掩码为 `255.255.0.0` 的所有流量通过 `192.168.33.19` 接口访问，而 `192.168.33.19` 正是该VPN的接口\r\n\r\n## Powershell 脚本\r\n\r\n```powershell\r\n# auto-vpn-route.ps1\r\n\r\nparam([String]$vpn, [String]$ip, [String]$mask)\r\n\r\n$vpn_ipv4 = (Get-NetIPAddress | Where-Object {$_.InterfaceAlias -eq $vpn}).IPAddress\r\n\r\nWrite-Host \"vpn: $vpn; vpn-ipv4: $vpn_ipv4\"\r\nIf([String]::IsNullOrEmpty($vpn_ipv4)) {\r\n    Write-Warning \"请连接 VPN：$vpn\"\r\n} Else {\r\n    Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n    route delete $ip\r\n    Write-Host \"route add $ip mask $mask $vpn_ipv4\" -ForegroundColor DarkGray\r\n    route add $ip mask $mask $vpn_ipv4\r\n\r\n    If([String]::IsNullOrEmpty((route print | Select-String -Pattern \"\\s0.0.0.0\" | Select-String $vpn_ipv4))) {\r\n        Write-Host \"操作完成！可使用 route print | select-string $ip 查询路由表是否修改。\"\r\n    } Else {\r\n        Write-Host \"route delete $ip\" -ForegroundColor DarkGray\r\n        route delete $ip\r\n        Write-Warning \"请去控制面板关闭 $vpn 网卡的默认网关功能\" \r\n        Write-Warning \"参见：ncpa.cpl -> $vpn -> 属性 -> 网络 -> (TCP/IPv4) -> 高级 -> 在远程网络上使用默认网关\" \r\n        Write-Warning \"重新连接 $vpn\"\r\n    }\r\n}\r\n```\r\n\r\n```powershell\r\n.\\auto-vpn-route.ps1 -vpn 云开发 -ip 172.0.0.0 -mask 255.0.0.0\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
+      "lvl1": "Powershell 脚本"
+    },
+    "frontmatter": {
+      "title": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
+      "date": "2025/03/05",
+      "tags": [
+        "Windows"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "架构师学习笔记",
     "path": "/docs/architect/architect.html",
     "url": "/docs/architect/architect.html",
@@ -286,21 +308,6 @@
     "type": "content"
   },
   {
-    "title": "感谢打赏",
-    "path": "/docs/others/donate.html",
-    "url": "/docs/others/donate.html",
-    "content": "---\r\ntitle: 感谢打赏\r\ndate: 2025/03/05\r\n---\r\n\r\n<div style=\"display: flex; justify-content: space-around; flex-wrap: wrap;\">\r\n    <img src=\"@source/docs/others/static/收款码-支付宝.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-微信.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-QQ.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n</div>\r\n\r\n::: info \r\n加入群聊一起交流哦！如有错误的地方，欢迎指正！\r\n\r\n<ul>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331\">架构师：961215331</a></li>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984\">操盘手：966469984</a></li>\r\n</ul>\r\n:::\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "感谢打赏"
-    },
-    "frontmatter": {
-      "title": "感谢打赏",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -311,6 +318,21 @@
     },
     "frontmatter": {
       "title": "操盘手学习笔记",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "感谢打赏",
+    "path": "/docs/others/donate.html",
+    "url": "/docs/others/donate.html",
+    "content": "---\r\ntitle: 感谢打赏\r\ndate: 2025/03/05\r\n---\r\n\r\n<div style=\"display: flex; justify-content: space-around; flex-wrap: wrap;\">\r\n    <img src=\"@source/docs/others/static/收款码-支付宝.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-微信.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-QQ.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n</div>\r\n\r\n::: info \r\n加入群聊一起交流哦！如有错误的地方，欢迎指正！\r\n\r\n<ul>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331\">架构师：961215331</a></li>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984\">操盘手：966469984</a></li>\r\n</ul>\r\n:::\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "感谢打赏"
+    },
+    "frontmatter": {
+      "title": "感谢打赏",
       "date": "2025/03/05"
     },
     "type": "content"
