@@ -42,6 +42,12 @@ export default defineUserConfig({
           children: ["计算机图形学/边缘填充算法"],
         },
       ],
+      "/docs/diary/": [
+        {
+          text: "2025",
+          children: ["2025/2025-03"],
+        },
+      ],
     },
     navbar: [
       { text: "首页", link: "/" },
@@ -52,7 +58,10 @@ export default defineUserConfig({
         children: [
           { text: "架构师", link: "/docs/architect/architect" },
           { text: "操盘手", link: "/docs/trader/trader" },
+          { text: "交易笔记", link: "/docs/trading_journal/trading_journal" },
           { text: "计算机", link: "/docs/it/it" },
+          { text: "诗集", link: "/docs/poetry/poetry" },
+          { text: "日记", link: "/docs/diary/diary" },
         ],
       },
       { text: "博客", link: "/posts" },

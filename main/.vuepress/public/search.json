@@ -317,18 +317,34 @@
     "type": "content"
   },
   {
-    "title": "架构师学习笔记",
+    "title": "JAVA 架构师学习笔记",
     "path": "/docs/architect/architect.html",
     "url": "/docs/architect/architect.html",
-    "content": "---\r\ntitle: 架构师学习笔记\r\ndate: 2025/03/04\r\n---\r\n\r\n## 学习路径\r\n\r\n从 Java 基础，到 JVM，到微服务分布式，由浅入深，只讲干货\r\n\r\n\r\n",
+    "content": "---\r\ntitle: JAVA 架构师学习笔记\r\ndate: 2025/03/04\r\n---\r\n\r\n## 学习路径\r\n\r\n从 Java 基础，到 JVM，到微服务分布式，由浅入深，只讲干货\r\n\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
-      "lvl0": "架构师学习笔记",
+      "lvl0": "JAVA 架构师学习笔记",
       "lvl1": "学习路径"
     },
     "frontmatter": {
-      "title": "架构师学习笔记",
+      "title": "JAVA 架构师学习笔记",
       "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "日记",
+    "path": "/docs/diary/diary.html",
+    "url": "/docs/diary/diary.html",
+    "content": "---\r\ntitle: 日记\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "日记"
+    },
+    "frontmatter": {
+      "title": "日记",
+      "password": "b593bf97f44387eb6fdc629acef2d138",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
@@ -374,6 +390,36 @@
     "frontmatter": {
       "title": "操盘手学习笔记",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "诗集",
+    "path": "/docs/poetry/poetry.html",
+    "url": "/docs/poetry/poetry.html",
+    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "诗集"
+    },
+    "frontmatter": {
+      "title": "诗集",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "交易笔记",
+    "path": "/docs/trading_journal/trading_journal.html",
+    "url": "/docs/trading_journal/trading_journal.html",
+    "content": "---\r\ntitle: 交易笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "交易笔记"
+    },
+    "frontmatter": {
+      "title": "交易笔记",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
@@ -431,6 +477,23 @@
     "frontmatter": {
       "title": "Redis-持久化",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "2025-03",
+    "path": "/docs/diary/2025/2025-03.html",
+    "url": "/docs/diary/2025/2025-03.html",
+    "content": "---\r\ntitle: 2025-03\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n## 2025-03-08\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "2025-03",
+      "lvl1": "2025-03-08"
+    },
+    "frontmatter": {
+      "title": "2025-03",
+      "password": "b593bf97f44387eb6fdc629acef2d138",
+      "date": "2025/03/08"
     },
     "type": "content"
   },

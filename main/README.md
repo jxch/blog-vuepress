@@ -14,7 +14,9 @@ bannerBrand:
   buttons:
     - { text: 架构师, link: '/docs/architect/architect' }
     - { text: 操盘手, link: '/docs/trader/trader', type: 'plain' }
+    - { text: 交易笔记, link: '/docs/trading_journal/trading_journal', type: 'plain' }
     - { text: 计算机, link: '/docs/it/it', type: 'plain' }
+    - { text: 诗集, link: '/docs/poetry/poetry', type: 'plain' }
   socialLinks:
     - { icon: 'LogoGithub', link: 'https://github.com/jxch' }
 blog:
