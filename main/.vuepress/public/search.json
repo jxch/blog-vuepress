@@ -180,6 +180,29 @@
     "type": "content"
   },
   {
+    "title": "Linux 关闭 iptables 防火墙",
+    "path": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
+    "url": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
+    "content": "---\r\ntitle: Linux 关闭 iptables 防火墙\r\ndate: 2025/03/05\r\ntags:\r\n - Linux\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## 允许所有流量\r\n\r\n```shell\r\niptables -P FORWARD ACCEPT \r\niptables -P OUTPUT ACCEPT \r\niptables -P INPUT ACCEPT\r\niptables -F \r\n```\r\n\r\n::: warning\r\n该方式会在重启后失效\r\n:::\r\n\r\n## 自动生效\r\n\r\n```shell\r\napt install iptables-persistent\r\n\r\nnetfilter-persistent save\r\n\r\n# 重启后验证\r\niptables -L -v\r\n```\r\n\r\n::: tip\r\n适用于 Debian/Ubuntu 系统\r\n:::\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Linux 关闭 iptables 防火墙",
+      "lvl1": "允许所有流量",
+      "lvl2": "自动生效"
+    },
+    "frontmatter": {
+      "title": "Linux 关闭 iptables 防火墙",
+      "date": "2025/03/05",
+      "tags": [
+        "Linux"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Linux 开启 BBR",
     "path": "/blogs/yunweishouce/LinuxkaiqiBBR.html",
     "url": "/blogs/yunweishouce/LinuxkaiqiBBR.html",
