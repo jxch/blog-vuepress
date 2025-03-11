@@ -59,6 +59,7 @@ export default defineUserConfig({
           { text: "架构师", link: "/docs/architect/architect" },
           { text: "操盘手", link: "/docs/trader/trader" },
           { text: "交易笔记", link: "/docs/trading_journal/trading_journal" },
+          { text: "读书笔记", link: "/docs/book/book" },
           { text: "计算机", link: "/docs/it/it" },
           { text: "诗集", link: "/docs/poetry/poetry" },
           { text: "日记", link: "/docs/diary/diary" },

@@ -333,6 +333,21 @@
     "type": "content"
   },
   {
+    "title": "读书笔记",
+    "path": "/docs/book/book.html",
+    "url": "/docs/book/book.html",
+    "content": "---\r\ntitle: 读书笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "读书笔记"
+    },
+    "frontmatter": {
+      "title": "读书笔记",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
     "title": "日记",
     "path": "/docs/diary/diary.html",
     "url": "/docs/diary/diary.html",
@@ -379,21 +394,6 @@
     "type": "content"
   },
   {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "诗集",
     "path": "/docs/poetry/poetry.html",
     "url": "/docs/poetry/poetry.html",
@@ -405,6 +405,21 @@
     "frontmatter": {
       "title": "诗集",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "操盘手学习笔记"
+    },
+    "frontmatter": {
+      "title": "操盘手学习笔记",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -484,7 +499,7 @@
     "title": "2025-03",
     "path": "/docs/diary/2025/2025-03.html",
     "url": "/docs/diary/2025/2025-03.html",
-    "content": "---\r\ntitle: 2025-03\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n## 2025-03-08\r\n\r\n\r\n\r\n",
+    "content": "---\r\ntitle: 2025-03\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n## 2025-03-08\r\n\r\n- 优化博客站点\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "2025-03",
