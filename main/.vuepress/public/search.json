@@ -183,7 +183,7 @@
     "title": "Linux 关闭 iptables 防火墙",
     "path": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
     "url": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
-    "content": "---\r\ntitle: Linux 关闭 iptables 防火墙\r\ndate: 2025/03/05\r\ntags:\r\n - Linux\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## 允许所有流量\r\n\r\n```shell\r\niptables -P FORWARD ACCEPT \r\niptables -P OUTPUT ACCEPT \r\niptables -P INPUT ACCEPT\r\niptables -F \r\n```\r\n\r\n::: warning\r\n该方式会在重启后失效\r\n:::\r\n\r\n## 自动生效\r\n\r\n```shell\r\napt install iptables-persistent\r\n\r\nnetfilter-persistent save\r\n\r\n# 重启后验证\r\niptables -L -v\r\n```\r\n\r\n::: tip\r\n适用于 Debian/Ubuntu 系统\r\n:::\r\n\r\n\r\n",
+    "content": "---\r\ntitle: Linux 关闭 iptables 防火墙\r\ndate: 2025/03/11\r\ntags:\r\n - Linux\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## 允许所有流量\r\n\r\n```shell\r\niptables -P FORWARD ACCEPT \r\niptables -P OUTPUT ACCEPT \r\niptables -P INPUT ACCEPT\r\niptables -F \r\n```\r\n\r\n::: warning\r\n该方式会在重启后失效\r\n:::\r\n\r\n## 自动生效\r\n\r\n```shell\r\napt install iptables-persistent\r\n\r\nnetfilter-persistent save\r\n\r\n# 重启后验证\r\niptables -L -v\r\n```\r\n\r\n::: tip\r\n适用于 Debian/Ubuntu 系统\r\n:::\r\n\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Linux 关闭 iptables 防火墙",
@@ -192,7 +192,7 @@
     },
     "frontmatter": {
       "title": "Linux 关闭 iptables 防火墙",
-      "date": "2025/03/05",
+      "date": "2025/03/11",
       "tags": [
         "Linux"
       ],
@@ -417,21 +417,6 @@
     "type": "content"
   },
   {
-    "title": "诗集",
-    "path": "/docs/poetry/poetry.html",
-    "url": "/docs/poetry/poetry.html",
-    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "诗集"
-    },
-    "frontmatter": {
-      "title": "诗集",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -443,6 +428,21 @@
     "frontmatter": {
       "title": "操盘手学习笔记",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "诗集",
+    "path": "/docs/poetry/poetry.html",
+    "url": "/docs/poetry/poetry.html",
+    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "诗集"
+    },
+    "frontmatter": {
+      "title": "诗集",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
@@ -581,6 +581,22 @@
     "frontmatter": {
       "title": "期权交易策略收益图表",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "实盘日记 - 2025 年",
+    "path": "/docs/trading_journal/diary/2025.html",
+    "url": "/docs/trading_journal/diary/2025.html",
+    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "实盘日记 - 2025 年",
+      "lvl1": "2025/3/19"
+    },
+    "frontmatter": {
+      "title": "实盘日记 - 2025 年",
+      "date": "2025/03/19"
     },
     "type": "content"
   }

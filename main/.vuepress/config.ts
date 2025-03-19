@@ -48,6 +48,12 @@ export default defineUserConfig({
           children: ["2025/2025-03"],
         },
       ],
+      "/docs/trading_journal/": [
+        {
+          text: "实盘日记",
+          children: ["diary/2025"],
+        },
+      ],
     },
     navbar: [
       { text: "首页", link: "/" },
