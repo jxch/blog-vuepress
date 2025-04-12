@@ -3,14 +3,14 @@
     "title": "Java SpringBoot2x Starter 自定义环境变量",
     "path": "/blogs/bianmabiji/JavaSpringBoot2xStarterzidingyihuanjingbianliang.html",
     "url": "/blogs/bianmabiji/JavaSpringBoot2xStarterzidingyihuanjingbianliang.html",
-    "content": "---\r\ntitle: Java SpringBoot2x Starter 自定义环境变量\r\ndate: 2025/03/05\r\ntags:\r\n - Java\r\n - SpringBoot2x\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```\r\nMETA-INF\r\n  - application-referenced.yml\r\n  - spring.factories\r\n```\r\n\r\nspring.factories\r\n```prop\r\norg.springframework.boot.env.EnvironmentPostProcessor=package.path.CommonEnvironmentPostProcessor\r\n```\r\n\r\n```java\r\npublic class CommonEnvironmentPostProcessor implements EnvironmentPostProcessor {\r\n    private static final String PROPERTY_SOURCE_NAME = CommonEnvironmentPostProcessor.class.getSimpleName();\r\n\r\n    @Override\r\n    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {\r\n        YamlPropertySourceLoader loader = new YamlPropertySourceLoader();\r\n        Resource resource = new ClassPathResource(\"META-INF/application-referenced.yml\");\r\n\r\n        if (resource.exists()) {\r\n            try {\r\n                PropertySource<?> yamlProps = loader.load(PROPERTY_SOURCE_NAME, resource).get(0);\r\n                environment.getPropertySources().addLast(yamlProps);  // 注意：使用 `.addLast()`，确保主项目配置优先\r\n            } catch (IOException e) {\r\n                throw new IllegalStateException(\"Failed to load YAML file: \" + resource.getFilename(), e);\r\n            }\r\n        }\r\n    }\r\n\r\n}\r\n```\r\n",
+    "content": "---\r\ntitle: Java SpringBoot2x Starter 自定义环境变量\r\ndate: 2025/04/12\r\ntags:\r\n - Java\r\n - SpringBoot2x\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```\r\nMETA-INF\r\n  - application-referenced.yml\r\n  - spring.factories\r\n```\r\n\r\nspring.factories\r\n```prop\r\norg.springframework.boot.env.EnvironmentPostProcessor=package.path.CommonEnvironmentPostProcessor\r\n```\r\n\r\n```java\r\npublic class CommonEnvironmentPostProcessor implements EnvironmentPostProcessor {\r\n    private static final String PROPERTY_SOURCE_NAME = CommonEnvironmentPostProcessor.class.getSimpleName();\r\n\r\n    @Override\r\n    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {\r\n        YamlPropertySourceLoader loader = new YamlPropertySourceLoader();\r\n        Resource resource = new ClassPathResource(\"META-INF/application-referenced.yml\");\r\n\r\n        if (resource.exists()) {\r\n            try {\r\n                PropertySource<?> yamlProps = loader.load(PROPERTY_SOURCE_NAME, resource).get(0);\r\n                environment.getPropertySources().addLast(yamlProps);  // 注意：使用 `.addLast()`，确保主项目配置优先\r\n            } catch (IOException e) {\r\n                throw new IllegalStateException(\"Failed to load YAML file: \" + resource.getFilename(), e);\r\n            }\r\n        }\r\n    }\r\n\r\n}\r\n```\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Java SpringBoot2x Starter 自定义环境变量"
     },
     "frontmatter": {
       "title": "Java SpringBoot2x Starter 自定义环境变量",
-      "date": "2025/03/05",
+      "date": "2025/04/12",
       "tags": [
         "Java",
         "SpringBoot2x"
@@ -25,14 +25,14 @@
     "title": "Java 根据 Getter 方法获取字段及注解值",
     "path": "/blogs/bianmabiji/JavagenjuGetterfangfahuoquziduanjizhujiezhi.html",
     "url": "/blogs/bianmabiji/JavagenjuGetterfangfahuoquziduanjizhujiezhi.html",
-    "content": "---\r\ntitle: Java 根据 Getter 方法获取字段及注解值\r\ndate: 2025/03/05\r\ntags:\r\n - Java\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```java\r\n@FunctionalInterface\r\npublic interface SIFunction<T, R> extends Function<T, R>, Serializable {}\r\n```\r\n\r\n```java\r\npublic class FieldUtil {\r\n\r\n    public static <T, R> String getFieldNameByGetter(SIFunction<T, R> func) {\r\n        try {\r\n            SerializedLambda serializedLambda = getSerializedLambda(func);\r\n            String getterMethodName = serializedLambda.getImplMethodName();\r\n            return methodToFieldName(getterMethodName);\r\n        } catch (Exception e) {\r\n            throw new RuntimeException(\"获取字段名失败\", e);\r\n        }\r\n    }\r\n\r\n    private static SerializedLambda getSerializedLambda(Serializable lambda) throws Exception {\r\n        // 通过反射调用writeReplace方法获取SerializedLambda\r\n        Method writeReplace = lambda.getClass().getDeclaredMethod(\"writeReplace\");\r\n        writeReplace.setAccessible(true);\r\n        return (SerializedLambda) writeReplace.invoke(lambda);\r\n    }\r\n\r\n    private static String methodToFieldName(String getterMethodName) {\r\n        String fieldName;\r\n        if (getterMethodName.startsWith(\"get\")) {\r\n            fieldName = getterMethodName.substring(3);\r\n        } else if (getterMethodName.startsWith(\"is\")) {\r\n            fieldName = getterMethodName.substring(2);\r\n        } else {\r\n            throw new IllegalArgumentException(\"无效的getter方法名称: \" + getterMethodName);\r\n        }\r\n        // 将首字母转小写\r\n        return fieldName.substring(0, 1).toLowerCase(Locale.ROOT) + fieldName.substring(1);\r\n    }\r\n\r\n    public static <T, R> Field getFieldByGetter(SIFunction<T, R> getter, Class<T> clazz) {\r\n        try {\r\n            return clazz.getDeclaredField(getFieldNameByGetter(getter));\r\n        } catch (NoSuchFieldException e) {\r\n            throw new RuntimeException(\"字段不存在\", e);\r\n        }\r\n    }\r\n\r\n    public static <T, R, A extends Annotation> String getAnnotationValueByGetter(SIFunction<T, R> getter, Class<T> clazz, Class<A> annotationClass) {\r\n        try {\r\n            // 获取字段名\r\n            String fieldName = getFieldNameByGetter(getter);\r\n\r\n            // 获取字段对象\r\n            Field field = clazz.getDeclaredField(fieldName);\r\n\r\n            // 获取字段上的注解\r\n            A annotation = field.getAnnotation(annotationClass);\r\n\r\n            // 如果注解存在，返回其 value 属性值\r\n            if (annotation != null) {\r\n                // 使用反射获取注解的 value 属性值\r\n                Method valueMethod = annotationClass.getMethod(\"value\");\r\n                return (String) valueMethod.invoke(annotation);\r\n            } else {\r\n                throw new RuntimeException(\"字段没有指定的注解: \" + fieldName);\r\n            }\r\n        } catch (Exception e) {\r\n            throw new RuntimeException(\"获取注解值失败\", e);\r\n        }\r\n    }\r\n\r\n}\r\n```\r\n",
+    "content": "---\r\ntitle: Java 根据 Getter 方法获取字段及注解值\r\ndate: 2025/04/12\r\ntags:\r\n - Java\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```java\r\n@FunctionalInterface\r\npublic interface SIFunction<T, R> extends Function<T, R>, Serializable {}\r\n```\r\n\r\n```java\r\npublic class FieldUtil {\r\n\r\n    public static <T, R> String getFieldNameByGetter(SIFunction<T, R> func) {\r\n        try {\r\n            SerializedLambda serializedLambda = getSerializedLambda(func);\r\n            String getterMethodName = serializedLambda.getImplMethodName();\r\n            return methodToFieldName(getterMethodName);\r\n        } catch (Exception e) {\r\n            throw new RuntimeException(\"获取字段名失败\", e);\r\n        }\r\n    }\r\n\r\n    private static SerializedLambda getSerializedLambda(Serializable lambda) throws Exception {\r\n        // 通过反射调用writeReplace方法获取SerializedLambda\r\n        Method writeReplace = lambda.getClass().getDeclaredMethod(\"writeReplace\");\r\n        writeReplace.setAccessible(true);\r\n        return (SerializedLambda) writeReplace.invoke(lambda);\r\n    }\r\n\r\n    private static String methodToFieldName(String getterMethodName) {\r\n        String fieldName;\r\n        if (getterMethodName.startsWith(\"get\")) {\r\n            fieldName = getterMethodName.substring(3);\r\n        } else if (getterMethodName.startsWith(\"is\")) {\r\n            fieldName = getterMethodName.substring(2);\r\n        } else {\r\n            throw new IllegalArgumentException(\"无效的getter方法名称: \" + getterMethodName);\r\n        }\r\n        // 将首字母转小写\r\n        return fieldName.substring(0, 1).toLowerCase(Locale.ROOT) + fieldName.substring(1);\r\n    }\r\n\r\n    public static <T, R> Field getFieldByGetter(SIFunction<T, R> getter, Class<T> clazz) {\r\n        try {\r\n            return clazz.getDeclaredField(getFieldNameByGetter(getter));\r\n        } catch (NoSuchFieldException e) {\r\n            throw new RuntimeException(\"字段不存在\", e);\r\n        }\r\n    }\r\n\r\n    public static <T, R, A extends Annotation> String getAnnotationValueByGetter(SIFunction<T, R> getter, Class<T> clazz, Class<A> annotationClass) {\r\n        try {\r\n            // 获取字段名\r\n            String fieldName = getFieldNameByGetter(getter);\r\n\r\n            // 获取字段对象\r\n            Field field = clazz.getDeclaredField(fieldName);\r\n\r\n            // 获取字段上的注解\r\n            A annotation = field.getAnnotation(annotationClass);\r\n\r\n            // 如果注解存在，返回其 value 属性值\r\n            if (annotation != null) {\r\n                // 使用反射获取注解的 value 属性值\r\n                Method valueMethod = annotationClass.getMethod(\"value\");\r\n                return (String) valueMethod.invoke(annotation);\r\n            } else {\r\n                throw new RuntimeException(\"字段没有指定的注解: \" + fieldName);\r\n            }\r\n        } catch (Exception e) {\r\n            throw new RuntimeException(\"获取注解值失败\", e);\r\n        }\r\n    }\r\n\r\n}\r\n```\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Java 根据 Getter 方法获取字段及注解值"
     },
     "frontmatter": {
       "title": "Java 根据 Getter 方法获取字段及注解值",
-      "date": "2025/03/05",
+      "date": "2025/04/12",
       "tags": [
         "Java"
       ],
@@ -46,14 +46,14 @@
     "title": "Java 获取接口泛型类型",
     "path": "/blogs/bianmabiji/Javahuoqujiekoufanxingleixing.html",
     "url": "/blogs/bianmabiji/Javahuoqujiekoufanxingleixing.html",
-    "content": "---\r\ntitle: Java 获取接口泛型类型\r\ndate: 2025/03/05\r\ntags:\r\n - Java\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```java\r\n    @SuppressWarnings(\"unchecked\")\r\n    public Class<S> getTypeClass() {\r\n        Class<?> clazz = this.getClass();\r\n        Type result = InterfaceUtils.findParameterizedType(clazz, ProjectTypeServiceGetter.class);\r\n        if (result != null) {\r\n            ParameterizedType pt = (ParameterizedType) result;\r\n            // 获取第一个泛型参数，它对应 S\r\n            Type sType = pt.getActualTypeArguments()[0];\r\n            if (sType instanceof Class) {\r\n                return (Class<S>) sType;\r\n            } else if (sType instanceof ParameterizedType) {\r\n                // 处理嵌套泛型情况\r\n                return (Class<S>) ((ParameterizedType) sType).getRawType();\r\n            }\r\n        }\r\n        throw new IllegalStateException(\"无法获取泛型类型 S 的 Class 对象\");\r\n    }\r\n```\r\n\r\n\r\n```java\r\npublic class InterfaceUtils {\r\n\r\n    /**\r\n     * 获取指定类实现的所有接口，包括父类实现的接口以及接口之间的继承关系。\r\n     *\r\n     * @param clazz 要查找接口的类\r\n     * @return 包含所有接口的集合\r\n     */\r\n    public static Set<Class<?>> getAllInterfaces(Class<?> clazz) {\r\n        Set<Class<?>> interfaces = new HashSet<>();\r\n        // 遍历类的继承层次结构\r\n        while (clazz != null) {\r\n            // 获取当前类直接实现的接口\r\n            Class<?>[] directInterfaces = clazz.getInterfaces();\r\n            for (Class<?> intf : directInterfaces) {\r\n                collectInterfaces(intf, interfaces);\r\n            }\r\n            clazz = clazz.getSuperclass();\r\n        }\r\n        return interfaces;\r\n    }\r\n\r\n    /**\r\n     * 递归地将接口及其扩展的接口加入到集合中。\r\n     *\r\n     * @param intf       当前的接口\r\n     * @param interfaces 用来保存所有接口的集合\r\n     */\r\n    private static void collectInterfaces(Class<?> intf, Set<Class<?>> interfaces) {\r\n        if (interfaces.add(intf)) {\r\n            // 获取接口可能扩展的其他接口\r\n            for (Class<?> superInterface : intf.getInterfaces()) {\r\n                collectInterfaces(superInterface, interfaces);\r\n            }\r\n        }\r\n    }\r\n\r\n    public static Type findParameterizedType(Type clazz, Class<?> targetType) {\r\n        if (clazz instanceof ParameterizedType) {\r\n            ParameterizedType pt = (ParameterizedType) clazz;\r\n            // 如果直接匹配目标接口\r\n            if (targetType.equals(pt.getRawType())) {\r\n                return pt;\r\n            }\r\n            // 检查该参数化类型的原始类型的接口\r\n            return findParameterizedType(pt.getRawType(), targetType);\r\n        } else if (clazz instanceof Class) {\r\n            Class<?> currentClass = (Class<?>) clazz;\r\n\r\n            // 检查当前类所有直接实现的接口\r\n            for (Type intf : currentClass.getGenericInterfaces()) {\r\n                Type result = findParameterizedType(intf, targetType);\r\n                if (result != null) {\r\n                    return result;\r\n                }\r\n            }\r\n            // 检查父类\r\n            Type superClass = currentClass.getGenericSuperclass();\r\n            if (superClass != null) {\r\n                return findParameterizedType(superClass, targetType);\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n}\r\n```\r\n\r\n",
+    "content": "---\r\ntitle: Java 获取接口泛型类型\r\ndate: 2025/04/12\r\ntags:\r\n - Java\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n```java\r\n    @SuppressWarnings(\"unchecked\")\r\n    public Class<S> getTypeClass() {\r\n        Class<?> clazz = this.getClass();\r\n        Type result = InterfaceUtils.findParameterizedType(clazz, ProjectTypeServiceGetter.class);\r\n        if (result != null) {\r\n            ParameterizedType pt = (ParameterizedType) result;\r\n            // 获取第一个泛型参数，它对应 S\r\n            Type sType = pt.getActualTypeArguments()[0];\r\n            if (sType instanceof Class) {\r\n                return (Class<S>) sType;\r\n            } else if (sType instanceof ParameterizedType) {\r\n                // 处理嵌套泛型情况\r\n                return (Class<S>) ((ParameterizedType) sType).getRawType();\r\n            }\r\n        }\r\n        throw new IllegalStateException(\"无法获取泛型类型 S 的 Class 对象\");\r\n    }\r\n```\r\n\r\n\r\n```java\r\npublic class InterfaceUtils {\r\n\r\n    /**\r\n     * 获取指定类实现的所有接口，包括父类实现的接口以及接口之间的继承关系。\r\n     *\r\n     * @param clazz 要查找接口的类\r\n     * @return 包含所有接口的集合\r\n     */\r\n    public static Set<Class<?>> getAllInterfaces(Class<?> clazz) {\r\n        Set<Class<?>> interfaces = new HashSet<>();\r\n        // 遍历类的继承层次结构\r\n        while (clazz != null) {\r\n            // 获取当前类直接实现的接口\r\n            Class<?>[] directInterfaces = clazz.getInterfaces();\r\n            for (Class<?> intf : directInterfaces) {\r\n                collectInterfaces(intf, interfaces);\r\n            }\r\n            clazz = clazz.getSuperclass();\r\n        }\r\n        return interfaces;\r\n    }\r\n\r\n    /**\r\n     * 递归地将接口及其扩展的接口加入到集合中。\r\n     *\r\n     * @param intf       当前的接口\r\n     * @param interfaces 用来保存所有接口的集合\r\n     */\r\n    private static void collectInterfaces(Class<?> intf, Set<Class<?>> interfaces) {\r\n        if (interfaces.add(intf)) {\r\n            // 获取接口可能扩展的其他接口\r\n            for (Class<?> superInterface : intf.getInterfaces()) {\r\n                collectInterfaces(superInterface, interfaces);\r\n            }\r\n        }\r\n    }\r\n\r\n    public static Type findParameterizedType(Type clazz, Class<?> targetType) {\r\n        if (clazz instanceof ParameterizedType) {\r\n            ParameterizedType pt = (ParameterizedType) clazz;\r\n            // 如果直接匹配目标接口\r\n            if (targetType.equals(pt.getRawType())) {\r\n                return pt;\r\n            }\r\n            // 检查该参数化类型的原始类型的接口\r\n            return findParameterizedType(pt.getRawType(), targetType);\r\n        } else if (clazz instanceof Class) {\r\n            Class<?> currentClass = (Class<?>) clazz;\r\n\r\n            // 检查当前类所有直接实现的接口\r\n            for (Type intf : currentClass.getGenericInterfaces()) {\r\n                Type result = findParameterizedType(intf, targetType);\r\n                if (result != null) {\r\n                    return result;\r\n                }\r\n            }\r\n            // 检查父类\r\n            Type superClass = currentClass.getGenericSuperclass();\r\n            if (superClass != null) {\r\n                return findParameterizedType(superClass, targetType);\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n}\r\n```\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Java 获取接口泛型类型"
     },
     "frontmatter": {
       "title": "Java 获取接口泛型类型",
-      "date": "2025/03/05",
+      "date": "2025/04/12",
       "tags": [
         "Java"
       ],
@@ -420,6 +420,21 @@
     "type": "content"
   },
   {
+    "title": "读书笔记",
+    "path": "/docs/book/book.html",
+    "url": "/docs/book/book.html",
+    "content": "---\r\ntitle: 读书笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "读书笔记"
+    },
+    "frontmatter": {
+      "title": "读书笔记",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
     "title": "日记",
     "path": "/docs/diary/diary.html",
     "url": "/docs/diary/diary.html",
@@ -431,21 +446,6 @@
     "frontmatter": {
       "title": "日记",
       "password": "b593bf97f44387eb6fdc629acef2d138",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "读书笔记",
-    "path": "/docs/book/book.html",
-    "url": "/docs/book/book.html",
-    "content": "---\r\ntitle: 读书笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "读书笔记"
-    },
-    "frontmatter": {
-      "title": "读书笔记",
       "date": "2025/03/08"
     },
     "type": "content"
@@ -564,23 +564,6 @@
     "type": "content"
   },
   {
-    "title": "2025-03",
-    "path": "/docs/diary/2025/2025-03.html",
-    "url": "/docs/diary/2025/2025-03.html",
-    "content": "---\r\ntitle: 2025-03\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n## 2025-03-08\r\n\r\n- 优化博客站点\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "2025-03",
-      "lvl1": "2025-03-08"
-    },
-    "frontmatter": {
-      "title": "2025-03",
-      "password": "b593bf97f44387eb6fdc629acef2d138",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "Redis-持久化",
     "path": "/docs/architect/redis/Redis-chijiuhua.html",
     "url": "/docs/architect/redis/Redis-chijiuhua.html",
@@ -596,6 +579,23 @@
     "frontmatter": {
       "title": "Redis-持久化",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "2025-03",
+    "path": "/docs/diary/2025/2025-03.html",
+    "url": "/docs/diary/2025/2025-03.html",
+    "content": "---\r\ntitle: 2025-03\r\npassword: b593bf97f44387eb6fdc629acef2d138\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n## 2025-03-08\r\n\r\n- 优化博客站点\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "2025-03",
+      "lvl1": "2025-03-08"
+    },
+    "frontmatter": {
+      "title": "2025-03",
+      "password": "b593bf97f44387eb6fdc629acef2d138",
+      "date": "2025/03/08"
     },
     "type": "content"
   },

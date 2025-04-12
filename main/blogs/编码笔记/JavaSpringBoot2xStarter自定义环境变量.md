@@ -1,6 +1,6 @@
 ---
 title: Java SpringBoot2x Starter 自定义环境变量
-date: 2025/03/05
+date: 2025/04/12
 tags:
  - Java
  - SpringBoot2x

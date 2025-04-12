@@ -58,7 +58,7 @@ export default defineUserConfig({
     navbar: [
       { text: "首页", link: "/" },
       { text: "文章", link: "/categories/bianmabiji/1.html" },
-      { text: "标签", link: "/tags/PowerShell/1.html" },
+      { text: "标签", link: "/tags/Java/1.html" },
       {
         text: "文档",
         children: [
