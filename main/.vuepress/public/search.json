@@ -135,6 +135,30 @@
     "type": "content"
   },
   {
+    "title": "shlink 部署及 openfeign 调用",
+    "path": "/blogs/bianmabiji/shlinkbushujiopenfeigndiaoyong.html",
+    "url": "/blogs/bianmabiji/shlinkbushujiopenfeigndiaoyong.html",
+    "content": "---\r\ntitle: shlink 部署及 openfeign 调用\r\ndate: 2025/04/16\r\ntags:\r\n - shlink\r\n - openfeign\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n## shlink 部署\r\n\r\n```yml\r\nservices:\r\n  shlink:\r\n    image: shlinkio/shlink:latest\r\n    ports:\r\n      - \"28881:8080\"\r\n    environment:\r\n      - SHLINK_SHORT_CODES_LENGTH=5\r\n      - INITIAL_API_KEY=cda4282f-27a5-4a93-bb8a-47234309628f\r\n      - DB_DRIVER=mysql\r\n      - DB_HOST=mysql_host\r\n      - DB_PORT=3306\r\n      - DB_NAME=shlink\r\n      - DB_USER=shlink\r\n      - DB_PASSWORD=662caa92-1f0e-40f5-9656-2147c76a4f73\r\n```\r\n\r\n## openfeign\r\n\r\n```java\r\n@FeignClient(name = CloudName.SHLINK, path = \"/rest/v3\",\r\n        fallbackFactory = ShlinkClientFallbackFactory.class,\r\n        configuration = ShlinkHeaderConfig.class)\r\npublic interface ShlinkClient {\r\n    @PostMapping(\"/short-urls\")\r\n    ShortUrlRes shortUrls(@RequestBody ShortUrlParam param);\r\n}\r\n```\r\n\r\n```java\r\n@Data\r\n@Builder\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@Accessors(chain = true)\r\npublic class ShortUrlParam {\r\n    private String longUrl;\r\n}\r\n```\r\n\r\n```java\r\n@Data\r\n@Builder\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@Accessors(chain = true)\r\npublic class ShortUrlRes {\r\n    private String shortUrl;\r\n    private String shortCode;\r\n    private String longUrl;\r\n    @JsonFormat(pattern = \"yyyy-MM-dd'T'HH:mm:ssXXX\")\r\n    private Date dateCreated;\r\n    private String domain;\r\n    private String title;\r\n    private Boolean crawlable;\r\n    private Boolean forwardQuery;\r\n    private Boolean hasRedirectRules;\r\n}\r\n```\r\n\r\n```java\r\n@RequiredArgsConstructor\r\npublic class ShlinkHeaderConfig {\r\n    private final ShlinkConfig shlinkConfig;\r\n    @Bean\r\n    public RequestInterceptor requestInterceptor() {\r\n        return requestTemplate -> requestTemplate.header(\"X-Api-Key\", shlinkConfig.getApiKey());\r\n    }\r\n}\r\n```\r\n\r\n```java\r\n@Data\r\n@Configuration\r\n@ConfigurationProperties(prefix = \"app.shlink\")\r\npublic class ShlinkConfig {\r\n    private String apiKey;\r\n}\r\n```\r\n\r\n```yml\r\napp:\r\n  shlink:\r\n    api-key: cda4282f-27a5-4a93-bb8a-47234309628f\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "shlink 部署及 openfeign 调用",
+      "lvl1": "shlink 部署",
+      "lvl2": "openfeign"
+    },
+    "frontmatter": {
+      "title": "shlink 部署及 openfeign 调用",
+      "date": "2025/04/16",
+      "tags": [
+        "shlink",
+        "openfeign"
+      ],
+      "categories": [
+        "编码笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "VBS 静默执行 PowerShell 脚本",
     "path": "/blogs/bianmabiji/VBSjingmozhixingPSjiaoben.html",
     "url": "/blogs/bianmabiji/VBSjingmozhixingPSjiaoben.html",
