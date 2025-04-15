@@ -244,6 +244,30 @@
     "type": "content"
   },
   {
+    "title": "ELK 部署",
+    "path": "/blogs/yunweishouce/ELKbushu.html",
+    "url": "/blogs/yunweishouce/ELKbushu.html",
+    "content": "---\r\ntitle: ELK 部署\r\ndate: 2025/04/16\r\ntags:\r\n - elasticsearch\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## docker-compose.yml\r\n\r\n```yml\r\nservices:\r\n  elasticsearch: \r\n    image: elasticsearch:8.16.1\r\n    restart: always\r\n    environment:\r\n      - discovery.type=single-node \r\n      - xpack.security.enabled=true\r\n    volumes:\r\n      - /mnt/nexus3/es_data:/usr/share/elasticsearch/data \r\n    logging:\r\n      driver: \"json-file\"\r\n      options:\r\n        max-size: \"50m\"\r\n        max-file: \"3\"\r\n  kibana: \r\n    image: kibana:8.16.1 \r\n    ports:\r\n      - \"12563:5601\"\r\n    environment:\r\n      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200\r\n      - XPACK_SECURITY_ENABLED=true\r\n      - ELASTICSEARCH_USERNAME=kibana_system\r\n      - ELASTICSEARCH_PASSWORD=\"3UGDvTkAmzhprC5*9PUw\"\r\n    depends_on:\r\n      - elasticsearch\r\n    logging:\r\n      driver: \"json-file\"\r\n      options:\r\n        max-size: \"50m\"\r\n        max-file: \"3\"\r\n  zipkin:\r\n    image: bitnami/zipkin:3\r\n    ports:\r\n      - \"12411:9411\"\r\n    environment:\r\n      - STORAGE_TYPE=elasticsearch\r\n      - ES_HOSTS=elasticsearch:9200\r\n      - ES_USERNAME=elastic\r\n      - ES_PASSWORD=rC4hG9mR9DUC109=DeS8\r\n    depends_on:\r\n      - elasticsearch\r\n    logging:\r\n      driver: \"json-file\"\r\n      options:\r\n        max-size: \"50m\"\r\n        max-file: \"3\"\r\n  logstash:\r\n    image: bitnami/logstash:8.17.0\r\n    ports: \r\n      - \"5044:8080\"\r\n    volumes:\r\n      - ./logstash.conf:/opt/bitnami/logstash/pipeline/logstash.conf\r\n    logging:\r\n      driver: \"json-file\"\r\n      options:\r\n        max-size: \"50m\"\r\n        max-file: \"3\"\r\n```\r\n\r\n## logstash.conf\r\n\r\n```config\r\ninput {\r\n  tcp {\r\n    port => 8080 \r\n    codec => json_lines \r\n  }\r\n}\r\n\r\n\r\noutput {\r\n  elasticsearch {\r\n    hosts => [\"http://elasticsearch:9200\"] \r\n    user => \"elastic\"\r\n    password => \"rC4hG9mR9DUC109=DeS8\"\r\n    index => \"logs-%{+YYYY.MM.dd}\"\r\n    ssl => false \r\n  }\r\n}\r\n```\r\n\r\n## 设置密码\r\n\r\n```bash\r\n# 进入 elasticsearch 容器内部\r\ndocker exec -it <elasticsearch> sh\r\n\r\n# 设置超级用户的密码，此用户名密码可以用在logstash、zipkin和kibana web ui的登录上\r\nbin/elasticsearch-reset-password -u elastic\r\n\r\n# 设置kibana用户的密码，此用户专用于kibana容器与elasticsearch容器的交互\r\nbin/elasticsearch-reset-password -u kibana_system\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "ELK 部署",
+      "lvl1": "docker-compose.yml",
+      "lvl2": "logstash.conf",
+      "lvl3": "设置密码"
+    },
+    "frontmatter": {
+      "title": "ELK 部署",
+      "date": "2025/04/16",
+      "tags": [
+        "elasticsearch"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Linux 关闭 iptables 防火墙",
     "path": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
     "url": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
