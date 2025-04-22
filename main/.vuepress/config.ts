@@ -23,6 +23,9 @@ export default defineUserConfig({
     series: {
       "/docs/architect/": [
         {
+          text: "并发编程",
+          children: ["concurrent/JAVA并发-设计模式"],
+        },{
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
         }, {
