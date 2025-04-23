@@ -68,9 +68,30 @@
     "type": "content"
   },
   {
+    "title": "PowerShell 目录栈",
+    "path": "/blogs/bianmabiji/PowerShellmuluzhan.html",
+    "url": "/blogs/bianmabiji/PowerShellmuluzhan.html",
+    "content": "---\r\ntitle: PowerShell 目录栈\r\ndate: 2025/04/23\r\ntags:\r\n - PowerShell\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n:::info\r\n如果只是在脚本里临时切换目录，使用 `Push-Location / Pop-Location` 更优雅\r\n:::\r\n\r\n```powershell\r\ntry {\r\n    Push-Location path/to/dir\r\n    # todo ...\r\n}\r\nfinally {\r\n    Pop-Location\r\n}\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "PowerShell 目录栈"
+    },
+    "frontmatter": {
+      "title": "PowerShell 目录栈",
+      "date": "2025/04/23",
+      "tags": [
+        "PowerShell"
+      ],
+      "categories": [
+        "编码笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "PowerShell 设置定时任务",
-    "path": "/blogs/bianmabiji/PSshezhidingshirenwu.html",
-    "url": "/blogs/bianmabiji/PSshezhidingshirenwu.html",
+    "path": "/blogs/bianmabiji/PowerShellshezhidingshirenwu.html",
+    "url": "/blogs/bianmabiji/PowerShellshezhidingshirenwu.html",
     "content": "---\r\ntitle: PowerShell 设置定时任务\r\ndate: 2025/03/05\r\ntags:\r\n - PowerShell\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n::: tip\r\n1. 注册任务\r\n2. 注销任务\r\n\r\n---\r\n\r\n[使用VBS保持PS脚本的静默执行](./VBS静默执行PS脚本.md)\r\n:::\r\n\r\n\r\n## 注册任务\r\n\r\n```powershell\r\n# 使用vbs脚本的好处是可以保持静默执行\r\n$Action = New-ScheduledTaskAction -Execute \"wscript.exe\" -Argument \"D:\\personal-folder\\app\\powershell\\wallpaper-kline.vbs\"\r\n\r\n# 设置开机执行一次\r\n$Trigger1 = New-ScheduledTaskTrigger -AtStartup\r\n# 设置每小时执行一次\r\n$Trigger2 = New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Hours 1)\r\n\r\n# 注册任务\r\n$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable\r\nRegister-ScheduledTask -Action $Action -Trigger $Trigger1,$Trigger2 -TaskName \"wallpaper-kline-task\" -Description \"wallpaper-kline.vbs\"  -Settings $Settings\r\n```\r\n\r\n## 注销任务\r\n\r\n```powershell\r\nUnregister-ScheduledTask -TaskName \"wallpaper-kline-task\" -Confirm:$false\r\n```\r\n",
     "lang": "zh-CN",
     "hierarchy": {
@@ -237,7 +258,7 @@
     "title": "Vaadin 集成 SpringBoot3 及 GraalVM 云原生",
     "path": "/blogs/bianmabiji/VaadinjichengSpringBoot3jiGraalVMyunyuansheng.html",
     "url": "/blogs/bianmabiji/VaadinjichengSpringBoot3jiGraalVMyunyuansheng.html",
-    "content": "---\r\ntitle: Vaadin 集成 SpringBoot3 及 GraalVM 云原生\r\ndate: 2025/04/18\r\ntags:\r\n - GraalVM\r\n - SpringBoot3\r\n - Vaadin\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n## 依赖\r\n\r\n:::info\r\n- SpringBoot 版本必须在 3.4.4 之上\r\n- Vaadin 版本必须在 24.7.2 之上\r\n:::\r\n\r\n```xml\r\n    <parent>\r\n        <groupId>org.springframework.boot</groupId>\r\n        <artifactId>spring-boot-starter-parent</artifactId>\r\n        <version>3.4.4</version>\r\n    </parent>\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-web</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>com.vaadin</groupId>\r\n            <artifactId>vaadin-spring-boot-starter</artifactId>\r\n            <version>24.7.2</version>\r\n        </dependency>\r\n```\r\n\r\n```xml\r\n    <build>\r\n        <finalName>image-name</finalName>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.graalvm.buildtools</groupId>\r\n                <artifactId>native-maven-plugin</artifactId>\r\n            </plugin>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n                <version>3.4.4</version>\r\n            </plugin>\r\n            <plugin>\r\n                <groupId>com.vaadin</groupId>\r\n                <artifactId>vaadin-maven-plugin</artifactId>\r\n                <version>24.7.2</version>\r\n                <executions>\r\n                    <execution>\r\n                        <goals>\r\n                            <goal>prepare-frontend</goal>\r\n                            <goal>build-frontend</goal>\r\n                        </goals>\r\n                    </execution>\r\n                </executions>\r\n            </plugin>\r\n        </plugins>\r\n    </build>\r\n```\r\n\r\n## 兼容性\r\n\r\n:::info\r\nVaadin 组件中用到过的所有类都必须声明反射\r\n\r\n其他兼容性（静态资源、反射等）参见 [SpringBoot3集成GraalVM云原生](./SpringBoot3集成GraalVM云原生.md)\r\n:::\r\n\r\n## view\r\n\r\n```java\r\n@Route(\"clock\")\r\npublic class ClockView extends VerticalLayout {\r\n    public ClockView(){\r\n        // todo 在构造方法中编写这个页面（可以通过构造方法参数直接注入 SpringBean）\r\n    }\r\n}\r\n```\r\n",
+    "content": "---\r\ntitle: Vaadin 集成 SpringBoot3 及 GraalVM 云原生\r\ndate: 2025/04/18\r\ntags:\r\n - GraalVM\r\n - SpringBoot\r\n - Vaadin\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n## 依赖\r\n\r\n:::info\r\n- SpringBoot 版本必须在 3.4.4 之上\r\n- Vaadin 版本必须在 24.7.2 之上\r\n:::\r\n\r\n```xml\r\n    <parent>\r\n        <groupId>org.springframework.boot</groupId>\r\n        <artifactId>spring-boot-starter-parent</artifactId>\r\n        <version>3.4.4</version>\r\n    </parent>\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-web</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>com.vaadin</groupId>\r\n            <artifactId>vaadin-spring-boot-starter</artifactId>\r\n            <version>24.7.2</version>\r\n        </dependency>\r\n```\r\n\r\n```xml\r\n    <build>\r\n        <finalName>image-name</finalName>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.graalvm.buildtools</groupId>\r\n                <artifactId>native-maven-plugin</artifactId>\r\n            </plugin>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n                <version>3.4.4</version>\r\n            </plugin>\r\n            <plugin>\r\n                <groupId>com.vaadin</groupId>\r\n                <artifactId>vaadin-maven-plugin</artifactId>\r\n                <version>24.7.2</version>\r\n                <executions>\r\n                    <execution>\r\n                        <goals>\r\n                            <goal>prepare-frontend</goal>\r\n                            <goal>build-frontend</goal>\r\n                        </goals>\r\n                    </execution>\r\n                </executions>\r\n            </plugin>\r\n        </plugins>\r\n    </build>\r\n```\r\n\r\n## 兼容性\r\n\r\n:::info\r\nVaadin 组件中用到过的所有类都必须声明反射\r\n\r\n其他兼容性（静态资源、反射等）参见 [SpringBoot3集成GraalVM云原生](./SpringBoot3集成GraalVM云原生.md)\r\n:::\r\n\r\n## view\r\n\r\n```java\r\n@Route(\"clock\")\r\npublic class ClockView extends VerticalLayout {\r\n    public ClockView(){\r\n        // todo 在构造方法中编写这个页面（可以通过构造方法参数直接注入 SpringBean）\r\n    }\r\n}\r\n```\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "Vaadin 集成 SpringBoot3 及 GraalVM 云原生",
@@ -250,7 +271,7 @@
       "date": "2025/04/18",
       "tags": [
         "GraalVM",
-        "SpringBoot3",
+        "SpringBoot",
         "Vaadin"
       ],
       "categories": [
@@ -630,21 +651,6 @@
     "type": "content"
   },
   {
-    "title": "诗集",
-    "path": "/docs/poetry/poetry.html",
-    "url": "/docs/poetry/poetry.html",
-    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "诗集"
-    },
-    "frontmatter": {
-      "title": "诗集",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -656,6 +662,21 @@
     "frontmatter": {
       "title": "操盘手学习笔记",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "诗集",
+    "path": "/docs/poetry/poetry.html",
+    "url": "/docs/poetry/poetry.html",
+    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "诗集"
+    },
+    "frontmatter": {
+      "title": "诗集",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
