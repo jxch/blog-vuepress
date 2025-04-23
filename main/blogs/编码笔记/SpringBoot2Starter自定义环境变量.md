@@ -2,7 +2,7 @@
 title: SpringBoot2 Starter 自定义环境变量
 date: 2025/04/12
 tags:
- - SpringBoot2
+ - SpringBoot
 categories:
  - 编码笔记
 ---

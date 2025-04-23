@@ -3,7 +3,7 @@ title: SpringBoot3 集成 GraalVM 云原生
 date: 2025/04/18
 tags:
  - GraalVM
- - SpringBoot3
+ - SpringBoot
 categories:
  - 编码笔记
 ---
