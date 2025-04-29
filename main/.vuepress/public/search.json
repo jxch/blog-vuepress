@@ -179,6 +179,27 @@
     "type": "content"
   },
   {
+    "title": "SpringBoot2 实现 SpringCache 集成多个 CacheManager",
+    "path": "/blogs/bianmabiji/SpringBoot2shixianSpringCachejichengduogeCacheManager.html",
+    "url": "/blogs/bianmabiji/SpringBoot2shixianSpringCachejichengduogeCacheManager.html",
+    "content": "---\r\ntitle: SpringBoot2 实现 SpringCache 集成多个 CacheManager\r\ndate: 2025/04/29\r\ntags:\r\n - SpringBoot\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n:::info\r\n- 通过 `CachingConfigurerSupport` 指定全局默认的主 `CacheManager`\r\n- `@Cacheable` 等 SpringCache 注解可以通过 `cacheManager` 属性指定自定义的 `CacheManager`\r\n:::\r\n\r\n```java\r\n@Configuration\r\n@EnableCaching\r\npublic class CacheConfig extends CachingConfigurerSupport {\r\n    private final CacheManager cacheManager;\r\n\r\n    public CacheConfig(@Qualifier(RedisCacheConfig.REDIS_CACHE_NAME) CacheManager cacheManager) {\r\n        this.cacheManager = cacheManager;\r\n    }\r\n\r\n    @Override\r\n    public CacheManager cacheManager() {\r\n        return cacheManager;\r\n    }\r\n\r\n}\r\n```\r\n\r\n```java\r\n@Data\r\n@Configuration\r\n@ConditionalOnClass(name = \"com.github.benmanes.caffeine.cache.Caffeine\")\r\npublic class LocalCacheConfig {\r\n    public static final String LOCAL_CACHE_MANAGER = \"caffeineCacheManager\";\r\n    @Value(\"${app.cache.ttl-seconds:3600}\")\r\n    private Long ttlSeconds;\r\n    @Value(\"${app.cache.maximum:5000}\")\r\n    private Integer maximum;\r\n\r\n    @Bean(LOCAL_CACHE_MANAGER)\r\n    public CaffeineCacheManager caffeineCacheManager() {\r\n        CaffeineCacheManager cacheManager = new CaffeineCacheManager();\r\n        cacheManager.setCaffeine(Caffeine.newBuilder()\r\n                .expireAfterWrite(ttlSeconds, TimeUnit.SECONDS)\r\n                .maximumSize(maximum));\r\n        return cacheManager;\r\n    }\r\n\r\n}\r\n```\r\n\r\n```java\r\n@Data\r\n@Configuration\r\n@ConditionalOnClass(name = \"org.springframework.data.redis.cache.RedisCacheManager\")\r\npublic class RedisCacheConfig {\r\n    public static final String REDIS_CACHE_NAME = \"cacheManager\";\r\n    @Value(\"${app.cache.ttl-seconds:3600}\")\r\n    private Long ttlSeconds;\r\n\r\n    @Bean\r\n    @ConditionalOnMissingBean(RedisCacheConfiguration.class)\r\n    public RedisCacheConfiguration redisCacheConfiguration() {\r\n        return RedisCacheConfiguration.defaultCacheConfig()\r\n                .entryTtl(Duration.ofSeconds(ttlSeconds))\r\n                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))\r\n                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));\r\n    }\r\n\r\n    @Primary\r\n    @Bean(REDIS_CACHE_NAME)\r\n    public CacheManager cacheManager(RedisConnectionFactory connectionFactory, RedisCacheConfiguration config) {\r\n        return RedisCacheManager.builder(connectionFactory)\r\n                .cacheDefaults(config)\r\n                .build();\r\n    }\r\n\r\n}\r\n```\r\n\r\n```yml\r\napp:\r\n  cache:\r\n    ttl-seconds: 3600\r\n    maximum: 5000\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "SpringBoot2 实现 SpringCache 集成多个 CacheManager"
+    },
+    "frontmatter": {
+      "title": "SpringBoot2 实现 SpringCache 集成多个 CacheManager",
+      "date": "2025/04/29",
+      "tags": [
+        "SpringBoot"
+      ],
+      "categories": [
+        "编码笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "SpringBoot2 集成 Zipkin 和 Sleuth 实现链路追踪",
     "path": "/blogs/bianmabiji/SpringBoot2jichengZipkinheSleuthshixianlianluzhuizong.html",
     "url": "/blogs/bianmabiji/SpringBoot2jichengZipkinheSleuthshixianlianluzhuizong.html",
@@ -611,6 +632,21 @@
     "type": "content"
   },
   {
+    "title": "计算机技术栈",
+    "path": "/docs/it/it.html",
+    "url": "/docs/it/it.html",
+    "content": "---\r\ntitle: 计算机技术栈\r\ndate: 2025/03/08\r\n---\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "计算机技术栈"
+    },
+    "frontmatter": {
+      "title": "计算机技术栈",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
     "title": "读书笔记",
     "path": "/docs/book/book.html",
     "url": "/docs/book/book.html",
@@ -637,36 +673,6 @@
     "frontmatter": {
       "title": "日记",
       "password": "b593bf97f44387eb6fdc629acef2d138",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "计算机技术栈",
-    "path": "/docs/it/it.html",
-    "url": "/docs/it/it.html",
-    "content": "---\r\ntitle: 计算机技术栈\r\ndate: 2025/03/08\r\n---\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "计算机技术栈"
-    },
-    "frontmatter": {
-      "title": "计算机技术栈",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "诗集",
-    "path": "/docs/poetry/poetry.html",
-    "url": "/docs/poetry/poetry.html",
-    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "诗集"
-    },
-    "frontmatter": {
-      "title": "诗集",
       "date": "2025/03/08"
     },
     "type": "content"
@@ -702,6 +708,21 @@
     "type": "content"
   },
   {
+    "title": "诗集",
+    "path": "/docs/poetry/poetry.html",
+    "url": "/docs/poetry/poetry.html",
+    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "诗集"
+    },
+    "frontmatter": {
+      "title": "诗集",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
     "title": "交易笔记",
     "path": "/docs/trading_journal/trading_journal.html",
     "url": "/docs/trading_journal/trading_journal.html",
@@ -728,6 +749,23 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
+    },
+    "type": "content"
+  },
+  {
+    "title": "边缘填充算法",
+    "path": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
+    "url": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
+    "content": "---\r\ntitle: 边缘填充算法\r\ndate: 2025/03/08\r\n---\r\n\r\n## 填充原理\r\n边缘填充算法是先求出多边形的每条边与扫描线的交点，然后**将交点右侧的所有像素颜色全部取为补色（或反色**）。按任意顺序处理完多边形的所有边后，就完成了多边形的填充任务。边缘填充算法利用了图像处理中的求“补”或求“反”的概念，对于黑白图像，求补就是把RGB(1,1,1)（白色）的像素置为RGB(0,0,0)（黑色），反之亦然；对于彩色图像，求补就是将背景色置为填充色，反之亦然。求补的一条基本性质是**一个像素求补两次就恢复为原色**。**如果多边形内部的像素被求补偶数次，保持原色，如果被求补奇数次，显示填充色。**\r\n\r\n## 填充过程\r\n假定边的顺序为E0、E1、E2、E3、E4、E5和E6。这里，边的顺序并不影响填充结果，只是方便编写循环结构而已。\r\n\r\n\r\n![边缘填充算法](static/边缘填充算法.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "边缘填充算法",
+      "lvl1": "填充原理",
+      "lvl2": "填充过程"
+    },
+    "frontmatter": {
+      "title": "边缘填充算法",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
@@ -801,23 +839,6 @@
     "frontmatter": {
       "title": "2025-03",
       "password": "b593bf97f44387eb6fdc629acef2d138",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "边缘填充算法",
-    "path": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
-    "url": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
-    "content": "---\r\ntitle: 边缘填充算法\r\ndate: 2025/03/08\r\n---\r\n\r\n## 填充原理\r\n边缘填充算法是先求出多边形的每条边与扫描线的交点，然后**将交点右侧的所有像素颜色全部取为补色（或反色**）。按任意顺序处理完多边形的所有边后，就完成了多边形的填充任务。边缘填充算法利用了图像处理中的求“补”或求“反”的概念，对于黑白图像，求补就是把RGB(1,1,1)（白色）的像素置为RGB(0,0,0)（黑色），反之亦然；对于彩色图像，求补就是将背景色置为填充色，反之亦然。求补的一条基本性质是**一个像素求补两次就恢复为原色**。**如果多边形内部的像素被求补偶数次，保持原色，如果被求补奇数次，显示填充色。**\r\n\r\n## 填充过程\r\n假定边的顺序为E0、E1、E2、E3、E4、E5和E6。这里，边的顺序并不影响填充结果，只是方便编写循环结构而已。\r\n\r\n\r\n![边缘填充算法](static/边缘填充算法.png)\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "边缘填充算法",
-      "lvl1": "填充原理",
-      "lvl2": "填充过程"
-    },
-    "frontmatter": {
-      "title": "边缘填充算法",
       "date": "2025/03/08"
     },
     "type": "content"
