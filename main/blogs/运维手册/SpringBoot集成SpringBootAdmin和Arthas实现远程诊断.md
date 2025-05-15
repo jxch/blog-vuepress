@@ -36,6 +36,12 @@ services:
 
 ## 集成 arthas-spring-boot-starter
 
+:::info
+- tunnelWeb 并非 arthas-spring-boot-starter 提供的字段，我的目的是把这个入口注册到 SpringBootAdminServer，这样就可以在 SBA Server 上直接进入远程诊断了
+- tunnelToken 是 arthas-spring-boot-starter 提供的字段，但并没有显示的 Java 属性，这个字段是必填的
+- tunnelServer 必须用 ws 地址
+:::
+
 ```yml
 arthas:
   tunnelWeb: http://arthas-tunnel-server-ip-address:10777/
