@@ -617,6 +617,57 @@
     "type": "content"
   },
   {
+    "title": "SpringBoot 集成 SpringBootAdmin",
+    "path": "/blogs/yunweishouce/SpringBootjichengSpringBootAdmin.html",
+    "url": "/blogs/yunweishouce/SpringBootjichengSpringBootAdmin.html",
+    "content": "---\r\ntitle: SpringBoot 集成 SpringBootAdmin\r\ndate: 2025/05/15\r\ntags:\r\n - SpringBoot\r\n - SpringBootAdmin\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n1. 部署 SpringBootAdminServer\r\n2. 集成 SpringBootAdminClient\r\n3. 按不同环境修改 SpringBootAdminClient 注册的实例名称\r\n:::\r\n\r\n## 部署 SpringBootAdminServer\r\n\r\n```java\r\n@EnableAdminServer\r\n@SpringBootApplication\r\npublic class AdminServerApplication {\r\n    public static void main(String[] args) {\r\n        SpringApplication.run(AdminServerApplication.class, args);\r\n    }\r\n}\r\n```\r\n\r\n:::info\r\n- 开启 `httpBasic` 来允许 `curl` 使用用户名密码的方式访问 `/actuator`\r\n:::\r\n\r\n```java\r\n@Configuration\r\n@EnableWebSecurity\r\npublic class SecurityConfig extends WebSecurityConfigurerAdapter {\r\n    @Override\r\n    protected void configure(HttpSecurity http) throws Exception {\r\n        http\r\n                .authorizeRequests()\r\n                .anyRequest().authenticated()\r\n                .and()\r\n                .formLogin()\r\n                .and()\r\n                .httpBasic()\r\n                .and()\r\n                .logout()\r\n                .and()\r\n                .csrf().disable();\r\n    }\r\n}\r\n```\r\n\r\n:::info\r\n- 可以集成注册中心（如 Nacos）实现服务的自动发现\r\n- SpringBootAdmin2 可以通过 `ignored-services` 属性忽略注册中心的某些服务\r\n- SpringBootAdmin3 可以通过 `metadata-filter` 属性通过元数据来选择注册中心中的某些服务\r\n:::\r\n\r\n```yml\r\nserver:\r\n  port: 8111\r\n\r\nspring:\r\n  application:\r\n    name: SPRING-BOOT-ADMIN-SERVER\r\n  security:\r\n    user:\r\n      name: admin\r\n      password: password\r\n  cloud:\r\n    nacos:\r\n      server-addr: nacos-server-addr\r\n      discovery:\r\n        username: nacos\r\n        password: password\r\n        group: DEFAULT_GROUP\r\n        namespace: public\r\n  boot:\r\n    admin:\r\n      discovery:\r\n        ignored-services: shlink,snowflake\r\n      client:\r\n        url: http://localhost:${server.port}\r\n        username: ${spring.security.user.name}\r\n        password: ${spring.security.user.password}\r\n        instance:\r\n          prefer-ip: true\r\n          metadata:\r\n            environment: ${spring.profiles.active}\r\n            user:\r\n              name: ${spring.security.user.name}\r\n              password: ${spring.security.user.password}\r\n\r\nmanagement:\r\n  endpoints:\r\n    web:\r\n      exposure:\r\n        include: '*'\r\n      base-path: /actuator\r\n  endpoint:\r\n    health:\r\n      show-details: always\r\n    shutdown:\r\n      enabled: true\r\n```\r\n\r\n```xml\r\n    <parent>\r\n        <groupId>org.springframework.boot</groupId>\r\n        <artifactId>spring-boot-starter-parent</artifactId>\r\n        <version>2.7.9</version>\r\n        <relativePath/>\r\n    </parent>\r\n\r\n   <dependencies>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-web</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>de.codecentric</groupId>\r\n            <artifactId>spring-boot-admin-starter-server</artifactId>\r\n            <version>${spring-boot-admin.version}</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>de.codecentric</groupId>\r\n            <artifactId>spring-boot-admin-server-ui</artifactId>\r\n            <version>${spring-boot-admin.version}</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>de.codecentric</groupId>\r\n            <artifactId>spring-boot-admin-starter-client</artifactId>\r\n            <version>${spring-boot-admin.version}</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>com.alibaba.cloud</groupId>\r\n            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-actuator</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-security</artifactId>\r\n        </dependency>\r\n    </dependencies>\r\n```\r\n\r\n## 集成 SpringBootAdminClient\r\n\r\n:::info\r\n- 通过 `spring.boot.admin.client.instance.metadata` 来自定义要注册的元数据\r\n- 通过 `spring.boot.admin.client.instance.metadata.user` 来定义访问 `/actuator` 所需的用户名密码\r\n- 通过 `spring.boot.admin.client.username` 来定义 SpringBootAdminServer 所需的用户名\r\n- 通过 `spring.boot.admin.client.password` 来定义 SpringBootAdminServer 所需的密码\r\n:::\r\n\r\n```yml\r\nspring:\r\n  boot:\r\n    admin:\r\n      client:\r\n        url: http://asktrue.cn:8111\r\n        username: admin\r\n        password: password\r\n        instance:\r\n          prefer-ip: true\r\n          metadata:\r\n            application: ${spring.application.name}\r\n            environment: ${spring.profiles.active}\r\n            ip: ${spring.cloud.client.ip-address}\r\n            port: ${server.port}\r\n            user:\r\n              name: ${spring.security.user.name}\r\n              password: ${spring.security.user.password}\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>de.codecentric</groupId>\r\n            <artifactId>spring-boot-admin-starter-client</artifactId>\r\n            <version>${spring-boot-admin.version}</version>\r\n        </dependency>\r\n```\r\n\r\n## 按不同环境修改 SpringBootAdminClient 注册的实例名称\r\n\r\n:::info\r\n- 只能通过代码修改 `spring.boot.admin.client.instance.name` 属性来修改实例名称\r\n:::error\r\n- 直接在 `application.yml` 中修改 `spring.boot.admin.client.instance.name` 属性是无效的\r\n:::\r\n:::\r\n\r\n```java\r\n@Configuration\r\npublic class SBANameConfig implements ApplicationListener<ApplicationReadyEvent> {\r\n    @Value(\"${spring.application.name}\")\r\n    private String appName;\r\n    @Value(\"${spring.profiles.active:default}\")\r\n    private String active;\r\n\r\n    @PostConstruct\r\n    public void setAdminClientNameProperty() {\r\n        // 设置 System Property 让 SBA client 用自定义 name\r\n        System.setProperty(\"spring.boot.admin.client.instance.name\", appName + \"-[\" + active + \"]\");\r\n    }\r\n    @Override\r\n    public void onApplicationEvent(ApplicationReadyEvent event) {\r\n        // 这里也可以设置，保证启动后仍然有效\r\n        System.setProperty(\"spring.boot.admin.client.instance.name\", appName + \"-[\" + active + \"]\");\r\n    }\r\n}\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "SpringBoot 集成 SpringBootAdmin",
+      "lvl1": "部署 SpringBootAdminServer",
+      "lvl2": "集成 SpringBootAdminClient",
+      "lvl3": "按不同环境修改 SpringBootAdminClient 注册的实例名称"
+    },
+    "frontmatter": {
+      "title": "SpringBoot 集成 SpringBootAdmin",
+      "date": "2025/05/15",
+      "tags": [
+        "SpringBoot",
+        "SpringBootAdmin"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断",
+    "path": "/blogs/yunweishouce/SpringBootjichengSpringBootAdminheArthasshixianyuanchengzhenduan.html",
+    "url": "/blogs/yunweishouce/SpringBootjichengSpringBootAdminheArthasshixianyuanchengzhenduan.html",
+    "content": "---\r\ntitle: SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断\r\ndate: 2025/05/15\r\ntags:\r\n - SpringBoot\r\n - SpringBootAdmin\r\n - Arthas\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n1. 部署 arthas-tunnel-server\r\n2. SpringBoot 集成 arthas-spring-boot-starter\r\n3. 将 agent-id 注册到 SpringBootAdmin\r\n:::\r\n\r\n## 部署 arthas-tunnel-server\r\n\r\n:::tip\r\n- DockerHub 地址：https://hub.docker.com/repository/docker/jxch/arthas-tunnel-server/general\r\n- GitHub 地址：https://github.com/jxch-docker/docker-build/tree/main/arthas/tunnel\r\n:::\r\n\r\n```yml\r\nservices:\r\n  tunnel-server:\r\n    image: jxch/arthas-tunnel-server:4.0.5\r\n    ports:\r\n      - \"7777:7777\"\r\n      - \"10777:8080\"\r\n    environment:\r\n      - ARTHAS_TOKEN=token\r\n      - PASSWORD=password\r\n```\r\n\r\n## 集成 arthas-spring-boot-starter\r\n\r\n```yml\r\narthas:\r\n  tunnelWeb: http://arthas-tunnel-server-ip-address:10777/\r\n  tunnelServer: ws://arthas-tunnel-server-ip-address:7777/ws\r\n  tunnelToken: ARTHAS_TOKEN\r\n  app-name: ${spring.application.name}\r\n  agent-id: ${spring.application.name}-${spring.cloud.client.ip-address:${server.address:127.0.0.1}}-${server.port}\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>com.taobao.arthas</groupId>\r\n            <artifactId>arthas-spring-boot-starter</artifactId>\r\n            <version>4.0.5</version>\r\n        </dependency>\r\n```\r\n\r\n## 集成 SpringBootAdminClient 并注册 agent-id\r\n\r\n:::info\r\n- 参考：[SpringBoot 集成 SpringBootAdmin](./SpringBoot集成SpringBootAdmin.md)\r\n- 把 agent-id 等信息通过元数据注册到 SpringBootAdminServer\r\n- 这样就可以在 SpringBootAdminServer 的 web 面板中直接进入远程诊断了\r\n:::\r\n\r\n```yml\r\nspring:\r\n  boot:\r\n    admin:\r\n      client:\r\n        url: http://asktrue.cn:8111\r\n        username: admin\r\n        password: password\r\n        instance:\r\n          prefer-ip: true\r\n          metadata:\r\n            application: ${spring.application.name}\r\n            environment: ${spring.profiles.active}\r\n            arthas-tunnel-server: ${arthas.tunnelWeb}\r\n            arthas-agent-id: ${arthas.agent-id}\r\n            ip: ${spring.cloud.client.ip-address}\r\n            port: ${server.port}\r\n            user:\r\n              name: ${spring.security.user.name}\r\n              password: ${spring.security.user.password}\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断",
+      "lvl1": "部署 arthas-tunnel-server",
+      "lvl2": "集成 arthas-spring-boot-starter",
+      "lvl3": "集成 SpringBootAdminClient 并注册 agent-id"
+    },
+    "frontmatter": {
+      "title": "SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断",
+      "date": "2025/05/15",
+      "tags": [
+        "SpringBoot",
+        "SpringBootAdmin",
+        "Arthas"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "V2fly Shadowsocks 等翻墙服务部署",
     "path": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
     "url": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
@@ -777,21 +828,6 @@
     "type": "content"
   },
   {
-    "title": "交易笔记",
-    "path": "/docs/trading_journal/trading_journal.html",
-    "url": "/docs/trading_journal/trading_journal.html",
-    "content": "---\r\ntitle: 交易笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "交易笔记"
-    },
-    "frontmatter": {
-      "title": "交易笔记",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -803,6 +839,21 @@
     "frontmatter": {
       "title": "操盘手学习笔记",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "交易笔记",
+    "path": "/docs/trading_journal/trading_journal.html",
+    "url": "/docs/trading_journal/trading_journal.html",
+    "content": "---\r\ntitle: 交易笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "交易笔记"
+    },
+    "frontmatter": {
+      "title": "交易笔记",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
