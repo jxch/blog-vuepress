@@ -3,6 +3,7 @@ import recoTheme from "vuepress-theme-reco";
 import { viteBundler } from '@vuepress/bundler-vite'
 import { webpackBundler } from '@vuepress/bundler-webpack'
 import fs from 'fs';
+import path from 'path';
 
 export default defineUserConfig({
   lang: 'zh-CN',
@@ -25,12 +26,15 @@ export default defineUserConfig({
         {
           text: "并发编程",
           children: ["concurrent/JAVA并发-设计模式"],
-        },{
+        }, {
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
         }, {
           text: "Redis",
           children: ["redis/Redis-持久化"],
+        }, {
+          text: "Zookeeper",
+          children: ["zookeeper/Zookeeper-特性"],
         },
       ],
       "/docs/trader/": [
@@ -213,8 +217,98 @@ export default defineUserConfig({
       };
     });
 
-    // 输出到 .vuepress/public/search.json
+    function splitByByte(str: string, byteLimit: number): string[] {
+      const result: string[] = [];
+      let current = '';
+      let currentBytes = 0;
+      for (const char of str) {
+        const charBytes = Buffer.byteLength(char, 'utf8');
+        if (currentBytes + charBytes > byteLimit) {
+          result.push(current);
+          current = char;
+          currentBytes = charBytes;
+        } else {
+          current += char;
+          currentBytes += charBytes;
+        }
+      }
+      if (current) result.push(current);
+      return result;
+    }
+
+    interface PageData {
+      title: string;
+      path: string;
+      url: string;
+      content: string;
+      lang: string;
+      hierarchy: Record<string, string>;
+      frontmatter: any;
+      type: string;
+      contentPart?: number;
+      contentParts?: number;
+    }
+
+    const finalPages: PageData[] = [];
+    pages.forEach((page) => {
+      const content = page.content || "";
+      const contentBytes = Buffer.byteLength(content, 'utf8');
+      if (contentBytes > 10 * 1024) {
+        const parts = splitByByte(content, 6 * 1024);
+        parts.forEach((part, idx) => {
+          finalPages.push({
+            ...page,
+            content: part,
+            contentPart: idx + 1,
+            contentParts: parts.length
+          });
+        });
+      } else {
+        finalPages.push(page);
+      }
+    });
+
+    // 输出到 .vuepress/public/search.json 
     const outputPath = app.dir.source('./.vuepress/public/search.json');
-    fs.writeFileSync(outputPath, JSON.stringify(pages, null, 2));
+    fs.writeFileSync(outputPath, JSON.stringify(finalPages, null, 2), 'utf8');
+
+    // // 输出到 .vuepress/public/search.json
+    // const outputPath = app.dir.source('./.vuepress/public/search.json');
+    // fs.writeFileSync(outputPath, JSON.stringify(pages, null, 2));
+
+    // // 创建目录
+    // const outputDir = app.dir.source('./.vuepress/public/sreach');
+    // if (!fs.existsSync(outputDir)) {
+    //   fs.mkdirSync(outputDir, { recursive: true });
+    // }
+
+    // let fileIndex = 1;
+    // let currentBatch: string[] = [];
+    // let currentSize = 2; // JSON 数组开头和结尾 []
+    // const MAX_FILE_SIZE = 10 * 1024; // 10KB
+
+    // for (const page of pages) {
+    //   const str = (currentBatch.length ? ',' : '') + JSON.stringify(page, null, 2);
+    //   const strSize = Buffer.byteLength(str, 'utf8');
+
+    //   // 如果加上这个 page 会超出 10KB，则先写入当前 batch
+    //   if (currentSize + strSize > MAX_FILE_SIZE) {
+    //     // 写入文件
+    //     const filePath = path.join(outputDir, `search_${fileIndex}.json`);
+    //     fs.writeFileSync(filePath, `[${currentBatch.join(',')}]`);
+    //     fileIndex++;
+    //     currentBatch = [];
+    //     currentSize = 2; // 重置 size（[]）
+    //   }
+
+    //   currentBatch.push(JSON.stringify(page, null, 2));
+    //   currentSize += strSize;
+    // }
+
+    // // 写入最后一批
+    // if (currentBatch.length) {
+    //   const filePath = path.join(outputDir, `search_${fileIndex}.json`);
+    //   fs.writeFileSync(filePath, `[${currentBatch.join(',')}]`);
+    // }
   },
 });

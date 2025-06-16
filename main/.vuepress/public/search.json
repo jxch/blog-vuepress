@@ -645,7 +645,7 @@
     "title": "SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断",
     "path": "/blogs/yunweishouce/SpringBootjichengSpringBootAdminheArthasshixianyuanchengzhenduan.html",
     "url": "/blogs/yunweishouce/SpringBootjichengSpringBootAdminheArthasshixianyuanchengzhenduan.html",
-    "content": "---\r\ntitle: SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断\r\ndate: 2025/05/15\r\ntags:\r\n - SpringBoot\r\n - SpringBootAdmin\r\n - Arthas\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n1. 部署 arthas-tunnel-server\r\n2. SpringBoot 集成 arthas-spring-boot-starter\r\n3. 将 agent-id 注册到 SpringBootAdmin\r\n:::\r\n\r\n## 部署 arthas-tunnel-server\r\n\r\n:::tip\r\n- DockerHub 地址：https://hub.docker.com/repository/docker/jxch/arthas-tunnel-server/general\r\n- GitHub 地址：https://github.com/jxch-docker/docker-build/tree/main/arthas/tunnel\r\n:::\r\n\r\n```yml\r\nservices:\r\n  tunnel-server:\r\n    image: jxch/arthas-tunnel-server:4.0.5\r\n    ports:\r\n      - \"7777:7777\"\r\n      - \"10777:8080\"\r\n    environment:\r\n      - ARTHAS_TOKEN=token\r\n      - PASSWORD=password\r\n```\r\n\r\n## 集成 arthas-spring-boot-starter\r\n\r\n```yml\r\narthas:\r\n  tunnelWeb: http://arthas-tunnel-server-ip-address:10777/\r\n  tunnelServer: ws://arthas-tunnel-server-ip-address:7777/ws\r\n  tunnelToken: ARTHAS_TOKEN\r\n  app-name: ${spring.application.name}\r\n  agent-id: ${spring.application.name}-${spring.cloud.client.ip-address:${server.address:127.0.0.1}}-${server.port}\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>com.taobao.arthas</groupId>\r\n            <artifactId>arthas-spring-boot-starter</artifactId>\r\n            <version>4.0.5</version>\r\n        </dependency>\r\n```\r\n\r\n## 集成 SpringBootAdminClient 并注册 agent-id\r\n\r\n:::info\r\n- 参考：[SpringBoot 集成 SpringBootAdmin](./SpringBoot集成SpringBootAdmin.md)\r\n- 把 agent-id 等信息通过元数据注册到 SpringBootAdminServer\r\n- 这样就可以在 SpringBootAdminServer 的 web 面板中直接进入远程诊断了\r\n:::\r\n\r\n```yml\r\nspring:\r\n  boot:\r\n    admin:\r\n      client:\r\n        url: http://asktrue.cn:8111\r\n        username: admin\r\n        password: password\r\n        instance:\r\n          prefer-ip: true\r\n          metadata:\r\n            application: ${spring.application.name}\r\n            environment: ${spring.profiles.active}\r\n            arthas-tunnel-server: ${arthas.tunnelWeb}\r\n            arthas-agent-id: ${arthas.agent-id}\r\n            ip: ${spring.cloud.client.ip-address}\r\n            port: ${server.port}\r\n            user:\r\n              name: ${spring.security.user.name}\r\n              password: ${spring.security.user.password}\r\n```\r\n\r\n",
+    "content": "---\r\ntitle: SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断\r\ndate: 2025/05/15\r\ntags:\r\n - SpringBoot\r\n - SpringBootAdmin\r\n - Arthas\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n1. 部署 arthas-tunnel-server\r\n2. SpringBoot 集成 arthas-spring-boot-starter\r\n3. 将 agent-id 注册到 SpringBootAdmin\r\n:::\r\n\r\n## 部署 arthas-tunnel-server\r\n\r\n:::tip\r\n- DockerHub 地址：https://hub.docker.com/repository/docker/jxch/arthas-tunnel-server/general\r\n- GitHub 地址：https://github.com/jxch-docker/docker-build/tree/main/arthas/tunnel\r\n:::\r\n\r\n```yml\r\nservices:\r\n  tunnel-server:\r\n    image: jxch/arthas-tunnel-server:4.0.5\r\n    ports:\r\n      - \"7777:7777\"\r\n      - \"10777:8080\"\r\n    environment:\r\n      - ARTHAS_TOKEN=token\r\n      - PASSWORD=password\r\n```\r\n\r\n## 集成 arthas-spring-boot-starter\r\n\r\n:::info\r\n- tunnelWeb 并非 arthas-spring-boot-starter 提供的字段，我的目的是把这个入口注册到 SpringBootAdminServer，这样就可以在 SBA Server 上直接进入远程诊断了\r\n- tunnelToken 是 arthas-spring-boot-starter 提供的字段，但并没有显示的 Java 属性，这个字段是必填的\r\n- tunnelServer 必须用 ws 地址\r\n:::\r\n\r\n```yml\r\narthas:\r\n  tunnelWeb: http://arthas-tunnel-server-ip-address:10777/\r\n  tunnelServer: ws://arthas-tunnel-server-ip-address:7777/ws\r\n  tunnelToken: ARTHAS_TOKEN\r\n  app-name: ${spring.application.name}\r\n  agent-id: ${spring.application.name}-${spring.cloud.client.ip-address:${server.address:127.0.0.1}}-${server.port}\r\n```\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>com.taobao.arthas</groupId>\r\n            <artifactId>arthas-spring-boot-starter</artifactId>\r\n            <version>4.0.5</version>\r\n        </dependency>\r\n```\r\n\r\n## 集成 SpringBootAdminClient 并注册 agent-id\r\n\r\n:::info\r\n- 参考：[SpringBoot 集成 SpringBootAdmin](./SpringBoot集成SpringBootAdmin.md)\r\n- 把 agent-id 等信息通过元数据注册到 SpringBootAdminServer\r\n- 这样就可以在 SpringBootAdminServer 的 web 面板中直接进入远程诊断了\r\n:::\r\n\r\n```yml\r\nspring:\r\n  boot:\r\n    admin:\r\n      client:\r\n        url: http://asktrue.cn:8111\r\n        username: admin\r\n        password: password\r\n        instance:\r\n          prefer-ip: true\r\n          metadata:\r\n            application: ${spring.application.name}\r\n            environment: ${spring.profiles.active}\r\n            arthas-tunnel-server: ${arthas.tunnelWeb}\r\n            arthas-agent-id: ${arthas.agent-id}\r\n            ip: ${spring.cloud.client.ip-address}\r\n            port: ${server.port}\r\n            user:\r\n              name: ${spring.security.user.name}\r\n              password: ${spring.security.user.password}\r\n```\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "SpringBoot 集成 SpringBootAdmin 和 Arthas 实现远程诊断",
@@ -813,21 +813,6 @@
     "type": "content"
   },
   {
-    "title": "诗集",
-    "path": "/docs/poetry/poetry.html",
-    "url": "/docs/poetry/poetry.html",
-    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "诗集"
-    },
-    "frontmatter": {
-      "title": "诗集",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -839,6 +824,21 @@
     "frontmatter": {
       "title": "操盘手学习笔记",
       "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "诗集",
+    "path": "/docs/poetry/poetry.html",
+    "url": "/docs/poetry/poetry.html",
+    "content": "---\r\ntitle: 诗集\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "诗集"
+    },
+    "frontmatter": {
+      "title": "诗集",
+      "date": "2025/03/08"
     },
     "type": "content"
   },
@@ -871,6 +871,114 @@
       "date": "2025/04/22"
     },
     "type": "content"
+  },
+  {
+    "title": "Zookeeper-特性",
+    "path": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "url": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "content": "---\r\ntitle: Zookeeper-特性\r\ndate: 2025/06/16\r\n---\r\n\r\n:::tip\r\n- CP架构\r\n- 常见命令\r\n- 数据结构\r\n- 监听通知机制\r\n- 节点特性\r\n- ACL权限控制\r\n- 集群\r\n- 四字命令\r\n- Leader 选举原理\r\n- 数据同步流程\r\n:::\r\n\r\n---\r\n## CP架构\r\n\r\n- CAP 理论指出对于一个分布式计算系统来说，不可能同时满足以下三点\r\n\t- 一致性：在分布式环境中，一致性是指数据在多个副本之间是否能够保持一致的特性，等同于所有节点访问同一份最新的数据副本。在一致性的需求下，当一个系统在数据一致的状态下执行更新操作后，应该保证系统的数据仍然处于一致的状态\r\n\t- 可用性：每次请求都能获取到正确的响应，但是不保证获取的数据为最新数据\r\n\t- 分区容错性：分布式系统在遇到任何网络分区故障的时候，仍然需要能够保证对外提供服务，除非是整个网络环境都发生了故障\r\n- 一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项\r\n\t- P 是必须的，因此只能在 CP 和 AP 中选择，zookeeper 保证的是 CP\r\n- BASE 理论：BASE 是 Basically Available(基本可用)、Soft-state(软状态) 和 Eventually Consistent(最终一致性) 三个短语的缩写\r\n\t- 基本可用：在分布式系统出现故障，允许损失部分可用性（服务降级、页面降级）\r\n\t- 软状态：允许分布式系统出现中间状态。而且中间状态不影响系统的可用性。这里的中间状态是指不同的 data replication（数据备份节点）之间的数据更新可以出现延时的最终一致性\r\n\t- 最终一致性：data replications 经过一段时间达到一致性\r\n- Zookeeper 写入是强一致性，读取是顺序一致性（版本号）\r\n- ZooKeeper本质上是一个分布式的小文件存储系统（Zookeeper=文件系统+监听机制）\r\n\t- 是一个基于观察者模式设计的分布式服务管理框架\r\n\r\n---\r\n## 常见命令\r\n\r\n- ls 查看当前 znode 的子节点 \\[可监听\\]\r\n\t- -w: 监听子节点变化\r\n\t- -s: 节点状态信息（时间戳、版本号、数据大小等）\r\n\t- -R: 表示递归的获取\r\n- create 创建节点\r\n\t- -s : 创建有序节点\r\n\t- -e : 创建临时节点\r\n\t- -c : 创建一个容器节点\r\n\t- \\[-t ttl\\] : 创建一个TTL节点， -t 时间（单位毫秒）\r\n\t- data : 节点的数据，可选，如果不使用时，节点数据就为null\r\n\t- acl : 访问控制\r\n- get 获取节点数据信息\r\n\t-  -s: 节点状态信息（时间戳、版本号、数据大小等）\r\n\t-  -w: 监听节点变化\r\n- set 设置节点数据\r\n\t- -s: 表示节点为顺序节点\r\n\t- -v: 指定版本号\r\n- getAcl 获取节点的访问控制信息\r\n\t- -s: 节点状态信息（时间戳、版本号、数据大小等）\r\n- setAcl 设置节点的访问控制列表\r\n\t- -s: 节点状态信息（时间戳、版本号、数据大小等）\r\n\t- -v: 指定版本号\r\n\t- -R: 递归的设置\r\n- stat 查看节点状态信息\r\n- delete  删除某一节点，只能删除无子节点的节点\r\n\t- -v: 表示节点版本号\r\n- deleteall 递归的删除某一节点及其子节点\r\n- setquota 对节点增加限制\r\n\t- -n: 表示子节点的最大个数\r\n\t- -b: 数据值的最大长度，-1表示无限制\r\n\r\n---\r\n## 数据结构\r\n\r\n- ZooKeeper的数据模型是层次模型，层次模型常见于文件系统。层次模型和key-value模型是两种主流的数据模型。ZooKeeper使用文件系统模型主要基于以下两点考虑\r\n\t- 文件系统的树形结构便于表达数据之间的层次关系\r\n\t- 文件系统的树形结构便于为不同的应用分配独立的命名空间 ( namespace ) \r\n- ZooKeeper的层次模型称作Data Tree，Data Tree的每个节点叫作Znode\r\n\t- 每一个 ZNode 默认能够存储 1MB 的数据\r\n\t- 每个 ZNode 都可以通过其路径唯一标识\r\n\t- 每个节点都有一个版本(version)，版本从0开始计数\r\n\t- ![Zookeeper 节点](static/Zookeeper-特性-节点.png)\r\n- 节点分类\r\n\t- 持久节点 (PERSISTENT): 这样的znode在创建之后即使发生ZooKeeper集群宕机或者client宕机也不会丢失\r\n\t- 临时节点 (EPHEMERAL ): client宕机或者client在指定的timeout时间内没有给ZooKeeper集群发消息，这样的znode就会消失\r\n\t- 持久顺序节点 (PERSISTENT_SEQUENTIAL): znode除了具备持久性znode的特点之外，名字具备顺序性\r\n\t- 临时顺序节点 (EPHEMERAL_SEQUENTIAL): znode除了具备临时性znode的特点之外，名字具备顺序性\r\n\t- Container节点 (3.5.3版本新增)：Container容器节点，当容器中没有任何子节点，该容器节点会被zk定期删除（定时任务默认60s 检查一次)\r\n\t\t- 和持久节点的区别是 ZK 服务端启动后，会有一个单独的线程去扫描，所有的容器节点，当发现容器节点的子节点数量为 0 时，会自动删除该节点\r\n\t\t- 可以用于 leader 或者锁的场景中\r\n\t- TTL节点:  带过期时间节点，默认禁用\r\n\t\t- 在zoo.cfg中添加 `extendedTypesEnabled=true `开启\r\n\t\t- ttl 不能用于临时节点\r\n- 节点状态信息\r\n\t- cZxid ：Znode创建的事务id\r\n\t- ctime：节点创建时的时间戳\r\n\t- mZxid ：Znode被修改的事务id，即每次对znode的修改都会更新mZxid\r\n\t\t- 对于zk来说，每次的变化都会产生一个唯一的事务id，zxid（ZooKeeper Transaction Id）\r\n\t\t- 通过zxid，可以确定更新操作的先后顺序\r\n\t\t- 如果zxid1小于zxid2，说明zxid1操作先于zxid2发生\r\n\t\t- zxid对于整个zk都是唯一的，即使操作的是不同的znode\r\n\t- pZxid: 表示该节点的子节点列表最后一次修改的事务ID\r\n\t\t- 只有子节点列表变更了才会变更pzxid，子节点内容变更不会影响pzxid\r\n\t\t\t- 添加子节点或删除子节点就会影响子节点列表\r\n\t\t\t- 但是修改子节点的数据内容则不影响该ID\r\n\t- mtime：节点最新一次更新发生时的时间戳\r\n\t- cversion ：子节点的版本号\r\n\t\t- 当znode",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Zookeeper-特性",
+      "lvl1": "CP架构",
+      "lvl2": "常见命令",
+      "lvl3": "数据结构",
+      "lvl4": "监听通知机制",
+      "lvl5": "节点特性",
+      "lvl6": "ACL权限控制",
+      "lvl7": "集群",
+      "lvl8": "四字命令",
+      "lvl9": "Leader 选举原理",
+      "lvl10": "数据同步流程"
+    },
+    "frontmatter": {
+      "title": "Zookeeper-特性",
+      "date": "2025/06/16"
+    },
+    "type": "content",
+    "contentPart": 1,
+    "contentParts": 4
+  },
+  {
+    "title": "Zookeeper-特性",
+    "path": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "url": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "content": "的子节点有变化时，cversion 的值就会增加1\r\n\t- dataVersion：数据版本号\r\n\t\t- 每次对节点进行set操作，dataVersion的值都会增加1（即使设置的是相同的数据）\r\n\t\t- 可有效避免了数据更新时出现的先后顺序问题\r\n\t- ephemeralOwner\r\n\t\t- 如果该节点为临时节点, ephemeralOwner值表示与该节点绑定的session id\r\n\t\t\t- 在client和server通信之前,首先需要建立连接,该连接称为session\r\n\t\t\t- 连接建立后,如果发生连接超时、授权失败,或者显式关闭连接,连接便处于closed状态, 此时session结束\r\n\t\t- 如果不是, ephemeralOwner值为0 (持久节点)\r\n\t- dataLength： 数据的长度\r\n\t- numChildren：子节点的数量（只统计直接子节点的数量）\r\n\r\n---\r\n## 监听通知机制\r\n\r\n- watcher 机制\r\n\t- 一个Watch事件是一个一次性的触发器\r\n\t\t- 当被设置了Watch的数据发生了改变的时候，则服务器将这个改变发送给设置了Watch的客户端，以便通知它们\r\n\t- Zookeeper采用了 Watcher机制实现数据的发布订阅功能\r\n\t\t- 多个订阅者可同时监听某一特定主题对象，当该主题对象的自身状态发生变化时例如节点内容改变、节点下的子节点列表改变等，会实时、主动通知所有订阅者\r\n\t- watcher机制事件上与观察者模式类似，也可看作是一种观察者模式在分布式场景下的实现方式\r\n- watcher 的过程\r\n\t- 客户端向服务端注册watcher\r\n\t- 服务端事件发生触发watcher\r\n\t- 客户端回调watcher得到触发事件情况\r\n- Zookeeper中的watch机制，必须客户端先去服务端注册监听，这样事件发送才会触发监听，通知给客户端\r\n- 支持的事件类型\r\n\t- None: 连接建立事件\r\n\t- NodeCreated： 节点创建 \r\n\t- NodeDeleted： 节点删除 \r\n\t- NodeDataChanged：节点数据变化\r\n\t- NodeChildrenChanged：子节点列表变化 \r\n\t- DataWatchRemoved：节点监听被移除 \r\n\t- ChildWatchRemoved：子节点监听被移除\r\n- 特性\r\n\t- 一次性触发：watcher是一次性的，一旦被触发就会移除，再次使用时需要重新注册\r\n\t- 客户端顺序回调：watcher回调是顺序串行执行的，只有回调后客户端才能看到最新的数据状态。一个watcher回调逻辑不应该太多，以免影响别的watcher执行\r\n\t- 轻量级：WatchEvent是最小的通信单位，结构上只包含通知状态、事件类型和节点路径，并不会告诉数据节点变化前后的具体内容\r\n\t- 时效性：watcher只有在当前session彻底失效时才会无效，若在session有效期内快速重连成功，则watcher依然存在，仍可接收到通知\r\n- 使用场景\r\n\t- master-worker 机制\r\n\t- 基于版本号的条件更新\r\n\t\t- ![Zookeeper 更新](static/Zookeeper-特性-更新.png)\r\n\r\n---\r\n## 节点特性\r\n\r\n- 同一级节点 key 名称是唯一的\r\n- 创建节点时，必须要带上全路径\r\n- session 关闭，临时节点清除\r\n- 自动创建顺序节点\r\n- watch 机制，监听节点变化\r\n\t- 监听事件被单次触发后，事件就失效了\r\n- 永久性 Watch（`addWatch [‐m mode] path`）：是Zookeeper 3.6.0版本新增的功能\r\n\t- 在被触发之后，仍然保留，可以继续监听ZNode上的变更\r\n\t- 针对指定节点添加事件监听，支持两种模式\r\n\t\t- PERSISTENT，持久化订阅，针对当前节点的修改和删除事件，以及当前节点的子节点的删除和新增事件\r\n\t\t- PERSISTENT_RECURSIVE，持久化递归订阅，在PERSISTENT的基础上，增加了子节点修改的事件触发，以及子节点的子节点的数据变化都会触发相关事件\r\n- delete 命令只能一层一层删除\r\n- deleteall 命令递归删除\r\n- 应用场景：适用于存储和协同相关的关键数据，不适合用于大数据量存储\r\n\t- 注册中心 \r\n\t- 数据发布/订阅（常用于实现配置中心） \r\n\t\t- 数据量小的KV\r\n\t\t- 数据内容在运行时会发生动态变化\r\n\t\t- 集群机器共享，配置一致\r\n\t\t- 推拉结合\r\n\t\t\t- 服务端会推给注册了监控节点的客户端 Watcher 事件通知\r\n\t\t\t- 客户端获得通知后，然后主动到服务端拉取最新的数据\r\n\t- 统一集群管理\r\n\t- 负载均衡\r\n\t- 命名服务\r\n\t- 分布式协调/通知\r\n\t- 集群管理\r\n\t- Master选举\r\n\t- 分布式锁\r\n\t- 分布式队列\r\n\r\n---\r\n## ACL权限控制\r\n\r\n- zookeeper 的 ACL（Access Control List，访问控制表）权限可以针对节点设置相关读写等权限\r\n- zookeeper 的 acl 通过 `[scheme:id:permissions]` 来构成权限列表\r\n\t- scheme：授权的模式，代表采用的某种权限机制\r\n\t\t- 包括 world、auth、digest、ip、super 几种\r\n\t- id：授权对象，代表允许访问的用户\r\n\t\t- 如果我们选择采用 IP 方式，使用的授权对象可以是一个 IP 地址或 IP 地址段\r\n\t\t- 而如果使用 Digest 或 Super 方式，则对应于一个用户名\r\n\t\t- 如果是 World 模式，是授权系统中所有的用户\r\n\t- permissions：授权的权限，权限组合字符串，由 cdrwa 组成，其中每个字母代表支持不同权限\r\n\t\t- 创建权限 create(c)、删除权限 delete(d)、读权限 read(r)、写权限 write(w)、管理权限admin(a)。\r\n\r\n| 模式     | 描述                                        |\r\n| ------ | ----------------------------------------- |\r\n| world  | 授权对象只有一个anyone，代表登录到服务器的所有客户端都能对该节点执行某种权限 |\r\n| ip     | 对连接的客户端使用IP地址认证方式进行认证                     |\r\n| auth   | 使用以添加认证的用户进行认证                            |\r\n| digest | 使用用户:密码方式验证                               |\r\n\r\n| 权限类型   | ACL简写 | 描述              |\r\n| ------ | ----- | --------------- |\r\n| read   | r     | 读取节点及显示子节点列表的权限 |\r\n| write  | w     | 设置节点数据的权限       |\r\n| create | c     | 创建子节点的权限        |\r\n| delete | d     | 删除子节点的权限        |\r\n| admin  | a     | 设置该节点ACL权限的权限   |\r\n\r\n| 授权命令    |",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Zookeeper-特性",
+      "lvl1": "CP架构",
+      "lvl2": "常见命令",
+      "lvl3": "数据结构",
+      "lvl4": "监听通知机制",
+      "lvl5": "节点特性",
+      "lvl6": "ACL权限控制",
+      "lvl7": "集群",
+      "lvl8": "四字命令",
+      "lvl9": "Leader 选举原理",
+      "lvl10": "数据同步流程"
+    },
+    "frontmatter": {
+      "title": "Zookeeper-特性",
+      "date": "2025/06/16"
+    },
+    "type": "content",
+    "contentPart": 2,
+    "contentParts": 4
+  },
+  {
+    "title": "Zookeeper-特性",
+    "path": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "url": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "content": " 用法                   | 描述             |\r\n| ------- | -------------------- | -------------- |\r\n| getAcl  | getAcl path          | 读取节点的ACL       |\r\n| setAcl  | setAcl path acl      | 设置节点的ACL       |\r\n| create  | create path data acl | 创建节点时设置ACL     |\r\n| addAuth | addAuth scheme auth  | 添加认证用户，类似于登录操作 |\r\n- setAcl\r\n\t- `set Acl /name world:anyone:cdwa`\r\n- auth授权模式\r\n\t- 创建用户 `addauth digest fox:123456`\r\n\t- `setAcl /name auth:fox:123456:cdrwa`\r\n\t- 密码加密\r\n\t\t- `echo -n fox:123456 | openssl dgst -binary -sha1 | openssl base64`\r\n\t\t- `setAcl /name auth:fox:ZsWwgmtnTnx1usRF1voHFJAYGQU=:cdrwa`\r\n- digest授权模式\r\n\t- `setAcl /tuling/fox digest:fox:ZsWwgmtnTnx1usRF1voHFJAYGQU=:cdrwa`\r\n- IP授权模式\r\n\t- `setAcl /node-ip ip:192.168.109.128:cdwra`\r\n\t- `create /node-ip data ip:192.168.109.128:cdwra`\r\n\t\t- 多个指定IP可以通过逗号分隔\r\n\t\t\t- `setAcl /node-ip ip:IP1:rw,ip:IP2:a`\r\n- Super 超级管理员模式\r\n\t- 这是一种特殊的Digest模式， 在Super模式下超级管理员用户可以对Zookeeper上的节点进行任何的操作\r\n\t- 需要在启动脚本上通过添加JVM 参数开启\r\n\t\t- `-Dzookeeper.DigestAuthenticationProvider.superDigest=admin:<base64encoded(SHA1(123456))`\r\n\r\n---\r\n## 集群\r\n\r\n- 集群角色\r\n\t- Leader： 领导者\r\n\t\t- 事务请求（写操作）的唯一调度者和处理者，保证集群事务处理的顺序性\r\n\t\t- 集群内部各个服务器的调度者\r\n\t\t- 对于create、setData、delete等有写操作的请求，则要统一转发给leader处理，leader需要决定编号、执行操作，这个过程称为事务\r\n\t- Follower：跟随者\r\n\t\t- 处理客户端非事务（读操作）请求（可以直接响应）\r\n\t\t- 转发事务请求给 Leader\r\n\t\t- 参与集群 Leader 选举投票\r\n\t- Observer：观察者\r\n\t\t- 对于非事务请求可以独立处理（读操作）\r\n\t\t- 对于事务性请求会转发给 leader 处理\r\n\t\t- Observer 节点接收来自 leader 的 inform 信息，更新自己的本地存储\r\n\t\t- 不参与提交和选举投票\r\n\t\t- 在不影响集群事务处理能力的前提下提升集群的非事务处理能力\r\n\t\t- Observer 应用场景\r\n\t\t\t- 提升集群的读性能\r\n\t\t\t- 跨数据中心部署\r\n\t\t\t\t- 比如需要部署一个北京和香港两地都可以使用的zookeeper集群服务，并且要求北京和香港客户的读请求延迟都很低。解决方案就是把香港的节点都设置为observer\r\n- 集群架构\r\n\t- ![Zookeeper 集群](static/Zookeeper-特性-集群.png)\r\n\t- leader节点可以处理读写请求\r\n\t- follower只可以处理读请求\r\n\t- follower在接到写请求时会把写请求转发给leader来处理\r\n- Zookeeper数据一致性保证\r\n\t- 全局可线性化 (Linearizable) 写入：先到达leader的写请求会被先处理，leader决定写请求的执行顺序\r\n\t- 客户端FIFO顺序：来自给定客户端的请求按照发送顺序执行\r\n- 集群搭建\r\n\t- 修改zoo.cfg配置，添加server节点配置：`server.A=B:C:D`\r\n\t\t- `dataDir=/data/zookeeper`\r\n\t\t- `server.1=192.168.65.156:2888:3888`\r\n\t\t- A 是一个数字，表示这个是第几号服务器\r\n\t\t\t- 集群模式下配置一个文件 myid，这个文件在 dataDir 目录下，这个文件里面有一个数据 就是 A 的值，Zookeeper 启动时读取此文件，拿到里面的数据与 zoo.cfg 里面的配置信息比较从而判断到底是哪个server\r\n\t\t- B 是这个服务器的地址\r\n\t\t- C 是这个服务器Follower与集群中的Leader服务器交换信息的端口\r\n\t\t- D 是万一集群中的Leader服务器挂了，需要一个端口来重新进行选举，选出一个新的Leader\r\n\t\t\t- 而这个端口就是用来执行选举时服务器相互通信的端口\r\n\t- 创建 myid 文件，配置服务器编号\r\n\t- 启动 zookeeper server 集群 `bin/zkServer.sh start`\r\n\r\n---\r\n## 四字命令\r\n\r\n- zookeeper 支持某些特定的四字命令与其交互，用户获取 zookeeper 服务的当前状态及相关信息\r\n\t- 用户在客户端可以通过 telenet 或者 nc（netcat） 向 zookeeper 提交相应的命令\r\n- 开启四字命令\r\n\t- 在 zoo.cfg 文件里加入配置项让这些指令放行\r\n\t\t- `4lw.commands.whitelist=*`\r\n\t- 在 zk 的启动脚本 zkServer.sh 中新增放行指令（添加ＶＭ环境变量）\r\n\t\t- `ZOOMAIN=\"-Dzookeeper.4lw.commands.whitelist=* ${ZOOMAIN}\"`\r\n- `echo [command] | nc [ip] [port]`\r\n\t- stat 命令用于查看 zk 的状态信息\r\n\t\t- `echo stat | nc 192.168.65.156 2181`\r\n\r\n| 四字命令 | 功能描述                                                                        |\r\n| ---- | --------------------------------------------------------------------------- |\r\n| conf | 3.3.0版本引入的。打印出服务相关配置的详细信息。                                                  |\r\n| cons | 3.3.0版本引入的。列出所有连接到这台服务器的客户端全部连接/会话详细信息。包括\"接受/发送\"的包数量、会话id、操作延迟、最后的操作执行等等信息。 |\r\n| crst | 3.3.0版本引入的。重置所有连接的连接和会话统计信息。                                                |\r\n| dump | 列出那些比较重要的会话和临时节点。这个命令只能在leader节点上有用。                                        |\r\n| envi | 打印出服务环境的详细信息。                                                               |\r\n| reqs | 列出未经处理的请求                                                                   |\r\n| ruok | 测试服务是否处于正确状态。如果确实如此，那么服务返回\"imok\"，否则不做任何相应。                                  |\r\n| stat | 输出关于性能和连接的客户端的列表。                                                           |\r\n| srst | 重置服务器的统计。                                                                   |\r\n| srvr | 3.3.0版本引入的。列出连接服务器的详细信息                                                     |\r\n| wchs | 3.3.0版本引入的。列出服务器watch的",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Zookeeper-特性",
+      "lvl1": "CP架构",
+      "lvl2": "常见命令",
+      "lvl3": "数据结构",
+      "lvl4": "监听通知机制",
+      "lvl5": "节点特性",
+      "lvl6": "ACL权限控制",
+      "lvl7": "集群",
+      "lvl8": "四字命令",
+      "lvl9": "Leader 选举原理",
+      "lvl10": "数据同步流程"
+    },
+    "frontmatter": {
+      "title": "Zookeeper-特性",
+      "date": "2025/06/16"
+    },
+    "type": "content",
+    "contentPart": 3,
+    "contentParts": 4
+  },
+  {
+    "title": "Zookeeper-特性",
+    "path": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "url": "/docs/architect/zookeeper/Zookeeper-texing.html",
+    "content": "详细信息。                                                 |\r\n| wchc | 3.3.0版本引入的。通过session列出服务器watch的详细信息，它的输出是一个与watch相关的会话的列表。                  |\r\n| wchp | 3.3.0版本引入的。通过路径列出服务器watch的详细信息。它输出一个与session相关的路径。                          |\r\n| mntr | 3.4.0版本引入的。输出可用于检测集群健康状态的变量列表                                               |\r\n\r\n---\r\n## Leader 选举原理\r\n\r\n- zookeeper 的 leader 选举存在两个阶段\r\n\t- 一个是服务器启动时 leader 选举\r\n\t- 另一个是运行过程中 leader 服务器宕机\r\n- 重要的参数\r\n\t- 服务器 ID(myid)：编号越大在选举算法中权重越大\r\n\t- 事务 ID(zxid)：值越大说明数据越新，权重越大\r\n\t- 逻辑时钟(epoch-logicalclock)：同一轮投票过程中的逻辑时钟值是相同的，每投完一次值会增加\r\n- 选举状态\r\n\t- LOOKING: 竞选状态\r\n\t- FOLLOWING: 随从状态，同步 leader 状态，参与投票 \r\n\t- OBSERVING: 观察状态，同步 leader 状态，不参与投票 \r\n\t- LEADING: 领导者状态\r\n- 服务器启动时的 leader 选举\r\n\t- 每个节点启动的时候都 LOOKING 观望状态，接下来就开始进行选举主流程\r\n\t\t- 第一台服务器 server1启动时，无法进行 leader 选举\r\n\t\t- 当第二台服务器 server2 启动时，两台机器可以相互通信，进入 leader 选举过程\r\n\t- ![Zookeeper 选举](static/Zookeeper-特性-选举.png)\r\n\t\t1. 每台 server 发出一个投票\r\n\t\t\t1. 由于是初始情况，server1 和 server2 都将自己作为 leader 服务器进行投票\r\n\t\t\t2. 每次投票包含所推举的服务器myid、zxid、epoch，使用（myid，zxid）表示\r\n\t\t\t3. 此时 server1 投票为（1,0），server2 投票为（2,0），然后将各自投票发送给集群中其他机器\r\n\t\t2. 接收来自各个服务器的投票\r\n\t\t\t1. 集群中的每个服务器收到投票后，首先判断该投票的有效性\r\n\t\t\t2. 如检查是否是本轮投票（epoch）、是否来自 LOOKING 状态的服务器\r\n\t\t3. 分别处理投票\r\n\t\t\t1. 针对每一次投票，服务器都需要将其他服务器的投票和自己的投票进行对比\r\n\t\t\t\t1. 优先比较 epoch\r\n\t\t\t\t2. 检查 zxid，zxid 比较大的服务器优先作为 leader\r\n\t\t\t\t3. 如果 zxid 相同，那么就比较 myid，myid 较大的服务器作为 leader 服务器\r\n\t\t4. 统计投票\r\n\t\t\t1. 每次投票后，服务器统计投票信息，判断是否有过半机器接收到相同的投票信息\r\n\t\t\t2. server1、server2 都统计出集群中有两台机器接受了（2,0）的投票信息，此时已经选出了 server2 为 leader 节点\r\n\t\t5. 改变服务器状态\r\n\t\t\t1. 一旦确定了 leader，每个服务器响应更新自己的状态\r\n\t\t\t2. 如果是 follower，那么就变更为 FOLLOWING，如果是 Leader，变更为 LEADING\r\n\t\t\t3. 此时 server3继续启动，直接加入变更自己为 FOLLOWING\r\n- 运行过程中的 leader 选举：当集群中 leader 服务器出现宕机或者不可用情况时，整个集群无法对外提供服务，进入新一轮的 leader 选举\r\n\t1. 变更状态：leader 挂后，其他非 Oberver服务器将自身服务器状态变更为 LOOKING\r\n\t2. 每个 server 发出一个投票：在运行期间，每个服务器上 zxid 可能不同\r\n\t3. 处理投票：规则同启动过程\r\n\t4. 统计投票：与启动过程相同\r\n\t5. 改变服务器状态：与启动过程相同\r\n\r\n---\r\n## 数据同步流程\r\n\r\n- 在 Zookeeper 中，主要依赖 ZAB 协议来实现分布式数据一致性\r\n- ZAB 协议分为两部分：消息广播；崩溃恢复\r\n- 消息广播\r\n\t- ![Zookeeper 事务](static/Zookeeper-特性-事务.png)\r\n\t- Zookeeper 使用单一的主进程 Leader 来接收和处理客户端所有事务请求\r\n\t- 并采用 ZAB 协议的原子广播协议，将事务请求以 Proposal 提议广播到所有 Follower 节点\r\n\t- 当集群中有过半的Follower 服务器进行正确的 ACK 反馈\r\n\t\t- 那么Leader就会再次向所有的 Follower 服务器发送commit 消息，将此次提案进行提交\r\n\t- 这个过程可以简称为 2pc 事务提交\r\n\t- 注意 Observer 节点只负责同步 Leader 数据，不参与 2PC 数据同步过程\r\n- 崩溃恢复\r\n\t- 在正常情况消息下广播能运行良好，但是一旦 Leader 服务器出现崩溃，或者由于网络原理导致 Leader 服务器失去了与过半 Follower 的通信，那么就会进入崩溃恢复模式\r\n\t- 需要选举出一个新的 Leader 服务器\r\n\t- 在这个过程中可能会出现两种数据不一致性的隐患，需要 ZAB 协议的特性进行避免\r\n\t\t- Leader 服务器将消息 commit 发出后，立即崩溃\r\n\t\t- Leader 服务器刚提出 proposal 后，立即崩溃\r\n\t- ZAB 协议的恢复模式使用了以下策略\r\n\t\t- 选举 zxid 最大的节点作为新的 leader\r\n\t\t- 新 leader 将事务日志中尚未提交的消息进行处理\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Zookeeper-特性",
+      "lvl1": "CP架构",
+      "lvl2": "常见命令",
+      "lvl3": "数据结构",
+      "lvl4": "监听通知机制",
+      "lvl5": "节点特性",
+      "lvl6": "ACL权限控制",
+      "lvl7": "集群",
+      "lvl8": "四字命令",
+      "lvl9": "Leader 选举原理",
+      "lvl10": "数据同步流程"
+    },
+    "frontmatter": {
+      "title": "Zookeeper-特性",
+      "date": "2025/06/16"
+    },
+    "type": "content",
+    "contentPart": 4,
+    "contentParts": 4
   },
   {
     "title": "JVM-内存模型",
@@ -964,22 +1072,6 @@
     "type": "content"
   },
   {
-    "title": "实盘日记 - 2025 年",
-    "path": "/docs/trading_journal/diary/2025.html",
-    "url": "/docs/trading_journal/diary/2025.html",
-    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "实盘日记 - 2025 年",
-      "lvl1": "2025/3/19 TQQQ CALL"
-    },
-    "frontmatter": {
-      "title": "实盘日记 - 2025 年",
-      "date": "2025/03/19"
-    },
-    "type": "content"
-  },
-  {
     "title": "期权交易策略",
     "path": "/docs/trader/options/qiquanjiaoyicelue.html",
     "url": "/docs/trader/options/qiquanjiaoyicelue.html",
@@ -1008,6 +1100,22 @@
     "frontmatter": {
       "title": "期权交易策略收益图表",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "实盘日记 - 2025 年",
+    "path": "/docs/trading_journal/diary/2025.html",
+    "url": "/docs/trading_journal/diary/2025.html",
+    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "实盘日记 - 2025 年",
+      "lvl1": "2025/3/19 TQQQ CALL"
+    },
+    "frontmatter": {
+      "title": "实盘日记 - 2025 年",
+      "date": "2025/03/19"
     },
     "type": "content"
   }
