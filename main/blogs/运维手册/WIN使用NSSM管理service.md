@@ -1,5 +1,5 @@
 ---
-title: Windows 使用 NSSM 管理 service
+title: Windows 使用 NSSM 管理 Service
 date: 2025/06/29
 tags:
  - Windows
