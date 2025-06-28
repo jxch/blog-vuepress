@@ -477,6 +477,28 @@
     "type": "content"
   },
   {
+    "title": "Jumpserver 部署",
+    "path": "/blogs/yunweishouce/Jumpserverbushu.html",
+    "url": "/blogs/yunweishouce/Jumpserverbushu.html",
+    "content": "---\r\ntitle: Jumpserver 部署\r\ndate: 2025/06/16\r\ntags:\r\n - Jumpserver\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n## docker compose\r\n\r\n```yml\r\nservices:\r\n  jumpserver: \r\n    image: jumpserver/jms_all\r\n    restart: unless-stopped\r\n    user: root\r\n    privileged: true\r\n    ports:\r\n      - \"10880:80\"\r\n    environment:\r\n      SECRET_KEY: \"uuid\"\r\n      BOOTSTRAP_TOKEN: \"uuid\"\r\n      LOG_LEVEL: \"ERROR\"\r\n      DB_ENGINE: mysql\r\n      DB_HOST: \"\"\r\n      DB_PORT: \"3306\"\r\n      DB_USER: \"root\"\r\n      DB_PASSWORD: \"\"\r\n      DB_NAME: \"jumpserver\"\r\n      REDIS_HOST: \"\"\r\n      REDIS_PORT: \"\"\r\n      REDIS_PASSWORD: \"\"\r\n      DOMAINS: host:port\r\n    volumes:\r\n      - /mnt/nexus3/jumpserver:/opt/jumpserver/data\r\n```\r\n\r\n:::tip\r\n- [Docker Hub - Jumpserver/jms_all](https://hub.docker.com/r/jumpserver/jms_all)\r\n:::\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Jumpserver 部署",
+      "lvl1": "docker compose"
+    },
+    "frontmatter": {
+      "title": "Jumpserver 部署",
+      "date": "2025/06/16",
+      "tags": [
+        "Jumpserver"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Linux 关闭 iptables 防火墙",
     "path": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
     "url": "/blogs/yunweishouce/Linuxguanbiiptablesfanghuoqiang.html",
@@ -560,6 +582,30 @@
       "date": "2025/05/10",
       "tags": [
         "MySQL"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "MYSQL 增量 binlog 的逆向回放【danfengcao/binlog2sql】",
+    "path": "/blogs/yunweishouce/MYSQLzengliangbinlogdenixianghuifangzhibinlog2sql.html",
+    "url": "/blogs/yunweishouce/MYSQLzengliangbinlogdenixianghuifangzhibinlog2sql.html",
+    "content": "---\r\ntitle: MYSQL 增量 binlog 的逆向回放【danfengcao/binlog2sql】\r\ndate: 2025/06/28\r\ntags:\r\n - MYSQL\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n1. 下载工具 `binlog2sql`: `git clone https://github.com/danfengcao/binlog2sql.git`\r\n2. 初始化依赖环境\r\n3. 校验 mysql binlog 功能：其他实例的binlog在本地实例中的应用\r\n4. 生成逆向sql：兼容性问题（字符集问题）\r\n:::\r\n\r\n## binlog2sql\r\n\r\n```shell\r\n# 下载\r\ngit clone https://github.com/danfengcao/binlog2sql.git\r\n# 依赖环境（conda 为例）\r\nconda create -n binlog2sql_env python=3.9 -y\r\nconda activate binlog2sql_env\r\n\r\npip install -r requirements.txt\r\npip install mysqlclient\r\npip install pymysql\r\npip install requests\r\npip install python-dateutil\r\n\r\n# 验证\r\ncd .\\binlog2sql\\\r\npython binlog2sql.py --help\r\n```\r\n\r\n## binlog\r\n:::warning\r\n- 如果你的binlog文件来自其他实例，记得提前把binlog文件放入mysql的数据文件夹下（`/var/lib/mysql`），并修改`mysql-bin.index`文件\r\n- 查看binlog：`SHOW BINARY LOGS;`\r\n- 查看数据库字符集：`SHOW CREATE DATABASE matcheasy_new;`\r\n- 查看数据库表字符集：`SHOW FULL COLUMNS FROM matcheasy_new.i_resume;`\r\n:::\r\n\r\n以本地环境（docker mysql）为例（把线上实例的binlog放在本地实例上回放测试）\r\n\r\n```yml\r\nservices:\r\n  mysql:\r\n    image: mysql:8.0\r\n    environment:\r\n      MYSQL_ROOT_PASSWORD: password\r\n      MYSQL_USER: root_user\r\n      MYSQL_PASSWORD: password\r\n    ports:\r\n      - \"33306:3306\"\r\n    command:\r\n      --default-authentication-plugin=mysql_native_password\r\n      --character-set-server=utf8mb4\r\n      --collation-server=utf8mb4_unicode_ci\r\n      --binlog-format=ROW\r\n      --server-id=1\r\n      --log-bin=mysql-bin\r\n      --local-infile=1\r\n      --log-bin-trust-function-creators=1\r\n      --gtid-mode=ON\r\n      --enforce-gtid-consistency=ON\r\n    volumes:\r\n      - ./mysql_data:/var/lib/mysql\r\n```\r\n\r\n```sql\r\n-- 启动实例后给用户赋权\r\nGRANT ALL PRIVILEGES ON *.* TO 'root_user'@'%';\r\nFLUSH PRIVILEGES;\r\n```\r\n\r\n:::tip\r\n- 基础数据准备参考：[MYSQL数据导出导入](./MYSQL数据导出导入.md)\r\n- mysql版本以8.0为例，binlog以开启gtid为例\r\n- 源实例字符集以 utf8mb3 为例（注意我的docker compose文件中字符集指定的是 utf8mb4 ，因为它和 utf8mb3 可能会有兼容性问题，且本工具对 utf8mb3 也有兼容性问题，方便进行演示，实际场景中请保证两实例字符集一致）\r\n:::\r\n\r\n## 生成逆向sql\r\n\r\n:::info\r\n- 本工具可以直接连线上的mysql，包括阿里云什么的，就不用折腾两个实例了，这里只是对这种特殊需求的演示\r\n:::\r\n\r\n```shell\r\npython ..\\binlog2sql\\binlog2sql.py \\\r\n    --start-file=mysql-bin.001030 \\\r\n    --stop-file=mysql-bin.001039 \\\r\n    --host=127.0.0.1 --port=33306 \\\r\n    --user=root_user \\\r\n    --password='password' \\\r\n    --database=test_database \\\r\n    --flashback \\\r\n        > rollback.sql\r\n```\r\n\r\n:::danger utf8mb3字符集兼容性问题报错\r\n```shell\r\nTraceback (most recent call last):\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql.py\", line 150, in <module>\r\n    binlog2sql.process_binlog()\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql.py\", line 105, in process_binlog\r\n    for row in binlog_event.rows:\r\n  File \"C:\\Users\\xiche\\anaconda3\\envs\\binlog2sql_env\\lib\\site-packages\\pymysqlreplication\\row_event.py\", line 428, in rows\r\n    self._fetch_rows()\r\n  File \"C:\\Users\\xiche\\anaconda3\\envs\\binlog2sql_env\\lib\\site-packages\\pymysqlreplication\\row_event.py\", line 423, in _fetch_rows\r\n    self.__rows.append(self._fetch_one_row())\r\n  File \"C:\\Users\\xiche\\anaconda3\\envs\\binlog2sql_env\\lib\\site-packages\\pymysqlreplication\\row_event.py\", line 476, in _fetch_one_row\r\n    row[\"values\"] = self._read_column_data(self.columns_present_bitmap)\r\n  File \"C:\\Users\\xiche\\anaconda3\\envs\\binlog2sql_env\\lib\\site-packages\\pymysqlreplication\\row_event.py\", line 132, in _read_column_data\r\n    values[name] = self.__read_string(1, column)\r\n  File \"C:\\Users\\xiche\\anaconda3\\envs\\binlog2sql_env\\lib\\site-packages\\pymysqlreplication\\row_event.py\", line 220, in __read_string\r\n    string = string.decode(charset_to_encoding(column.character_set_name))\r\nLookupError: unknown encoding: utf8mb3\r\n```\r\n\r\n解决方案：因为本工具引用的pymysql版本太老，无法识别utf8mb3，所以需要手动修改pymysql包下的`charset.py`\r\n```py\r\ndef charset_to_encoding(name):\r\n    \"\"\"Convert MySQL's charset name to Python's codec name\"\"\"\r\n    if name == 'utf8mb4':\r\n        return 'utf8'\r\n    if name == 'utf8mb3':\r\n        return 'utf8'\r\n    return name\r\n```\r\n:::\r\n\r\n:::danger 字符解码报错\r\n```shell\r\nTraceback (most recent call last):\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql.py\", line 150, in <module>\r\n    binlog2sql.process_binlog()\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql.py\", line 121, in process_binlog\r\n    self.print_rollback_sql(filename=tmp_file)\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql.py\", line 129, in print_rollback_sql\r\n    for line in reversed_lines(f_tmp):\r\n  File \"E:\\DB-BACK\\binlog2sql\\binlog2sql\\binlog2sql\\binlog2sql_util.py\", line 249, in reversed_lines\r\n    block = block.decode(\"utf-8\")\r\nUnicodeDecodeError: 'utf-8' codec can't decode byte 0x83 in position 0: invalid start byte\r\n```\r\n\r\n解决方案：因为两实例字符集不同，或实例修改字符集导致的历史数据问题，总之解析binlog时发现存在无法解析的字符编码，所以需要手动修改工具中的解码逻辑，修改`binlog2sql_util.py`文件，这样非法字符就会被`�`代替，等回放完需要去sql文件中手动修改非法字符\r\n```py\r\nblock = block.decode(\"utf-8\")\r\n# 改为\r\nblock = block.decode(\"utf-8\", errors=\"replace\")\r\n```\r\n- 字符编码的报错没有好的办法彻底避免\r\n:::\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "MYSQL 增量 binlog 的逆向回放【danfengcao/binlog2sql】",
+      "lvl1": "binlog2sql",
+      "lvl2": "binlog",
+      "lvl3": "生成逆向sql"
+    },
+    "frontmatter": {
+      "title": "MYSQL 增量 binlog 的逆向回放【danfengcao/binlog2sql】",
+      "date": "2025/06/28",
+      "tags": [
+        "MYSQL"
       ],
       "categories": [
         "运维手册"
@@ -713,6 +759,28 @@
     "type": "content"
   },
   {
+    "title": "WIN 安装 ANDROID 安卓子系统",
+    "path": "/blogs/yunweishouce/WINanzhuangANDROIDanzhuozixitong.html",
+    "url": "/blogs/yunweishouce/WINanzhuangANDROIDanzhuozixitong.html",
+    "content": "---\r\ntitle: WIN 安装 ANDROID 安卓子系统\r\ndate: 2025/06/19\r\ntags:\r\n - Windows\r\n - Android\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n1. 打开链接 [https://store.rg-adguard.net/](https://store.rg-adguard.net/)\r\n2. 输入 `https://www.microsoft.com/store/productid/9p3395vx91nr`\r\n3. 选择 `slow`，点击 `√`\r\n4. `MicrosoftCorporationII.WindowsSubsystemForAndroid_1.8.32837.0_neutral_~_8wekyb3d8bbwe.msixbundle`，右键这个链接，复制链接地址，新建标签页，打开这个链接，开始下载\r\n5. 进入管理员模式 PS\r\n6. `Add-AppxPackage \"D:\\xicheng_jiang\\下载\\浏览器\\MicrosoftCorporationII.WindowsSubsystemForAndroid_1.8.32837.0_neutral___8wekyb3d8bbwe.Msixbundle\"`\r\n\r\n\r\n:::danger 安装过程中报错\r\n- 若报错则以同样的方式安装 `Microsoft.UI.Xaml.2.6_2.62112.3002.0_x64__8wekyb3d8bbwe.appx`，然后重试\r\n:::\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "WIN 安装 ANDROID 安卓子系统"
+    },
+    "frontmatter": {
+      "title": "WIN 安装 ANDROID 安卓子系统",
+      "date": "2025/06/19",
+      "tags": [
+        "Windows",
+        "Android"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Windows 设置 Route 在连接 VPN 的同时保持对互联网的正常访问",
     "path": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
     "url": "/blogs/yunweishouce/WINshezhiRoutezailianjieVPNdetongshibaochiduihulianwangdezhengchangfangwen.html",
@@ -813,21 +881,6 @@
     "type": "content"
   },
   {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "诗集",
     "path": "/docs/poetry/poetry.html",
     "url": "/docs/poetry/poetry.html",
@@ -839,6 +892,21 @@
     "frontmatter": {
       "title": "诗集",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "操盘手学习笔记"
+    },
+    "frontmatter": {
+      "title": "操盘手学习笔记",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -869,6 +937,63 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
+    },
+    "type": "content"
+  },
+  {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
+    "title": "JVM-内存模型",
+    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-内存模型",
+      "lvl1": "JVM 内存模型",
+      "lvl2": "JVM 内存核心参数",
+      "lvl3": "内存调优案例"
+    },
+    "frontmatter": {
+      "title": "JVM-内存模型",
+      "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "JVM-常量池",
+    "path": "/docs/architect/jvm/JVM-changliangchi.html",
+    "url": "/docs/architect/jvm/JVM-changliangchi.html",
+    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-常量池",
+      "lvl1": "Class 常量池与运行时常量池",
+      "lvl2": "字符串常量池",
+      "lvl3": "八种基本类型的包装类和对象池",
+      "lvl4": "字符串常量池示例",
+      "lvl5": "包装类对象池示例"
+    },
+    "frontmatter": {
+      "title": "JVM-常量池",
+      "date": "2025/03/04"
     },
     "type": "content"
   },
@@ -979,63 +1104,6 @@
     "type": "content",
     "contentPart": 4,
     "contentParts": 4
-  },
-  {
-    "title": "JVM-内存模型",
-    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-内存模型",
-      "lvl1": "JVM 内存模型",
-      "lvl2": "JVM 内存核心参数",
-      "lvl3": "内存调优案例"
-    },
-    "frontmatter": {
-      "title": "JVM-内存模型",
-      "date": "2025/03/04"
-    },
-    "type": "content"
-  },
-  {
-    "title": "JVM-常量池",
-    "path": "/docs/architect/jvm/JVM-changliangchi.html",
-    "url": "/docs/architect/jvm/JVM-changliangchi.html",
-    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-常量池",
-      "lvl1": "Class 常量池与运行时常量池",
-      "lvl2": "字符串常量池",
-      "lvl3": "八种基本类型的包装类和对象池",
-      "lvl4": "字符串常量池示例",
-      "lvl5": "包装类对象池示例"
-    },
-    "frontmatter": {
-      "title": "JVM-常量池",
-      "date": "2025/03/04"
-    },
-    "type": "content"
-  },
-  {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
-    },
-    "type": "content"
   },
   {
     "title": "2025-03",
