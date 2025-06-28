@@ -345,6 +345,28 @@
     "type": "content"
   },
   {
+    "title": "Cloudflared 防 DNS 污染",
+    "path": "/blogs/yunweishouce/CloudflaredfangDNSwuran.html",
+    "url": "/blogs/yunweishouce/CloudflaredfangDNSwuran.html",
+    "content": "---\r\ntitle: Cloudflared 防 DNS 污染\r\ndate: 2025/06/29\r\ntags:\r\n - DNS\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n:::tip\r\n- 下载：[https://github.com/cloudflare/cloudflared/releases](https://github.com/cloudflare/cloudflared/releases)\r\n- 启动命令：`cloudflared proxy-dns`\r\n- win11 安装：`winget install Cloudflare.cloudflared`，然后把 `C:\\Program Files (x86)\\cloudflared` 设进环境变量 path\r\n- win11 开机自启\r\n  - NSSM方式参考：[WIN使用NSSM管理service](./WIN使用NSSM管理service.md)\r\n  - VBS方式：\r\n    - 启动脚本参考：[VBS静默执行PS脚本](../编码笔记/VBS静默执行PS脚本.md)\r\n    - 脚本放入 `win + r` 输入 `shell:startup` 回车后出现的文件夹中\r\n:::\r\n\r\n## 以 Ubuntu - arm64 为例\r\n\r\n### 安装\r\n```shell\r\n# 下载\r\nwget https://github.com/cloudflare/cloudflared/releases/download/2025.6.1/cloudflared-linux-arm64.deb\r\n\r\n# 安装\r\ndpkg -i cloudflared-linux-arm64.deb\r\n\r\n# 启动\r\ncloudflared proxy-dns\r\n```\r\n\r\n### 部署\r\n设为 service\r\n```shell\r\n# 查看路径\r\nwhich cloudflared\r\n# 编辑配置文件\r\nvi /etc/systemd/system/cloudflared-proxy-dns.service\r\n# 启动 service\r\nsystemctl daemon-reload\r\nsystemctl enable --now cloudflared-proxy-dns\r\nsystemctl status cloudflared-proxy-dns\r\n```\r\n\r\n`cloudflared-proxy-dns.service` 配置文件：\r\n\r\n```shell \r\n[Unit]\r\nDescription=cloudflared DNS over HTTPS Proxy\r\nAfter=network.target\r\n\r\n[Service]\r\nType=simple\r\nUser=nobody\r\nCapabilityBoundingSet=CAP_NET_BIND_SERVICE\r\nAmbientCapabilities=CAP_NET_BIND_SERVICE\r\nExecStart=/usr/local/bin/cloudflared proxy-dns\r\nRestart=on-failure\r\n\r\n[Install]\r\nWantedBy=multi-user.target\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Cloudflared 防 DNS 污染",
+      "lvl1": "以 Ubuntu - arm64 为例"
+    },
+    "frontmatter": {
+      "title": "Cloudflared 防 DNS 污染",
+      "date": "2025/06/29",
+      "tags": [
+        "DNS"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "dnsmasq 部署",
     "path": "/blogs/yunweishouce/dnsmasqbushu.html",
     "url": "/blogs/yunweishouce/dnsmasqbushu.html",
@@ -759,6 +781,27 @@
     "type": "content"
   },
   {
+    "title": "Windows 使用 NSSM 管理 service",
+    "path": "/blogs/yunweishouce/WINshiyongNSSMguanliservice.html",
+    "url": "/blogs/yunweishouce/WINshiyongNSSMguanliservice.html",
+    "content": "---\r\ntitle: Windows 使用 NSSM 管理 service\r\ndate: 2025/06/29\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n- 安装：`winget install NSSM.NSSM`\r\n- 安装服务：`nssm install cloudflared-dns`\r\n  - 在弹出的对话框中\r\n    - Application path 添应用的绝对路径\r\n    - Startup dir 添 `win + r` 输入 `shell:startup` 回车后弹出的文件夹路径\r\n    - Arguments 填应用的启动参数\r\n    - 最后点击 Install service\r\n- 启动服务：`net start cloudflared-dns` 或 `Start-Service cloudflared-dns`\r\n- 检查服务状态： `Get-Service cloudflared-dns`\r\n- 修改服务参数：`nssm edit cloudflared-dns`\r\n- 卸载服务：`nssm remove cloudflared-dns confirm`\r\n\r\n:::info\r\n- 需要以管理员权限运行\r\n:::\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Windows 使用 NSSM 管理 service"
+    },
+    "frontmatter": {
+      "title": "Windows 使用 NSSM 管理 service",
+      "date": "2025/06/29",
+      "tags": [
+        "Windows"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "WIN 安装 ANDROID 安卓子系统",
     "path": "/blogs/yunweishouce/WINanzhuangANDROIDanzhuozixitong.html",
     "url": "/blogs/yunweishouce/WINanzhuangANDROIDanzhuozixitong.html",
@@ -896,21 +939,6 @@
     "type": "content"
   },
   {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "交易笔记",
     "path": "/docs/trading_journal/trading_journal.html",
     "url": "/docs/trading_journal/trading_journal.html",
@@ -922,6 +950,21 @@
     "frontmatter": {
       "title": "交易笔记",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "操盘手学习笔记"
+    },
+    "frontmatter": {
+      "title": "操盘手学习笔记",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -956,44 +999,6 @@
     "frontmatter": {
       "title": "Redis-持久化",
       "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
-    "title": "JVM-内存模型",
-    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-内存模型",
-      "lvl1": "JVM 内存模型",
-      "lvl2": "JVM 内存核心参数",
-      "lvl3": "内存调优案例"
-    },
-    "frontmatter": {
-      "title": "JVM-内存模型",
-      "date": "2025/03/04"
-    },
-    "type": "content"
-  },
-  {
-    "title": "JVM-常量池",
-    "path": "/docs/architect/jvm/JVM-changliangchi.html",
-    "url": "/docs/architect/jvm/JVM-changliangchi.html",
-    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-常量池",
-      "lvl1": "Class 常量池与运行时常量池",
-      "lvl2": "字符串常量池",
-      "lvl3": "八种基本类型的包装类和对象池",
-      "lvl4": "字符串常量池示例",
-      "lvl5": "包装类对象池示例"
-    },
-    "frontmatter": {
-      "title": "JVM-常量池",
-      "date": "2025/03/04"
     },
     "type": "content"
   },
@@ -1106,6 +1111,44 @@
     "contentParts": 4
   },
   {
+    "title": "JVM-内存模型",
+    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-内存模型",
+      "lvl1": "JVM 内存模型",
+      "lvl2": "JVM 内存核心参数",
+      "lvl3": "内存调优案例"
+    },
+    "frontmatter": {
+      "title": "JVM-内存模型",
+      "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "JVM-常量池",
+    "path": "/docs/architect/jvm/JVM-changliangchi.html",
+    "url": "/docs/architect/jvm/JVM-changliangchi.html",
+    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-常量池",
+      "lvl1": "Class 常量池与运行时常量池",
+      "lvl2": "字符串常量池",
+      "lvl3": "八种基本类型的包装类和对象池",
+      "lvl4": "字符串常量池示例",
+      "lvl5": "包装类对象池示例"
+    },
+    "frontmatter": {
+      "title": "JVM-常量池",
+      "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
     "title": "2025-03",
     "path": "/docs/diary/2025/2025-03.html",
     "url": "/docs/diary/2025/2025-03.html",
@@ -1140,6 +1183,22 @@
     "type": "content"
   },
   {
+    "title": "实盘日记 - 2025 年",
+    "path": "/docs/trading_journal/diary/2025.html",
+    "url": "/docs/trading_journal/diary/2025.html",
+    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "实盘日记 - 2025 年",
+      "lvl1": "2025/3/19 TQQQ CALL"
+    },
+    "frontmatter": {
+      "title": "实盘日记 - 2025 年",
+      "date": "2025/03/19"
+    },
+    "type": "content"
+  },
+  {
     "title": "期权交易策略",
     "path": "/docs/trader/options/qiquanjiaoyicelue.html",
     "url": "/docs/trader/options/qiquanjiaoyicelue.html",
@@ -1168,22 +1227,6 @@
     "frontmatter": {
       "title": "期权交易策略收益图表",
       "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "实盘日记 - 2025 年",
-    "path": "/docs/trading_journal/diary/2025.html",
-    "url": "/docs/trading_journal/diary/2025.html",
-    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "实盘日记 - 2025 年",
-      "lvl1": "2025/3/19 TQQQ CALL"
-    },
-    "frontmatter": {
-      "title": "实盘日记 - 2025 年",
-      "date": "2025/03/19"
     },
     "type": "content"
   }
