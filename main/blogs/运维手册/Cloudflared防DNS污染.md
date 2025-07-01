@@ -12,7 +12,7 @@ categories:
 - 启动命令：`cloudflared proxy-dns`
 - win11 安装：`winget install Cloudflare.cloudflared`，然后把 `C:\Program Files (x86)\cloudflared` 设进环境变量 path
 - win11 开机自启
-  - NSSM方式参考：[WIN使用NSSM管理service](./WIN使用NSSM管理service.md)
+  - NSSM方式参考：[WIN使用NSSM管理Service](./WIN使用NSSM管理Service.md)
   - VBS方式：
     - 启动脚本参考：[VBS静默执行PS脚本](../编码笔记/VBS静默执行PS脚本.md)
     - 脚本放入 `win + r` 输入 `shell:startup` 回车后出现的文件夹中
