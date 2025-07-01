@@ -68,6 +68,27 @@
     "type": "content"
   },
   {
+    "title": "PowerShell 实现 Chrome 环境隔离的多开方案",
+    "path": "/blogs/bianmabiji/PowerShellshixianChromehuanjinggelideduokaifangan.html",
+    "url": "/blogs/bianmabiji/PowerShellshixianChromehuanjinggelideduokaifangan.html",
+    "content": "---\r\ntitle: PowerShell 实现 Chrome 环境隔离的多开方案\r\ndate: 2025/07/01\r\ntags:\r\n - PowerShell\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n:::info\r\n- 下载地址：[https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1](https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1)\r\n:::\r\n\r\n使用示例：\r\n```powershell\r\n    .\\chromej.ps1 1\r\n    .\\chromej.ps1 devtest -Url \"https://example.com\"\r\n    .\\chromej.ps1 test2 -ChromePath \"D:\\chrome\\chrome.exe\" -RootDir \"D:\\chrome-profiles\"\r\n    .\\chromej.ps1 1 -Delete\r\n    .\\chromej.ps1 1 -Delete -y\r\n    .\\chromej.ps1 -Help\r\n    .\\chromej.ps1\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "PowerShell 实现 Chrome 环境隔离的多开方案"
+    },
+    "frontmatter": {
+      "title": "PowerShell 实现 Chrome 环境隔离的多开方案",
+      "date": "2025/07/01",
+      "tags": [
+        "PowerShell"
+      ],
+      "categories": [
+        "编码笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "PowerShell 目录栈",
     "path": "/blogs/bianmabiji/PowerShellmuluzhan.html",
     "url": "/blogs/bianmabiji/PowerShellmuluzhan.html",
@@ -639,7 +660,7 @@
     "title": "MYSQL 数据导出导入",
     "path": "/blogs/yunweishouce/MYSQLshujudaochudaoru.html",
     "url": "/blogs/yunweishouce/MYSQLshujudaochudaoru.html",
-    "content": "---\r\ntitle: MYSQL 数据导出导入\r\ndate: 2025/03/05\r\ntags:\r\n - MYSQL\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip\r\n1. 安装 mysqlsh\r\n2. 导出数据\r\n3. 导入数据（需要开启性能模式）\r\n:::\r\n\r\n## 安装 mysqlsh\r\n\r\n```shell\r\nwinget install Oracle.MySQLShell\r\nmysqlsh\r\n```\r\n\r\n## 导出\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.dumpTables(\"asktrue_exam\", [\"project_exam_student_result\"], \"E:\\\\DB\\\\asktrue\")\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\");\r\n\r\n// 移除 definer，比如创建该库的用户名\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\", {compatibility:[\"strip_definers\"]});\r\n```\r\n\r\n## 导入\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.loadDump(\"E:\\\\DB\\\\asktrue\\\\project_exam_student_result\", {threads: 4});\r\n```\r\n\r\n::: info 需要开启性能模式\r\n开启性能模式：`performance_schema=ON`\r\n:::\r\n\r\n",
+    "content": "---\r\ntitle: MYSQL 数据导出导入\r\ndate: 2025/03/05\r\ntags:\r\n - MYSQL\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: tip\r\n1. 安装 mysqlsh\r\n2. 导出数据\r\n3. 导入数据（需要开启性能模式）\r\n:::\r\n\r\n## 安装 mysqlsh\r\n\r\n```shell\r\nwinget install Oracle.MySQLShell\r\nmysqlsh\r\n```\r\n\r\n## 导出\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.dumpTables(\"asktrue_exam\", [\"project_exam_student_result\"], \"E:\\\\DB\\\\asktrue\")\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\");\r\n\r\n// 移除 definer，比如创建该库的用户名\r\nutil.dumpSchemas([\"staffcloud_crm\", \"staffcloud_oa\"], \"E:\\\\DB\\\\staffcloud\", {compatibility:[\"strip_definers\"]});\r\n```\r\n\r\n## 导入\r\n\r\n```js\r\n\\connect username@host\r\n\\js\r\nutil.loadDump(\"E:\\\\DB\\\\asktrue\\\\project_exam_student_result\", {threads: 4});\r\n\r\n// 指定导入另一个 schema\r\nutil.loadDump(\"E:\\\\DB-BACK\\\\matcheasy_new_gray_20250630_0100_2\", {schema: \"matcheasy_new\"})\r\n```\r\n\r\n::: info 需要开启性能模式\r\n开启性能模式：`performance_schema=ON`\r\n:::\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "MYSQL 数据导出导入",
@@ -781,16 +802,16 @@
     "type": "content"
   },
   {
-    "title": "Windows 使用 NSSM 管理 service",
-    "path": "/blogs/yunweishouce/WINshiyongNSSMguanliservice.html",
-    "url": "/blogs/yunweishouce/WINshiyongNSSMguanliservice.html",
-    "content": "---\r\ntitle: Windows 使用 NSSM 管理 service\r\ndate: 2025/06/29\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n- 安装：`winget install NSSM.NSSM`\r\n- 安装服务：`nssm install cloudflared-dns`\r\n  - 在弹出的对话框中\r\n    - Application path 添应用的绝对路径\r\n    - Startup dir 添 `win + r` 输入 `shell:startup` 回车后弹出的文件夹路径\r\n    - Arguments 填应用的启动参数\r\n    - 最后点击 Install service\r\n- 启动服务：`net start cloudflared-dns` 或 `Start-Service cloudflared-dns`\r\n- 检查服务状态： `Get-Service cloudflared-dns`\r\n- 修改服务参数：`nssm edit cloudflared-dns`\r\n- 卸载服务：`nssm remove cloudflared-dns confirm`\r\n\r\n:::info\r\n- 需要以管理员权限运行\r\n:::\r\n\r\n",
+    "title": "Windows 使用 NSSM 管理 Service",
+    "path": "/blogs/yunweishouce/WINshiyongNSSMguanliService.html",
+    "url": "/blogs/yunweishouce/WINshiyongNSSMguanliService.html",
+    "content": "---\r\ntitle: Windows 使用 NSSM 管理 Service\r\ndate: 2025/06/29\r\ntags:\r\n - Windows\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n- 安装：`winget install NSSM.NSSM`\r\n- 安装服务：`nssm install cloudflared-dns`\r\n  - 在弹出的对话框中\r\n    - Application path 添应用的绝对路径\r\n    - Startup dir 添 `win + r` 输入 `shell:startup` 回车后弹出的文件夹路径\r\n    - Arguments 填应用的启动参数\r\n    - 最后点击 Install service\r\n- 启动服务：`net start cloudflared-dns` 或 `Start-Service cloudflared-dns`\r\n- 检查服务状态： `Get-Service cloudflared-dns`\r\n- 修改服务参数：`nssm edit cloudflared-dns`\r\n- 卸载服务：`nssm remove cloudflared-dns confirm`\r\n\r\n:::info\r\n- 需要以管理员权限运行\r\n:::\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
-      "lvl0": "Windows 使用 NSSM 管理 service"
+      "lvl0": "Windows 使用 NSSM 管理 Service"
     },
     "frontmatter": {
-      "title": "Windows 使用 NSSM 管理 service",
+      "title": "Windows 使用 NSSM 管理 Service",
       "date": "2025/06/29",
       "tags": [
         "Windows"
@@ -939,21 +960,6 @@
     "type": "content"
   },
   {
-    "title": "交易笔记",
-    "path": "/docs/trading_journal/trading_journal.html",
-    "url": "/docs/trading_journal/trading_journal.html",
-    "content": "---\r\ntitle: 交易笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "交易笔记"
-    },
-    "frontmatter": {
-      "title": "交易笔记",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "操盘手学习笔记",
     "path": "/docs/trader/trader.html",
     "url": "/docs/trader/trader.html",
@@ -969,6 +975,21 @@
     "type": "content"
   },
   {
+    "title": "交易笔记",
+    "path": "/docs/trading_journal/trading_journal.html",
+    "url": "/docs/trading_journal/trading_journal.html",
+    "content": "---\r\ntitle: 交易笔记\r\ndate: 2025/03/08\r\n---\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "交易笔记"
+    },
+    "frontmatter": {
+      "title": "交易笔记",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
     "title": "JAVA并发-设计模式",
     "path": "/docs/architect/concurrent/JAVAbingfa-shejimoshi.html",
     "url": "/docs/architect/concurrent/JAVAbingfa-shejimoshi.html",
@@ -980,25 +1001,6 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
-    },
-    "type": "content"
-  },
-  {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -1149,6 +1151,25 @@
     "type": "content"
   },
   {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
     "title": "2025-03",
     "path": "/docs/diary/2025/2025-03.html",
     "url": "/docs/diary/2025/2025-03.html",
@@ -1183,22 +1204,6 @@
     "type": "content"
   },
   {
-    "title": "实盘日记 - 2025 年",
-    "path": "/docs/trading_journal/diary/2025.html",
-    "url": "/docs/trading_journal/diary/2025.html",
-    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "实盘日记 - 2025 年",
-      "lvl1": "2025/3/19 TQQQ CALL"
-    },
-    "frontmatter": {
-      "title": "实盘日记 - 2025 年",
-      "date": "2025/03/19"
-    },
-    "type": "content"
-  },
-  {
     "title": "期权交易策略",
     "path": "/docs/trader/options/qiquanjiaoyicelue.html",
     "url": "/docs/trader/options/qiquanjiaoyicelue.html",
@@ -1227,6 +1232,22 @@
     "frontmatter": {
       "title": "期权交易策略收益图表",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "实盘日记 - 2025 年",
+    "path": "/docs/trading_journal/diary/2025.html",
+    "url": "/docs/trading_journal/diary/2025.html",
+    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "实盘日记 - 2025 年",
+      "lvl1": "2025/3/19 TQQQ CALL"
+    },
+    "frontmatter": {
+      "title": "实盘日记 - 2025 年",
+      "date": "2025/03/19"
     },
     "type": "content"
   }

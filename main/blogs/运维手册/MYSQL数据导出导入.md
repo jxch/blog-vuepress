@@ -38,6 +38,9 @@ util.dumpSchemas(["staffcloud_crm", "staffcloud_oa"], "E:\\DB\\staffcloud", {com
 \connect username@host
 \js
 util.loadDump("E:\\DB\\asktrue\\project_exam_student_result", {threads: 4});
+
+// 指定导入另一个 schema
+util.loadDump("E:\\DB-BACK\\matcheasy_new_gray_20250630_0100_2", {schema: "matcheasy_new"})
 ```
 
 ::: info 需要开启性能模式
