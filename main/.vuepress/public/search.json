@@ -899,21 +899,6 @@
     "type": "content"
   },
   {
-    "title": "计算机技术栈",
-    "path": "/docs/it/it.html",
-    "url": "/docs/it/it.html",
-    "content": "---\r\ntitle: 计算机技术栈\r\ndate: 2025/03/08\r\n---\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "计算机技术栈"
-    },
-    "frontmatter": {
-      "title": "计算机技术栈",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "日记",
     "path": "/docs/diary/diary.html",
     "url": "/docs/diary/diary.html",
@@ -925,6 +910,21 @@
     "frontmatter": {
       "title": "日记",
       "password": "b593bf97f44387eb6fdc629acef2d138",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "计算机技术栈",
+    "path": "/docs/it/it.html",
+    "url": "/docs/it/it.html",
+    "content": "---\r\ntitle: 计算机技术栈\r\ndate: 2025/03/08\r\n---\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "计算机技术栈"
+    },
+    "frontmatter": {
+      "title": "计算机技术栈",
       "date": "2025/03/08"
     },
     "type": "content"
@@ -990,21 +990,107 @@
     "type": "content"
   },
   {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "title": "格言联璧-名句-1",
+    "path": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-1.html",
+    "url": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-1.html",
+    "content": "---\r\ntitle: 格言联璧-名句-1\r\ndate: 2025/07/01\r\ntags:\r\n - 摘抄\r\ncategories:\r\n - 读书笔记\r\n---\r\n\r\n> \r\n> <font color=\"orange\">静坐常思己过，闲谈莫论人非</font><br>\r\n> 怒是猛虎，欲是深渊<br>\r\n> <font color=\"orange\">鱼离水则身枯，心离书则神索</font><br>\r\n> <font color=\"orange\">修己以清心为要，涉世以慎言为先</font><br>\r\n> 谦，美德也，过谦者怀诈。默，懿行也，过默者藏奸<br>\r\n> <font color=\"orange\">天欲祸人，先以微福骄之；天欲福人，先以微祸儆之</font><br>\r\n> 日日行不怕千万里，常常做不怕千万事<br>\r\n> 对失意人，莫谈得意事。处得意日，莫忘失意时<br>\r\n> <font color=\"orange\">以情恕人，以理律己</font><br>\r\n> <font color=\"orange\">恶莫大于纵己之欲，祸莫大于言人之非</font><br>\r\n> 此生不学一可惜，此日闲过二可惜，此身一败三可惜<br>\r\n> 人之谤我也，与其能辩，不如能容；人之侮我也，与其能防，不如能化<br>\r\n> <font color=\"orange\">提得起，放得下，算得到，做得完，看得破，撇得开</font><br>\r\n> <font color=\"orange\">是非窝里，人用口，我用耳；热闹场中，人向前，我落后</font><br>\r\n> <font color=\"orange\">事有机缘，不先不后，刚刚凑巧。命若蹭蹬，走来走去，步步踏空</font><br>\r\n> 胆欲大，心欲小；智欲圆，行欲方<br>\r\n> <font color=\"orange\">事当快意时须转，言到快意时须住</font><br>\r\n> 不自重者取辱，不自畏者招祸，不自满者受益，不自是者博闻<br>\r\n> 读书即未成名，究竟人高品雅。修德不期获报，自然梦稳心安<br>\r\n> 以恕己之心恕人，则全交。以责人之心责己，则寡过<br>\r\n> 世人以七尺为性命，君子以性命为七尺<br>\r\n> 在古人之后议古人之失，则易；处古人之位为古人之事，则难<br>\r\n> 读未见书，如得良友；见已读书，如逢故人<br>\r\n> 事不可做尽，言不可道尽，势不可倚尽，福不可享尽<br>\r\n> <font color=\"orange\">不可吃尽，不可穿尽，不可说尽；又要洞得，又要做得，又要耐得</font><br>\r\n> <font color=\"orange\">有才而性缓，定属大才。有智而气和，斯为大智</font><br>\r\n> 何思何虑，居心当如止水；勿取勿忘，为学当如流水<br>\r\n> 案上不可多书，心中不可少书<br>\r\n> 辱人以不堪，必反辱；伤人以已甚，必反伤<br>\r\n> 无事时埋藏着许多小人，多事时识破了许多君子<br>\r\n> 不自反者，看不出一身病痛；不耐烦者，做不成一件事业<br>\r\n> 无心者公，无我者明<br>\r\n> 论人当节取其长，曲谅其短；做事必先审其害，后计其利<br>\r\n> 人好刚，我以柔胜之；人用术，我以诚感之；人使气，我以理屈之<br>\r\n> 盛喜中勿许人物，盛怒中勿答人书<br>\r\n> 不可不存时时可死之心，不可不行步步求生之事<br>\r\n> 见事贵乎理明，处事贵乎心公<br>\r\n> 气忌盛，心忌满，才忌露<br>\r\n> <font color=\"orange\">一念疏忽，是错起头。一念决裂，是错到底</font><br>\r\n> <font color=\"orange\">龙吟虎啸，凤翥鸾翔，大丈夫之气象</font><br>\r\n> <font color=\"orange\">缓事宜急干，敏则有功；急事宜缓办，忙则多错</font><br>\r\n> 直道事人，虚衷御物<br>\r\n> 小人乐闻君子之过，君子耻闻小人之恶<br>\r\n> <font color=\"orange\">不近人情，举足尽是危机；不体物情，一生俱成梦境</font><br>\r\n> <font color=\"orange\">心慎杂欲，则有余灵；目慎杂观，则有余明</font><br>\r\n> 眼界要阔，遍历名山大川；度量要宏，熟读五经诸史<br>\r\n> 步步占先者，必有人以挤之。事事争胜者，必有人以挫之<br>\r\n> <font color=\"orange\">顽石之中良玉隐焉，寒灰之中星火寓焉</font><br>\r\n> <font color=\"orange\">下手处是自强不息，成就处是至诚无息</font><br>\r\n> <font color=\"orange\">自责之外，无胜人之术。自强之外，无上人之术</font><br>\r\n>\r\n\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
+      "lvl0": "格言联璧-名句-1"
     },
     "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
+      "title": "格言联璧-名句-1",
+      "date": "2025/07/01",
+      "tags": [
+        "摘抄"
+      ],
+      "categories": [
+        "读书笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "格言联璧-名句-2",
+    "path": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-2.html",
+    "url": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-2.html",
+    "content": "---\r\ntitle: 格言联璧-名句-2\r\ndate: 2025/07/01\r\ntags:\r\n - 摘抄\r\ncategories:\r\n - 读书笔记\r\n---\r\n\r\n>\r\n> 穷寇不可追也，遁辞不可攻也，贫民不可威也<br>\r\n> 见人不是，诸恶之根，见己不是，万善之门<br>\r\n> 热闹荣华之境，一过辄生凄凉。清真冷淡之为，历久愈有意味<br>\r\n> 古今来许多世家，无非积德。天地间第一人品，还是读书<br>\r\n> 善用威者不轻怒，善用恩者不妄施<br>\r\n> 事到手，且莫急，便要缓缓想；想到时，切莫缓，便要急急行<br>\r\n> 静以修身，俭以养德。入则笃行，出则友贤<br>\r\n> 作本色人，说根心话，干近情事<br>\r\n> <font color=\"orange\">知足常足，终身不辱；知止常止，终身不耻</font><br>\r\n> 怒如火，不遏则燎原；欲如水，不遏则滔天<br>\r\n> 不让古人，是谓有志；不让今人，是谓无量<br>\r\n> 读书为身上之用，而人以为纸上之用<br>\r\n> 执法如山，守身如玉，爱民如子，去蠹如仇<br>\r\n> 小人专望受人恩，受过辄忘；君子不轻受人恩，受则必报<br>\r\n> 书有未曾经我读，事无不可对人言<br>\r\n> 至乐无如读书，至要莫如教子<br>\r\n> <font color=\"orange\">福莫大于无祸，祸莫大于邀福</font><br>\r\n> 大智兴邦，不过集众思；大愚误国，只为好自用<br>\r\n> <font color=\"orange\">任难任之事，要有力而无气；处难处之人，要有知而无言</font><br>\r\n> 待小人宜宽，防小人宜严<br>\r\n> 无欲之谓圣，寡欲之谓贤，多欲之谓凡，徇欲之谓狂<br>\r\n> <font color=\"orange\">律己宜带秋气，处世须带春风</font><br>\r\n> 有真才者，必不矜才。有实学者，必不夸学<br>\r\n> 天下之势，以渐而成；天下之事，以积而居<br>\r\n> <font color=\"orange\">强不知以为知，此乃大愚；本无事而生事，是谓薄福</font><br>\r\n> 处逆境心，须用开拓法。处顺境心，要用收敛法<br>\r\n> 物忌全胜，事忌全美，人忌全盛<br>\r\n> 一时劝人以言，百世劝人以书<br>\r\n> <font color=\"orange\">有作用者，器宇定是不凡。有智慧者，才情决然不露</font><br>\r\n> 以虚养心，以德养身，以仁养天下万物，以道养天下万世<br>\r\n> <font color=\"orange\">心不欲杂，杂则神荡而不收；心不欲劳，劳则神疲而不入</font><br>\r\n> 对愁人勿乐，对哭人勿笑，对失意人勿矜<br>\r\n> 寡欲故静，有主则虚<br>\r\n> 必有容，德乃大；必有忍，事乃济<br>\r\n> 聪明者，戒太察。刚强者，戒太暴。温良者，戒无断<br>\r\n> 喜来时一检点，怒来时一检点，怠惰时一检点，放肆时一检点<br>\r\n> <font color=\"orange\">毋以小嫌疏至戚，毋以新怨忘旧恩</font><br>\r\n> 倚势欺人，势尽而为人欺；恃财侮人，财散而受人侮<br>\r\n> 彼之理是，我之理非，我让之；彼之理非，我之理是，我容之<br>\r\n> <font color=\"orange\">大着肚皮容物，立定脚跟做人</font><br>\r\n> <font color=\"orange\">闻恶不可遽怒，恐为谗人泄忿；闻善不可就亲，恐引奸人进身</font><br>\r\n> 炎凉之态，富贵其于贫贱；嫉妒之心，骨肉其于外人<br>\r\n> <font color=\"orange\">待人三自反，处世两如何</font><br>\r\n> 涵养冲虚，便是身世学问。省除烦恼，何等心性安和<br>\r\n> <font color=\"orange\">公生明，诚生明，从容生明</font><br>\r\n> 居安虑危，处治思乱<br>\r\n> 丈夫之高华，只在于道德气节。鄙夫之炫耀，但求诸服饰起居<br>\r\n> 古之君子病其无能也，学之；今之君子耻其无能也，讳之<br>\r\n> 身在天地后，心在天地前；身在万物中，心在万物上<br>\r\n> <font color=\"orange\">世事让三分，天空地阔。心田培一点，子种孙收</font><br>\r\n> \r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "格言联璧-名句-2"
+    },
+    "frontmatter": {
+      "title": "格言联璧-名句-2",
+      "date": "2025/07/01",
+      "tags": [
+        "摘抄"
+      ],
+      "categories": [
+        "读书笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "格言联璧-名句-3",
+    "path": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-3.html",
+    "url": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-3.html",
+    "content": "---\r\ntitle: 格言联璧-名句-3\r\ndate: 2025/07/01\r\ntags:\r\n - 摘抄\r\ncategories:\r\n - 读书笔记\r\n---\r\n\r\n>\r\n> <font color=\"orange\">处事须留余地，责善切戒尽言</font><br>\r\n> 以耐事了天下之多事，以无心息天下之争心<br>\r\n> 读书贵能疑，疑乃可以启信。读书在有渐，渐乃克底有成<br>\r\n> 只是心不放肆，便无过差。只是心不怠忽，便无逸志<br>\r\n> 临事须替别人想，论人先将自己想<br>\r\n> <font color=\"orange\">以镜自照见形容，以心自照见吉凶</font><br>\r\n> 人性中不曾缺一物，人性上不可添一物<br>\r\n> 看书求理，须令自家胸中点头。与人谈理，须令人家胸中点头<br>\r\n> <font color=\"orange\">不为过三字，昧却多少良心；没奈何三字，抹却多少体面</font><br>\r\n> 静能制动，沈能制浮。宽能制褊，缓能制急<br>\r\n> 观天地生物气象，学圣贤克己工夫<br>\r\n> 贫贱是苦境，能善处者自乐；富贵是乐境，不善处者更苦<br>\r\n> 谈人之善，泽于膏沐；暴人之恶，痛于戈矛<br>\r\n> 人未己知，不可急求其知；人未己合，不可急与之合<br>\r\n> 勿施小惠伤大体，毋借公道遂私情<br>\r\n> 心志要苦，意趣要乐。气度要宏，言动要谨<br>\r\n> 勤能补拙，俭以养廉<br>\r\n> 尽前行者地步窄，向后看者眼界宽<br>\r\n> 阿谀取容，男子耻为妾妇之道。本真不凿，大人不失赤子之心<br>\r\n> 穷达有命，吉凶见人<br>\r\n> 省费医贫，恬退医躁，独卧医淫，随缘医愁，读书医俗<br>\r\n> 以鲜花视美色，则孽障自消；以流水听弦歌，则性灵何害<br>\r\n> 当厄之施甘于时雨，伤心之语毒于阴冰<br>\r\n> 能容小人是大人，能培薄德是厚德<br>\r\n> <font color=\"orange\">居处必先精勤，乃能闲暇。凡事务求停妥，然后逍遥</font><br>\r\n> <font color=\"orange\">毋毁众人之名，以成一己之善。毋没天下之理，以护一己之过</font><br>\r\n> <font color=\"orange\">实处着脚，稳处下手</font><br>\r\n> 兄弟争财，父遗不尽不止；妻妾争宠，夫命不死不休<br>\r\n> 盖世功劳，当不得一个“矜”字。弥天罪恶，当不得一个“悔”字<br>\r\n> 古之学者得一善言，附于其身；今之学者得一善言，务以悦人<br>\r\n> 万理澄彻，则一心愈精而愈谨。一心凝聚，则万理愈通而愈流<br>\r\n> 语言间尽可积德，妻子间亦是修身<br>\r\n> 吉凶祸福，是天主张。毁誉予夺，是人主张。主身行己，是我主张<br>\r\n> 位尊身危，财多命殆<br>\r\n> <font color=\"orange\">天下无不是的父母，世间最难得者兄弟</font><br>\r\n> 读书者不贱，力田者不饥。积德者不倾，择交者不败<br>\r\n> 天德只是个无我，王道只是个爱人<br>\r\n> <font color=\"orange\">真圣贤决非迂腐，真豪杰断不粗疏</font><br>\r\n> 防欲如挽逆水之舟，才歇手便下流。力行如缘无枝之树，才住脚便下坠<br>\r\n> 以仁义存心，以勤俭作家，以忍让接物<br>\r\n> <font color=\"orange\">恩怕先益后损，威怕先松后紧</font><br>\r\n> 无事时戒一“偷”字，有事时戒一“乱”字<br>\r\n> 律身惟廉为宜，处世以退为尚<br>\r\n> 俭则约，约则百善俱兴；侈则肆，肆则百恶俱纵<br>\r\n> <font color=\"orange\">欲理会七尺，先理会方寸；欲理会六合，先理会一腔</font><br>\r\n> 径路窄处，留一步与人行；滋味浓处，减三分让人嗜<br>\r\n> 飘风不可以调宫商，巧妇不可以主中馈，词章之士不可以治国家<br>\r\n> <font color=\"orange\">人褊急，我受之以宽宏；人险仄，我待之以坦荡</font><br>\r\n> 工于论人者，察己常阔疏；狃于讦直者，发言多弊病<br>\r\n> <font color=\"orange\">不蹈无人之室，不入有事之门，不处藏物之所</font><br>\r\n> \r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "格言联璧-名句-3"
+    },
+    "frontmatter": {
+      "title": "格言联璧-名句-3",
+      "date": "2025/07/01",
+      "tags": [
+        "摘抄"
+      ],
+      "categories": [
+        "读书笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "格言联璧-名句-4",
+    "path": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-4.html",
+    "url": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-4.html",
+    "content": "---\r\ntitle: 格言联璧-名句-4\r\ndate: 2025/07/01\r\ntags:\r\n - 摘抄\r\ncategories:\r\n - 读书笔记\r\n---\r\n\r\n>\r\n> 敬守此心，则心定；敛抑其气，则气平<br>\r\n> 富以能施为德，贫以无求为德，贵以下人为德，贱以忘势为德<br>\r\n> <font color=\"orange\">要得富贵福泽，天主张由不得我。要做贤人君子，我主张由不得天</font><br>\r\n> <font color=\"orange\">爱惜精神，留他日担当宇宙。蹉跎岁月，尽此身污秽乾坤</font><br>\r\n> 为善最乐，读书便佳<br>\r\n> <font color=\"orange\">富贵家不肯从宽，必遭横祸；聪明人不肯学厚，必殀天年</font><br>\r\n> <font color=\"orange\">海阔从鱼跃，天空任鸟飞</font><br>\r\n> 事以典故为据，故当博洽，不然臆说杜撰也<br>\r\n> 敬为千圣授受真源，慎乃百年提撕紧钥<br>\r\n> 祸到休愁，也要会救；福来休喜，也要会受<br>\r\n> 庙堂之上，以养正气为先；海宇之内，以养元气为本<br>\r\n> <font color=\"orange\">凡为外所胜者，皆内不足；凡为邪所夺者，皆正不足</font><br>\r\n> 只一事不留心，便有一事不得其理；只一物不留心，便有一物不得其所<br>\r\n> 古之从仕者养人，今之从仕者养己<br>\r\n> 未用兵时，全要虚心用人；既用兵时，全要实心活人<br>\r\n> <font color=\"orange\">治家严家乃和，居乡恕乡乃睦</font><br>\r\n> <font color=\"orange\">直不犯祸，和不害义</font><br>\r\n> 困辱非忧，取困辱为忧。荣利非乐，忘荣利为乐<br>\r\n> 接人要和中有介，处事要精中有果，认理要正中有道通<br>\r\n> 意粗性躁，一事无成。心平气和，千祥骈集<br>\r\n> <font color=\"orange\">喜闻人过，不若喜闻己过；乐道己善，何如乐道人善</font><br>\r\n> <font color=\"orange\">在事者，当置身利害之外；建言者，当设身利害之中</font><br>\r\n> 人属寒微，要思矜礼他，着不得一毫傲睨的气象<br>\r\n> 果决人似忙，心中常有余闲。因循人似闲，人中常有余忙<br>\r\n> 俗语近于市，纤语近于娼，诨语近于优<br>\r\n> <font color=\"orange\">岂能尽如人意，但求不愧我心</font><br>\r\n> 能改过，则天地不怒。能安分，则鬼神无权<br>\r\n> 居官先厚民风，处事先求大体<br>\r\n> 事属暖昧，要思回护他，着不得一点攻讦的念头<br>\r\n> 名誉自屈辱中彰，德量自隐忍中大<br>\r\n> <font color=\"orange\">荆棘满野，而望收嘉禾者愚；私念满胸，而欲求福应者悖</font><br>\r\n> 心术不可得罪于天地，言行要留好样与儿孙<br>\r\n> 肆傲者纳侮，诲过者长恶，贪利者害己，纵欲者戕生<br>\r\n> <font color=\"orange\">作恶事须防鬼神知，干好事莫怕旁人笑</font><br>\r\n> 作德日休，是谓福地；居易俟命，是谓洞天<br>\r\n> 藏书可以邀友，积德可以邀天<br>\r\n> <font color=\"orange\">于福作罪，其罪非轻；于苦作福，其福最大</font><br>\r\n> 洁己方能不失己，爱民所重在亲民<br>\r\n> 供人欣赏，侪风月于烟花，是曰亵天<br>\r\n> <font color=\"orange\">宇宙内事，乃己分内事；己分内事，乃宇宙内事</font><br>\r\n> 舍事功更无学问。求性道不外文章<br>\r\n> 事事难上难，举足常虞失坠；件件想一想，浑身都是过差<br>\r\n> 怒宜实力消融，过要细心检点<br>\r\n> 经济出自学问，经济方有本源；心性见之事功，心性方为圆满<br>\r\n> 逞我机锋，借诗书以戏谑，是名侮圣<br>\r\n> 罪莫大于亵天，恶莫大于无耻；苛刻心术之恶，过莫大于深险<br>\r\n> 衣垢不湔，器缺不补，对人犹有惭色<br>\r\n> <font color=\"orange\">盛者衰之始，福者祸之基</font><br>\r\n> 国家立法，不可不严。有司行法，不可不恕<br>\r\n> \r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "格言联璧-名句-4"
+    },
+    "frontmatter": {
+      "title": "格言联璧-名句-4",
+      "date": "2025/07/01",
+      "tags": [
+        "摘抄"
+      ],
+      "categories": [
+        "读书笔记"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "格言联璧-名句-5",
+    "path": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-5.html",
+    "url": "/blogs/dushubiji/geyanlianbi/geyanlianbi-mingju-5.html",
+    "content": "---\r\ntitle: 格言联璧-名句-5\r\ndate: 2025/07/01\r\ntags:\r\n - 摘抄\r\ncategories:\r\n - 读书笔记\r\n---\r\n\r\n>\r\n> 古之名望相近则相得，今之名望相近则相妒<br>\r\n> 孝莫辞劳，转眼便为人父母；善因望报，回头但看尔儿孙<br>\r\n> 理欲交争，肺腑成为吴越。物我一体，参商终是兄弟<br>\r\n> 政令之所重者人才，国家之所重者元气<br>\r\n> 父母所欲为者，我继述之；父母所重念者，我亲厚之<br>\r\n> 兄弟和其中自乐，子孙贤此外何求<br>\r\n> 造物所忌，曰刻曰巧；万类相感，以诚以忠<br>\r\n> 入瑶树琼林中皆宝，有谦德仁心者为祥<br>\r\n> 行垢不湔，德缺不补，对天岂无愧心<br>\r\n> 内不欺己，外不欺人<br>\r\n> 何思何虑，居心当如止水；勿取勿忘，为学当如流水<br>\r\n> 存养宜冲粹，近春温；省察宜谨严，近秋肃<br>\r\n> 惩忿如摧山，窒欲如填壑；惩忿如救火，窒欲如防水<br>\r\n> 奢者富不足，俭者贫有余。奢者心常贫，贫者心常富<br>\r\n> 蚕茧蛛丝，蚁封蚓结，儿女子之经营<br>\r\n> 慎言动于妻子仆隶之间，检身人于食息起居之际<br>\r\n> 宽厚者，毋使人有所恃；精明者，不使人有所容<br>\r\n> 富儿因求宦倾赀，污吏以黩货失职<br>\r\n> 问消息于蓍龟，疑团空结；祈福祉于奥灶，奢想徒劳<br>\r\n> 圣贤学问是一套，行王道必本天德；后世学问是两截，不修己只管治人<br>\r\n> 理以心得为精，故当沈潜，不然耳边口头尔<br>\r\n> <font color=\"orange\">信不足则多言</font><br>\r\n> <font color=\"orange\">立党羽，不如昭信义</font><br>\r\n> 孝子百世之宗，仁人天下之命<br>\r\n> 圣人敛福，君子考祥；作德日休，为善最乐<br>\r\n> 听断之官，成心必不可有；任事之官，成算必不可无<br>\r\n> 做大官底是一样家数，做好人底是一样家数<br>\r\n> 知足常乐，能忍自安<br>\r\n> 休诿罪于气化，一切责之人事。休过望于世间，一切求之我身<br>\r\n> 亲兄弟析箸，璧合翻作瓜分。士大夫爱钱，书香化为铜臭<br>\r\n> <font color=\"orange\">一能胜千，君子不可无此小心。吾何畏彼，丈夫不可无此大志</font><br>\r\n> 安莫安于知足，危莫危于多言<br>\r\n> 人之心胸，多欲则窄，寡欲则宽<br>\r\n> <font color=\"orange\">惟有主，则天地万物自我而立；必无私，斯上下四旁咸得其平</font><br>\r\n> 茹素虽佛氏教也，好生非上天意乎<br>\r\n> 志之所趋，无远勿届，穷山距海，不能限也<br>\r\n> 对痴人莫说梦话，防所误也；见短人莫说矮话，避所忌也<br>\r\n> 有违言为信，践言为非信者<br>\r\n> 情爱过义，子孙之灾也<br>\r\n> 勤俭治家之本，忠孝齐家之本，谨慎保家之本，诗书起家之本，积善传家之本<br>\r\n> 饱肥甘衣轻暖，不知节者损福<br>\r\n> 广积聚骄富贵，不知止者杀身<br>\r\n> <font color=\"orange\">戒久睡，久睡倦神</font><br>\r\n> 慨夏畦之劳劳，秋毫无补；悯冬烘之贸贸，春恩广覃<br>\r\n> 四海和平之福，只是随缘。一生牵惹之劳，总因好事<br>\r\n> 口不妄言，君子所以存诚<br>\r\n> 志之所向，无坚不入，锐兵固甲，不能御也<br>\r\n> 天下无不可化之人，但恐诚心未至；天下无不可为之事，只怕立志不坚<br>\r\n> ",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "格言联璧-名句-5"
+    },
+    "frontmatter": {
+      "title": "格言联璧-名句-5",
+      "date": "2025/07/01",
+      "tags": [
+        "摘抄"
+      ],
+      "categories": [
+        "读书笔记"
+      ]
     },
     "type": "content"
   },
@@ -1020,6 +1106,25 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
+    },
+    "type": "content"
+  },
+  {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -1170,23 +1275,6 @@
     "contentParts": 4
   },
   {
-    "title": "边缘填充算法",
-    "path": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
-    "url": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
-    "content": "---\r\ntitle: 边缘填充算法\r\ndate: 2025/03/08\r\n---\r\n\r\n## 填充原理\r\n边缘填充算法是先求出多边形的每条边与扫描线的交点，然后**将交点右侧的所有像素颜色全部取为补色（或反色**）。按任意顺序处理完多边形的所有边后，就完成了多边形的填充任务。边缘填充算法利用了图像处理中的求“补”或求“反”的概念，对于黑白图像，求补就是把RGB(1,1,1)（白色）的像素置为RGB(0,0,0)（黑色），反之亦然；对于彩色图像，求补就是将背景色置为填充色，反之亦然。求补的一条基本性质是**一个像素求补两次就恢复为原色**。**如果多边形内部的像素被求补偶数次，保持原色，如果被求补奇数次，显示填充色。**\r\n\r\n## 填充过程\r\n假定边的顺序为E0、E1、E2、E3、E4、E5和E6。这里，边的顺序并不影响填充结果，只是方便编写循环结构而已。\r\n\r\n\r\n![边缘填充算法](static/边缘填充算法.png)\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "边缘填充算法",
-      "lvl1": "填充原理",
-      "lvl2": "填充过程"
-    },
-    "frontmatter": {
-      "title": "边缘填充算法",
-      "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
     "title": "2025-03",
     "path": "/docs/diary/2025/2025-03.html",
     "url": "/docs/diary/2025/2025-03.html",
@@ -1199,6 +1287,23 @@
     "frontmatter": {
       "title": "2025-03",
       "password": "b593bf97f44387eb6fdc629acef2d138",
+      "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "边缘填充算法",
+    "path": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
+    "url": "/docs/it/jisuanjituxingxue/bianyuantianchongsuanfa.html",
+    "content": "---\r\ntitle: 边缘填充算法\r\ndate: 2025/03/08\r\n---\r\n\r\n## 填充原理\r\n边缘填充算法是先求出多边形的每条边与扫描线的交点，然后**将交点右侧的所有像素颜色全部取为补色（或反色**）。按任意顺序处理完多边形的所有边后，就完成了多边形的填充任务。边缘填充算法利用了图像处理中的求“补”或求“反”的概念，对于黑白图像，求补就是把RGB(1,1,1)（白色）的像素置为RGB(0,0,0)（黑色），反之亦然；对于彩色图像，求补就是将背景色置为填充色，反之亦然。求补的一条基本性质是**一个像素求补两次就恢复为原色**。**如果多边形内部的像素被求补偶数次，保持原色，如果被求补奇数次，显示填充色。**\r\n\r\n## 填充过程\r\n假定边的顺序为E0、E1、E2、E3、E4、E5和E6。这里，边的顺序并不影响填充结果，只是方便编写循环结构而已。\r\n\r\n\r\n![边缘填充算法](static/边缘填充算法.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "边缘填充算法",
+      "lvl1": "填充原理",
+      "lvl2": "填充过程"
+    },
+    "frontmatter": {
+      "title": "边缘填充算法",
       "date": "2025/03/08"
     },
     "type": "content"
