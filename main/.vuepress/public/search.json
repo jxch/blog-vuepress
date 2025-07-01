@@ -71,7 +71,7 @@
     "title": "PowerShell 实现 Chrome 环境隔离的多开方案",
     "path": "/blogs/bianmabiji/PowerShellshixianChromehuanjinggelideduokaifangan.html",
     "url": "/blogs/bianmabiji/PowerShellshixianChromehuanjinggelideduokaifangan.html",
-    "content": "---\r\ntitle: PowerShell 实现 Chrome 环境隔离的多开方案\r\ndate: 2025/07/01\r\ntags:\r\n - PowerShell\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n:::info\r\n- 下载地址：[https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1](https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1)\r\n:::\r\n\r\n使用示例：\r\n```powershell\r\n    .\\chromej.ps1 1\r\n    .\\chromej.ps1 devtest -Url \"https://example.com\"\r\n    .\\chromej.ps1 test2 -ChromePath \"D:\\chrome\\chrome.exe\" -RootDir \"D:\\chrome-profiles\"\r\n    .\\chromej.ps1 1 -Delete\r\n    .\\chromej.ps1 1 -Delete -y\r\n    .\\chromej.ps1 -Help\r\n    .\\chromej.ps1\r\n```\r\n\r\n",
+    "content": "---\r\ntitle: PowerShell 实现 Chrome 环境隔离的多开方案\r\ndate: 2025/07/01\r\ntags:\r\n - PowerShell\r\ncategories:\r\n - 编码笔记\r\n---\r\n\r\n:::info\r\n- 下载地址：[https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1](https://raw.githubusercontent.com/jxch/shell/refs/heads/main/powershell/chromej.ps1)\r\n:::\r\n\r\n使用示例：\r\n```powershell\r\n    chromej.ps1 1 2 --disable-web-security --incognito\r\n        # 启动/多开 1、2 两个 profile，并传递原生参数\r\n\r\n    chromej.ps1 dev -a -u \"https://example.com\" --disable-gpu\r\n        # 激活已开的 dev profile，或未开则以指定网址和参数新开\r\n\r\n    chromej.ps1 1 -Delete -y\r\n        # 强制删除 1 号 profile 目录，无需确认\r\n\r\n    chromej.ps1 --disable-software-rasterizer -sc\r\n        # 启动 Chrome 并显示完整命令行\r\n\r\n    chromej.ps1 -s\r\n        # 静默启动 Chrome 本体\r\n\r\n    chromej.ps1 1 2 3 -Activate -ShowCmd -Silent\r\n        # 激活/多开 1、2、3，命令行输出，静默执行\r\n```\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "PowerShell 实现 Chrome 环境隔离的多开方案"
@@ -945,21 +945,6 @@
     "type": "content"
   },
   {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "诗集",
     "path": "/docs/poetry/poetry.html",
     "url": "/docs/poetry/poetry.html",
@@ -971,6 +956,21 @@
     "frontmatter": {
       "title": "诗集",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "操盘手学习笔记"
+    },
+    "frontmatter": {
+      "title": "操盘手学习笔记",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -1001,25 +1001,6 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
-    },
-    "type": "content"
-  },
-  {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -1058,6 +1039,25 @@
     "frontmatter": {
       "title": "JVM-常量池",
       "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
