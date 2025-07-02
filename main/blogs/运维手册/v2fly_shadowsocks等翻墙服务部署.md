@@ -2,7 +2,7 @@
 title: V2fly Shadowsocks 等翻墙服务部署
 date: 2025/03/08
 tags:
- - 翻墙
+ - proxy
 categories:
  - 运维手册
 ---

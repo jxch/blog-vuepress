@@ -23,3 +23,14 @@
     padding-left: 12px;
 }
 
+.series-container::-webkit-scrollbar {
+    background:  #222 !important;
+    width: 4px;
+}
+.series-container::-webkit-scrollbar-thumb {
+    background: gray; /* 滑块颜色（黑色）*/
+    border-radius: 4px;
+}
+.series-container::-webkit-scrollbar-thumb:hover {
+    background: #aaa; /* 悬停时变浅一点 */
+}

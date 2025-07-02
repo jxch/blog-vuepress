@@ -26,15 +26,65 @@ export default defineUserConfig({
         {
           text: "并发编程",
           children: ["concurrent/JAVA并发-设计模式"],
+          
         }, {
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
+          
         }, {
           text: "Redis",
           children: ["redis/Redis-持久化"],
+          
         }, {
           text: "Zookeeper",
           children: ["zookeeper/Zookeeper-特性"],
+          
+        }, {
+          text: "Hadoop",
+          children: [
+            "hadoop/Hadoop-1.生态",
+            "hadoop/Hadoop-2.节点",
+            "hadoop/Hadoop-3.HDFS读写文件流程",
+            "hadoop/Hadoop-4.元数据管理-edits+fsimage",
+            "hadoop/Hadoop-5.mapreduce工作机制",
+            "hadoop/Hadoop-6.提交任务流程与Shuffle流程",
+            "hadoop/Hadoop-7-切片逻辑",
+            "hadoop/Hadoop-8-YARN流程",
+            "hadoop/Hadoop-9-mapreduce-YARN流程",
+            "hadoop/Hadoop-10-YARN资源调度器",
+            "hadoop/Hadoop-11-优化",
+            "hadoop/Hadoop-11.1.数据压缩",
+            "hadoop/Hadoop-12-Hive-特点",
+            "hadoop/Hadoop-12.1.Hive窗口函数",
+            "hadoop/Hadoop-12.2.Hive常用命令dd与dmll",
+            "hadoop/Hadoop-12.3.Hive分桶",
+            "hadoop/Hadoop-12.4.HiveDemo大小写转换UDF自定义函数",
+            "hadoop/Hadoop-12.5.1.Hive不支援10验证类型",
+            "hadoop/Hadoop-12.5.2.HiveWstxParsingException",
+            "hadoop/Hadoop-13-HBase-特点",
+            "hadoop/Hadoop-13.1.HBase常用命令",
+            "hadoop/Hadoop-13.2.HBase优化",
+            "hadoop/Hadoop-13.3.HBase设计优化rowkey",
+            "hadoop/Hadoop-13.4.HBase预分区",
+            "hadoop/Hadoop-13.5.1.HBaseDemoJavaAPI常用操作",
+            "hadoop/Hadoop-13.6.1.HBaseServerNotRunningYetException",
+            "hadoop/Hadoop-13.6.2.HBaseNoHbaseMasterFound",
+            "hadoop/Hadoop-14-Sqoop-特点",
+            "hadoop/Hadoop-14.1.Sqoop导入数据到HBase",
+            "hadoop/Hadoop-14.2.SqoopHive与Mysql互导",
+            "hadoop/Hadoop-14.3.SqoopMysql导入HDFS",
+            "hadoop/Hadoop-15.1.Demo单词统计",
+            "hadoop/Hadoop-15.2.Demo单词分组排序统计",
+            "hadoop/Hadoop-15.3.Demo倒排索引-文章单词统计",
+            "hadoop/Hadoop-15.4.Demo共同好友",
+            "hadoop/Hadoop-15.5.Demo自定义InputFileFormat",
+            "hadoop/Hadoop-15.6.Demo自定义OutputFileFormat",
+            "hadoop/Hadoop-15.7.Demo文件操作FileSystem",
+            "hadoop/Hadoop-16.1.启动时没有启动datanode",
+            "hadoop/Hadoop-16.2.ClassNotFoundException",
+            "hadoop/Hadoop-17.1.常用命令fs",
+          ],
+          
         },
       ],
       "/docs/trader/": [
@@ -172,7 +222,7 @@ export default defineUserConfig({
       appId: 'MNIVPZZIJ2',
       apiKey: 'b0d8bdcebbf20469cd0beadde0ab831a',
       indexName: 'jxch.github.io',
-      inputSelector: '#docsearch-input',
+      // inputSelector: '#docsearch-input',
       debug: false,
     },
     // commentConfig: {

@@ -520,6 +520,50 @@
     "type": "content"
   },
   {
+    "title": "HAProxy TCP 端口代理",
+    "path": "/blogs/yunweishouce/HAProxy-TCPduankoudaili.html",
+    "url": "/blogs/yunweishouce/HAProxy-TCPduankoudaili.html",
+    "content": "---\r\ntitle: HAProxy TCP 端口代理\r\ndate: 2025/07/02\r\ntags:\r\n - proxy\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n\r\n## docker-compose.yml\r\n```yml\r\nversion: '3.8'\r\nservices: \r\n  haproxy: \r\n    image: haproxy:lts-alpine\r\n    privileged: true\r\n    ports:\r\n      - 1080:1080\r\n      - 3306:3306\r\n    volumes: \r\n      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg\r\n```\r\n\r\n## haproxy.cfg\r\n```properties\r\ndefaults\r\n    mode            tcp\r\n    log             global\r\n    option          tcplog\r\n    option          dontlognull\r\n    option http-server-close\r\n    option          redispatch\r\n    retries         3\r\n    timeout http-request 10s\r\n    timeout queue   1m\r\n    timeout connect 10s\r\n    timeout client  1m\r\n    timeout server  1m\r\n    timeout http-keep-alive 10s\r\n    timeout check   10s\r\n    maxconn         3000\r\nfrontend    mysql\r\n    bind        0.0.0.0:3306\r\n    mode        tcp\r\n    log         global\r\n    default_backend mysql_server\r\nbackend     mysql_server\r\n    balance roundrobin\r\n    server capital_mysql qbh.jiangxicheng.xyz:3306 check inter 5s rise 2 fall 3\r\nlisten stats\r\n    mode    http\r\n    bind    0.0.0.0:1080\r\n    stats   enable\r\n    stats   hide-version\r\n    stats uri /haproxyamdin?stats\r\n    stats realm Haproxy\\ Statistics\r\n    stats auth admin:admin\r\n    stats admin if TRUE\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "HAProxy TCP 端口代理",
+      "lvl1": "docker-compose.yml",
+      "lvl2": "haproxy.cfg"
+    },
+    "frontmatter": {
+      "title": "HAProxy TCP 端口代理",
+      "date": "2025/07/02",
+      "tags": [
+        "proxy"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
+    "title": "hexo 下载内部文件",
+    "path": "/blogs/yunweishouce/hexo-xiazainabuwenjian.html",
+    "url": "/blogs/yunweishouce/hexo-xiazainabuwenjian.html",
+    "content": "---\r\ntitle: hexo 下载内部文件\r\ndate: 2025/07/02\r\ntags:\r\n - hexo\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n1. `_config.yml` 文件内修改属性 `post_asset_folder: true`\r\n2. 在 `source` 文件夹内创建下载目录 `download`\r\n3. 下载链接：`[xxxxxx](/download/xxxxxx)`\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "hexo 下载内部文件"
+    },
+    "frontmatter": {
+      "title": "hexo 下载内部文件",
+      "date": "2025/07/02",
+      "tags": [
+        "hexo"
+      ],
+      "categories": [
+        "运维手册"
+      ]
+    },
+    "type": "content"
+  },
+  {
     "title": "Jumpserver 部署",
     "path": "/blogs/yunweishouce/Jumpserverbushu.html",
     "url": "/blogs/yunweishouce/Jumpserverbushu.html",
@@ -760,7 +804,7 @@
     "title": "V2fly Shadowsocks 等翻墙服务部署",
     "path": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
     "url": "/blogs/yunweishouce/v2fly_shadowsocksdengfanqiangfuwubushu.html",
-    "content": "---\r\ntitle: V2fly Shadowsocks 等翻墙服务部署\r\ndate: 2025/03/08\r\ntags:\r\n - 翻墙\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: info\r\n替换一下各配置文件中的 uuid 就可以了\r\n:::\r\n\r\n## docker swarm 部署\r\n\r\n```yml\r\nservices:\r\n  shadowsocks: \r\n    image: shadowsocks/shadowsocks-libev \r\n    restart: unless-stopped\r\n    ports: \r\n      - 12346:12346\r\n      - 12346:12346/udp \r\n    configs: \r\n      - source: shadowsocks_config\r\n        target: /etc/shadowsocks-libev/config.json \r\n    environment:\r\n      - DNS_ADDRS=8.8.8.8,8.8.4.4\r\n    command: ss-server -c /etc/shadowsocks-libev/config.json \r\n  v2fly:\r\n    image: v2fly/v2fly-core\r\n    restart: unless-stopped\r\n    ports:\r\n      - 12345:12345\r\n    configs: \r\n      - source: v2fly_config\r\n        target: /etc/v2ray/config.json\r\n    entrypoint: [\"v2ray\", \"run\",  \"-c\", \"/etc/v2ray/config.json\"]\r\n\r\n\r\nconfigs:\r\n  shadowsocks_config:\r\n    file: /root/server/config/shadowsocks/config.json \r\n  v2fly_config:\r\n    file: /root/server/config/v2fly/config.json\r\n```\r\n\r\n## shadowsocks config.json\r\n\r\n```json\r\n{\r\n    \"server\":\"0.0.0.0\",\r\n    \"server_port\":12346,\r\n    \"password\":\"uuid\",\r\n    \"timeout\":3000,\r\n    \"method\":\"aes-256-gcm\",\r\n    \"fast_open\":false,\r\n    \"mode\":\"tcp_and_udp\"\r\n}\r\n\r\n```\r\n\r\n## v2fly config.json\r\n\r\n```json\r\n{\r\n    \"log\": {\r\n        \"access\": \"/var/log/v2ray/access.log\",\r\n        \"error\": \"/var/log/v2ray/error.log\",\r\n        \"loglevel\": \"warning\"\r\n    },\r\n    \"inbound\": {\r\n        \"port\": 12345,\r\n        \"protocol\": \"vmess\",\r\n        \"settings\": {\r\n            \"clients\": [\r\n                {\r\n                    \"id\": \"uuid\",\r\n                    \"level\": 1,\r\n                    \"alterId\": 0\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"outbound\": {\r\n        \"protocol\": \"freedom\",\r\n        \"settings\": {}\r\n    },\r\n    \"inboundDetour\": [],\r\n    \"outboundDetour\": [\r\n        {\r\n            \"protocol\": \"blackhole\",\r\n            \"settings\": {},\r\n            \"tag\": \"blocked\"\r\n        }\r\n    ],\r\n    \"routing\": {\r\n        \"strategy\": \"rules\",\r\n        \"settings\": {\r\n            \"rules\": [\r\n                {\r\n                    \"type\": \"field\",\r\n                    \"ip\": [\r\n                        \"0.0.0.0/8\",\r\n                        \"10.0.0.0/8\",\r\n                        \"100.64.0.0/10\",\r\n                        \"127.0.0.0/8\",\r\n                        \"169.254.0.0/16\",\r\n                        \"172.16.0.0/12\",\r\n                        \"192.0.0.0/24\",\r\n                        \"192.0.2.0/24\",\r\n                        \"192.168.0.0/16\",\r\n                        \"198.18.0.0/15\",\r\n                        \"198.51.100.0/24\",\r\n                        \"203.0.113.0/24\",\r\n                        \"::1/128\",\r\n                        \"fc00::/7\",\r\n                        \"fe80::/10\"\r\n                    ],\r\n                    \"outboundTag\": \"blocked\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}\r\n\r\n```\r\n\r\n\r\n",
+    "content": "---\r\ntitle: V2fly Shadowsocks 等翻墙服务部署\r\ndate: 2025/03/08\r\ntags:\r\n - proxy\r\ncategories:\r\n - 运维手册\r\n---\r\n\r\n::: info\r\n替换一下各配置文件中的 uuid 就可以了\r\n:::\r\n\r\n## docker swarm 部署\r\n\r\n```yml\r\nservices:\r\n  shadowsocks: \r\n    image: shadowsocks/shadowsocks-libev \r\n    restart: unless-stopped\r\n    ports: \r\n      - 12346:12346\r\n      - 12346:12346/udp \r\n    configs: \r\n      - source: shadowsocks_config\r\n        target: /etc/shadowsocks-libev/config.json \r\n    environment:\r\n      - DNS_ADDRS=8.8.8.8,8.8.4.4\r\n    command: ss-server -c /etc/shadowsocks-libev/config.json \r\n  v2fly:\r\n    image: v2fly/v2fly-core\r\n    restart: unless-stopped\r\n    ports:\r\n      - 12345:12345\r\n    configs: \r\n      - source: v2fly_config\r\n        target: /etc/v2ray/config.json\r\n    entrypoint: [\"v2ray\", \"run\",  \"-c\", \"/etc/v2ray/config.json\"]\r\n\r\n\r\nconfigs:\r\n  shadowsocks_config:\r\n    file: /root/server/config/shadowsocks/config.json \r\n  v2fly_config:\r\n    file: /root/server/config/v2fly/config.json\r\n```\r\n\r\n## shadowsocks config.json\r\n\r\n```json\r\n{\r\n    \"server\":\"0.0.0.0\",\r\n    \"server_port\":12346,\r\n    \"password\":\"uuid\",\r\n    \"timeout\":3000,\r\n    \"method\":\"aes-256-gcm\",\r\n    \"fast_open\":false,\r\n    \"mode\":\"tcp_and_udp\"\r\n}\r\n\r\n```\r\n\r\n## v2fly config.json\r\n\r\n```json\r\n{\r\n    \"log\": {\r\n        \"access\": \"/var/log/v2ray/access.log\",\r\n        \"error\": \"/var/log/v2ray/error.log\",\r\n        \"loglevel\": \"warning\"\r\n    },\r\n    \"inbound\": {\r\n        \"port\": 12345,\r\n        \"protocol\": \"vmess\",\r\n        \"settings\": {\r\n            \"clients\": [\r\n                {\r\n                    \"id\": \"uuid\",\r\n                    \"level\": 1,\r\n                    \"alterId\": 0\r\n                }\r\n            ]\r\n        }\r\n    },\r\n    \"outbound\": {\r\n        \"protocol\": \"freedom\",\r\n        \"settings\": {}\r\n    },\r\n    \"inboundDetour\": [],\r\n    \"outboundDetour\": [\r\n        {\r\n            \"protocol\": \"blackhole\",\r\n            \"settings\": {},\r\n            \"tag\": \"blocked\"\r\n        }\r\n    ],\r\n    \"routing\": {\r\n        \"strategy\": \"rules\",\r\n        \"settings\": {\r\n            \"rules\": [\r\n                {\r\n                    \"type\": \"field\",\r\n                    \"ip\": [\r\n                        \"0.0.0.0/8\",\r\n                        \"10.0.0.0/8\",\r\n                        \"100.64.0.0/10\",\r\n                        \"127.0.0.0/8\",\r\n                        \"169.254.0.0/16\",\r\n                        \"172.16.0.0/12\",\r\n                        \"192.0.0.0/24\",\r\n                        \"192.0.2.0/24\",\r\n                        \"192.168.0.0/16\",\r\n                        \"198.18.0.0/15\",\r\n                        \"198.51.100.0/24\",\r\n                        \"203.0.113.0/24\",\r\n                        \"::1/128\",\r\n                        \"fc00::/7\",\r\n                        \"fe80::/10\"\r\n                    ],\r\n                    \"outboundTag\": \"blocked\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}\r\n\r\n```\r\n\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
       "lvl0": "V2fly Shadowsocks 等翻墙服务部署",
@@ -772,7 +816,7 @@
       "title": "V2fly Shadowsocks 等翻墙服务部署",
       "date": "2025/03/08",
       "tags": [
-        "翻墙"
+        "proxy"
       ],
       "categories": [
         "运维手册"
@@ -1110,25 +1154,6 @@
     "type": "content"
   },
   {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "JVM-内存模型",
     "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
     "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
@@ -1163,6 +1188,752 @@
     "frontmatter": {
       "title": "JVM-常量池",
       "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "1.生态",
+    "path": "/docs/architect/hadoop/Hadoop-1.shengtai.html",
+    "url": "/docs/architect/hadoop/Hadoop-1.shengtai.html",
+    "content": "---\r\ntitle: 1.生态\r\ndate: 2025/07/01\r\n---\r\n\r\n## Hadoop 背景\r\n\r\n其实最先被这些问题困惑的并不是电商，而是 google，他需面对的挑战一点也不会比电商小\r\n* 大量的网页怎么存储\r\n* 面对的数据和计算难题\r\n\r\n2003，2004 年 Google\r\n* GFS\r\n* MapReduce\r\n\r\n为了解决上面的两大难题，google 提出了自己的简介方案，当然这解决方案是闭源的，另外\r\n还提出了两篇论文，为大量数据的存储与计算问题提供了思路。\r\n\r\n---\r\n\r\n## Hadoop 生态\r\n[Hadoop 是 apache 下面的一套开源软件平台](http://hadoop.apache.org/)\r\n\r\nHadoop 的功能：利用服务器的集群，根据用户的业务逻辑对海里信息进行处理（存储与计算）\r\nHadoop 的核心组件:\r\n* HDFS(分布式文件系统)\r\n* MAPREDUCE(分布式运行系统)\r\n* YARN(运算资源调度系统)\r\n以上就是 hadoop 最核心的部分，可是随着时间的推移，hadoop 已经不只是这些技术了，它慢慢进化成了一个生态圈\r\n\r\n![Hadoop 生态](static/生态.png)\r\n\r\n---\r\n\r\n## Hadoop 起源\r\n* Hadoop 最初是由 Apache Lucene 项目的创始人 Doug Cutting 开发的文本搜索库。Hadoop 源自始于 2002 年的 Apache Nutch 项目——一个开源的网络搜索引擎并且也是 Lucene 项目的一部分\r\n* 2004 年 Nutch 项目也模仿 GFS 开发了自己的分布式文件系统 NDFS（Nutch Distributed File System），也就是 HDFS 的前身\r\n* 2005 年，Nutch 开源实现了谷歌的 MapReduce\r\n* 2006 年 2 月，Nutch 中的 NDFS 和 MapReduce 开始独立出来，成为 Lucene 项目的一个子项目，称为 Hadoop，同时，Doug Cutting 加盟雅虎\r\n* 2008 年 1 月，HADOOP 成为 Apache 顶级项目，迎来了它的快速发展期。\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "1.生态",
+      "lvl1": "Hadoop 背景",
+      "lvl2": "Hadoop 生态",
+      "lvl3": "Hadoop 起源"
+    },
+    "frontmatter": {
+      "title": "1.生态",
+      "date": "2025/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "10. YARN 资源调度器",
+    "path": "/docs/architect/hadoop/Hadoop-10-YARNziyuandiaoduqi.html",
+    "url": "/docs/architect/hadoop/Hadoop-10-YARNziyuandiaoduqi.html",
+    "content": "---\r\ntitle: 10. YARN 资源调度器\r\ndate: 2025/07/02\r\n---\r\n\r\n配置 ([官方文档](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-common/yarn-default.xml)):\r\n`yarn.resourcemanager.scheduler.class` 默认: `org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler`\r\n\r\n---\r\n\r\n![YARN 资源调度器](static/YARN-QUEUE.png)\r\n\r\n1. FIFO 队列缺点: 大任务会耗时太长会导致小任务得不到及时的执行\r\n2. 分为大小任务两个队列，小任务在大任务执行时也能得到及时执行\r\n    * 缺点：如果只有大任务或只有小任务，会浪费掉一部分内存资源维护另一个用不到的队列\r\n    * Apache Hadoop 原生默认的队列类型\r\n3. 公平队列：在大任务执行过程中，如果加入了小任务，那么大任务会让出部分资源给小任务执行\r\n    * 缺点：小任务需要等待大任务让出资源，得不到及时执行\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "10. YARN 资源调度器"
+    },
+    "frontmatter": {
+      "title": "10. YARN 资源调度器",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "11.优化",
+    "path": "/docs/architect/hadoop/Hadoop-11-youhua.html",
+    "url": "/docs/architect/hadoop/Hadoop-11-youhua.html",
+    "content": "---\r\ntitle: 11.优化\r\ndate: 2025/07/02\r\n---\r\n\r\n## 参数调优\r\n**以下参数是在用户自己的 mr 应用程序中配置就可以生效**\r\n1. `mapreduce.map.memory.mb`: 一个 Map Task 可使用的资源上限（单位:MB），默认为 1024。如果 Map Task 实际使用的资源量超过该值，则会被强制杀死。\r\n2. `mapreduce.reduce.memory.mb`: 一个 Reduce Task 可使用的资源上限（单位:MB），默认为 1024。如果 Reduce Task 实际使用的资源量超过该值，则会被强制杀死。\r\n3. `mapreduce.map.cpu.vcores`: 每个 Map task 可使用的最多 cpu core 数目, 默认值: 1\r\n4. `mapreduce.reduce.cpu.vcores`: 每个 Reduce task 可使用的最多 cpu core 数目, 默认值: 1\r\n5. `mapreduce.map.java.opts`: Map Task 的 JVM 参数，你可以在此配置默认的 java heap size 等参数, e.g. \"-Xmx1024m -verbose:gc -Xloggc:/tmp/@taskid@.gc\" （@taskid@ 会被 Hadoop 框架自动换为相应的 taskid）, 默认值: \"\"\r\n6. `mapreduce.reduce.java.opts`: Reduce Task 的 JVM 参数，你可以在此配置默认的 java heap size 等参数, e.g. \"-Xmx1024m -verbose:gc -Xloggc:/tmp/@taskid@.gc\", 默认值: \"\"\r\n\r\n**应该在 yarn 启动之前就配置在服务器的配置文件中才能生效**\r\n1. `yarn.scheduler.minimum-allocation-mb`: 1024 给应用程序 container 分配的最小内存\r\n2. `yarn.scheduler.maximum-allocation-mb`: 8192 给应用程序 container 分配的最大内存\r\n3. `yarn.scheduler.minimum-allocation-vcores`: 1 最小核数\r\n4. `yarn.scheduler.maximum-allocation-vcores`: 32 最大核数\r\n5. `yarn.nodemanager.resource.memory-mb`: 8192 nodemanager resource 内存大小\r\n\r\n**shuffle 性能优化的关键参数，应在 yarn 启动之前就配置好**\r\n1. `mapreduce.task.io.sort.mb`: 100  shuffle 的环形缓冲区大小，默认 100m\r\n2. `mapreduce.map.sort.spill.percent`: 0.8  环形缓冲区溢出的阈值，默认 80%\r\n\r\n**可靠性相关**\r\n1. `mapreduce.map.speculative`: 是否为 Map Task 打开推测执行机制，默认为 false \r\n2. `mapreduce.reduce.speculative`: 是否为 Reduce Task 打开推测执行机制，默认为 false\r\n3. `mapreduce.job.user.classpath.first` & `mapreduce.task.classpath.user.precedence`：当同一个 class 同时出现在用户 jar 包和 hadoop jar 中时，优先使用哪个 jar 包中的 class，默认为 false，表示优先使用 hadoop jar 中的 class\r\n4. `mapreduce.input.fileinputformat.split.minsize`: FileInputFormat 做切片时的最小切片大小，\r\n5. `mapreduce.input.fileinputformat.split.maxsize`: FileInputFormat 做切片时的最大切片大小 (切片的默认大小就等于 blocksize，即 134217728)\r\n\r\n推测执行机制就是同时执行两台机器，选最先出结果的机器的结果，杀死另一台机器的任务，防止出现其中一台机器计算速度太慢的情况\r\n\r\n**压缩**\r\n* 如果是 IO 密集形任务，可以考虑开启压缩\r\n\r\n## 代码优化\r\n1. 输出的时候不要频繁创建对象\r\n```java\r\nfor(String word: words) {\r\n    context.write(new Text(word),new IntWritable(1));\r\n}\r\n// 改为\r\nText text = new Text(\"\");\r\nIntWritable count = new IntWritable(1);\r\nfor(String word: words) {\r\n    context.write(text.set(word), count);\r\n}\r\n```\r\n2. 尽量使用Combiner机制，减轻Reduce的压力: `job.setCombinerClass(XXReducer.class);`\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "11.优化",
+      "lvl1": "参数调优",
+      "lvl2": "代码优化"
+    },
+    "frontmatter": {
+      "title": "11.优化",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "11.1. 数据压缩",
+    "path": "/docs/architect/hadoop/Hadoop-11.1.shujuyasuo.html",
+    "url": "/docs/architect/hadoop/Hadoop-11.1.shujuyasuo.html",
+    "content": "---\r\ntitle: 11.1. 数据压缩\r\ndate: 2025/07/02\r\n---\r\n\r\n## 原则\r\nMapReduce 支持压缩，通过压缩算法对 mapper 或者 reducer 的最终数据结果进行压缩\r\n* 好处：减少了磁盘 io，提高了 MR 获取数据的速度，节省了磁盘空间\r\n* 坏处：压缩需要增加 cpu 的运算负担\r\n\r\n原则:\r\n* 运算密集的 job，少用压缩，尤其是中间数据\r\n* Io 密集的 job，可以用压缩，尤其是最终归档数据\r\n\r\n[官方文档](http://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Data_Compression)\r\n\r\n---\r\n\r\n## Mapper 输出压缩\r\n配置文档:\r\n* `mapreduce.map.output.compress=false`\r\n* `mapreduce.map.output.compress.codec=org.apache.hadoop.io.compress.DefaultCodec`\r\n\r\n在代码中进行配置:\r\n```java\r\nconf.setBoolean(Job.MAP_OUTPUT_COMPRESS, true);\r\nconf.setClass(Job.MAP_OUTPUT_COMPRESS_CODEC, GzipCodec.class, CompressionCodec.class);\r\n```\r\n\r\n## Reduce 输出压缩\r\n配置文档:\r\n* `mapreduce.output.fileoutputformat.compress=false `\r\n* `mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.DefaultCodec `\r\n* `mapreduce.output.fileoutputformat.compress.type=RECORD`\r\n\r\n在代码中进行配置:\r\n```java\r\nJob job = Job.getInstance(conf);\r\nFileOutputFormat.setCompressOutput(job, true);\r\nFileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);\r\n```\r\n\r\n---\r\n\r\n![支持的压缩类型](static/Compression.jpg)\r\n\r\n不建议使用配置文档的方式，不灵活，可以使用代码进行配置\r\n[配置文件官方文档](http://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml)\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "11.1. 数据压缩",
+      "lvl1": "原则",
+      "lvl2": "Mapper 输出压缩",
+      "lvl3": "Reduce 输出压缩"
+    },
+    "frontmatter": {
+      "title": "11.1. 数据压缩",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12. Hive 特点",
+    "path": "/docs/architect/hadoop/Hadoop-12-Hive-tedian.html",
+    "url": "/docs/architect/hadoop/Hadoop-12-Hive-tedian.html",
+    "content": "---\r\ntitle: 12. Hive 特点\r\ndate: 2025/07/02\r\n---\r\n\r\n\r\n## Hive 简介\r\nHive 是属于 Hadoop 的数据仓库工具，可以让使用者将结构化数据映射成一张张数据库的表，让用户能通过 SQL 来查询数据。用户出 SQL 命令给 hive，<font color=\"orange\">hive 把 SQL 语句转换成 MapReduce 查询分析存储在 hdfs 上的数据</font>。\r\n\r\n优点:\r\n* 直接使用 MapReuce 实现复杂查询比较复杂，而 Hive 提供 SQL 的语法，提高了开发的便捷程度\r\n* 直接使用 SQL 查询，减少了人员的学习成本，哪怕是数据库操作人员能很快上手\r\n* HIVE 提供很好的扩展性，方便用户增加功能\r\n\r\n## Hive 与传统数据库对比\r\n![Hive 与传统数据库对比](static/Hive-SQL-Compare.png)\r\n\r\n* **查询语言**: 由于 SQL 被广泛的应用在数据仓库中，因此，专门针对 Hive 的特性设计了类 SQL 的查询语言 HQL。熟悉 SQL 开发的开发者可以很方便的使用 Hive 进行开发。\r\n* **数据存储位置**: Hive 是建立在 Hadoop 之上的，所有 Hive 的数据都是存储在 HDFS 中的。而数据库则可以将数据保存在块设备或者本地文件系统中。\r\n* **数据格式**: Hive 中没有定义专门的数据格式，数据格式可以由用户指定，用户定义数据格式需要指定三个属性：**列分隔符**（通常为空格、”\\t”、”\\x001″）、**行分隔符**（”\\n”）以及**读取文件数据的方法**（Hive 中默认有三个文件格式 `TextFile`，`SequenceFile` 以及 `RCFile`）。由于在加载数据的过程中，不需要从用户数据格式到 Hive 定义的数据格式的转换，因此，**Hive 在加载的过程中不会对数据本身进行任何修改**，而只是将数据内容复制或者移动到相应的 HDFS 目录中。而在数据库中，不同的数据库有不同的存储引擎，定义了自己的数据格式。所有数据都会按照一定的组织存储，因此，数据库加载数据的过程会比较耗时。\r\n* **数据更新**: 由于 Hive 是针对数据仓库应用设计的，而数据仓库的内容是**读多写少**的。因此，**Hive 中不支持对数据的改写和添加**，所有的数据都是在加载的时候中确定好的。而数据库中的数据通常是需要经常进行修改的，因此可以使用 INSERT INTO ... VALUES 添加数据，使用 UPDATE ... SET 修改数据。\r\n* **索引**: 之前已经说过，Hive 在加载数据的过程中不会对数据进行任何处理，甚至不会对数据进行扫描，因此也没有对数据中的某些 Key 建立索引。Hive 要访问数据中满足条件的特定值时，需要**暴力扫描整个数据**，因此访问延迟较高。由于 `MapReduce` 的引入， Hive 可以**并行访问数据**，因此即使没有索引，**对于大数据量的访问，Hive 仍然可以体现出优势**。数据库中，通常会针对一个或者几个列建立索引，因此对于少量的特定条件的数据的访问，数据库可以有很高的效率，较低的延迟。由于数据的访问延迟较高，决定了 **Hive 不适合在线数据查询**。\r\n* **执行**: Hive 中大多数查询的执行是通过 Hadoop 提供的 `MapReduce` 来实现的（类似 select * from tbl 的查询不需要 MapReduce）。而数据库通常有自己的执行引擎。\r\n* **执行延迟**: 之前提到，Hive 在查询数据的时候，**由于没有索引，需要扫描整个表，因此延迟较高**。另外一个导致 Hive 执行延迟高的因素是 MapReduce 框架。由于 **MapReduce 本身具有较高的延迟**，因此在利用 MapReduce 执行 Hive 查询时，也会有较高的延迟。相对的，数据库的执行延迟较低。当然，这个低是有条件的，即数据规模较小，**当数据规模大到超过数据库的处理能力的时候，Hive 的并行计算显然能体现出优势**。\r\n* **可扩展性**: 由于 Hive 是建立在 Hadoop 之上的，因此 **Hive 的可扩展性是和 Hadoop 的可扩展性是一致的**。而数据库由于 ACID 语义的严格限制，扩展行非常有限。目前最先进的并行数据库 Oracle 在理论上的扩展能力也只有 100 台左右。\r\n* **数据规模**: 由于 Hive 建立在集群上并可以利用 MapReduce 进行并行计算，因此可以支持**很大规模的数据**；对应的，数据库可以支持的数据规模较小。\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12. Hive 特点",
+      "lvl1": "Hive 简介",
+      "lvl2": "Hive 与传统数据库对比"
+    },
+    "frontmatter": {
+      "title": "12. Hive 特点",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.1. Hive 窗口函数",
+    "path": "/docs/architect/hadoop/Hadoop-12.1.Hivechuangkouhanshu.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.1.Hivechuangkouhanshu.html",
+    "content": "---\r\ntitle: 12.1. Hive 窗口函数\r\ndate: 2025/07/02\r\n---\r\n\r\n```sql\r\nCREATE TABLE window_demo(cookieid STRING, createtime STRING, pv INT)\r\nROW FORMAT DELIMITED\r\nFIELDS TERMINATED BY ',';\r\n\r\nload data local inpath '/testdata/window' into table window_demo;\r\n```\r\n\r\n## SUM\r\n```sql\r\nSELECT cookieid,createtime,pv, \r\nSUM(pv) OVER(PARTITION BY cookieid ORDER BY createtime) AS pv1, -- 默认为从起点到当前行\r\nSUM(pv) OVER(PARTITION BY cookieid ORDER BY createtime \r\nROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS pv2, --从起点到当前行，结果同 pv1\r\nSUM(pv) OVER(PARTITION BY cookieid ORDER BY createtime \r\nROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS pv3, --当前行+往前 3 行\r\nSUM(pv) OVER(PARTITION BY cookieid ORDER BY createtime \r\nROWS BETWEEN 3 PRECEDING AND 1 FOLLOWING) AS pv4, --当前行+往前 3 行+往后 1 行\r\nSUM(pv) OVER(PARTITION BY cookieid ORDER BY createtime \r\nROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) AS pv5 --当前行+往后所有行\r\nFROM test1;\r\n```\r\n\r\n* 如果不指定 `ROWS BETWEEN`, 默认统计窗口为从起点到当前行\r\n* 如果不指定 `ORDER BY`, 不仅分区内没有排序, 则将分组内所有值累加\r\n* `max()` 函数无论有没有 `order by` 都是计算整个分区的最大值\r\n\r\n关键是理解 `ROWS BETWEEN` 含义, 也叫做 window 子句：\r\n* `PRECEDING`：往前\r\n* `FOLLOWING`：往后\r\n* `CURRENT ROW`：当前行\r\n* `UNBOUNDED`：无边界\r\n* `UNBOUNDED PRECEDING`：表示从最前面的起点开始 \r\n* `UNBOUNDED FOLLOWING`：表示到最后面的终点\r\n\r\n## NTILE\r\n`NTILE(n)`，用于将分组数据按照顺序切分成 n 片，返回当前切片值，`NTILE` 不支持 `ROWS BETWEEN`\r\n\r\n```sql\r\nSELECT cookieid,createtime,pv, \r\nNTILE(2) OVER(PARTITION BY cookieid ORDER BY createtime) AS ntile1, --分组内将数据分成 2 片\r\nNTILE(3) OVER(PARTITION BY cookieid ORDER BY createtime) AS ntile2, --分组内将数据分成 3 片\r\nNTILE(4) OVER(PARTITION BY cookieid ORDER BY createtime) AS ntile3 --将所有数据分成 4 片\r\nFROM window_demo;\r\n```\r\n\r\n## ROW_NUMBER\r\n`ROW_NUMBER()` 从 1 开始，按照顺序，生成分组内记录的序列\r\n`ROW_NUMBER()` 的应用场景非常多，比如获取分组内排序第一的记录\r\n\r\n```sql\r\nSELECT cookieid,createtime,pv, \r\nROW_NUMBER() OVER(PARTITION BY cookieid ORDER BY pv desc) AS rn\r\nFROM window_demo;\r\n```\r\n\r\n## RANK DENSE_RANK\r\n`RANK()` 生成数据项在分组中的排名，排名相等会在名次中留下空位\r\n`DENSE_RANK()` 生成数据项在分组中的排名，排名相等会在名次中不会留下空位\r\n\r\n```sql\r\nSELECT cookieid,createtime,pv, \r\nRANK() OVER(PARTITION BY cookieid ORDER BY pv desc) AS rank1, \r\nDENSE_RANK() OVER(PARTITION BY cookieid ORDER BY pv desc) AS d_rank2, \r\nROW_NUMBER() OVER(PARTITION BY cookieid ORDER BY pv DESC) AS rn3\r\nFROM window_demo\r\n```\r\n\r\n## CUME_DIST\r\n`cume_dist` 返回 小于等于 当前值的行数/分组内总行数\r\n\r\n```sql\r\nSELECT cookieid,createtime,pv, \r\nround(CUME_DIST() OVER(ORDER BY pv),2) AS cd1, \r\nround(CUME_DIST() OVER(PARTITION BY cookieid ORDER BY pv),2) AS cd2\r\nFROM window_demo;\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.1. Hive 窗口函数",
+      "lvl1": "SUM",
+      "lvl2": "NTILE",
+      "lvl3": "ROW_NUMBER",
+      "lvl4": "RANK DENSE_RANK",
+      "lvl5": "CUME_DIST"
+    },
+    "frontmatter": {
+      "title": "12.1. Hive 窗口函数",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.2. Hive 常用命令 dd 与 dmll",
+    "path": "/docs/architect/hadoop/Hadoop-12.2.Hivechangyongminglingddyudmll.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.2.Hivechangyongminglingddyudmll.html",
+    "content": "---\r\ntitle: 12.2. Hive 常用命令 dd 与 dmll\r\ndate: 2025/07/02\r\n---\r\n\r\n## 创建表\r\n```sql\r\nCREATE [EXTERNAL] TABLE [IF NOT EXISTS] table_name\r\n    [(col_name data_type [COMMENT col_comment], ...)]\r\n    [COMMENT table_comment]\r\n    [PARTITIONED BY (col_name data_type [COMMENT col_comment], ...)]\r\n    [CLUSTERED BY (col_name, col_name, ...)\r\n    [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS]\r\n    [ROW FORMAT row_format]\r\n    [STORED AS file_format]\r\n    [LOCATION hdfs_path]\r\n```\r\n\r\n### 创建内部表\r\n删除表的时候数据也会被删除\r\n\r\n```sql\r\ncreate table if not exists mytable(sid int ,sname string) \r\nrow format delimited\r\nfields terminated by ',' stored as textfile;\r\n\r\nshow tables;\r\n```\r\n\r\n上传数据: `hdfs dfs -put a /user/hive/warehouse/test.db/mytable/`\r\n`select * from mytable`\r\n\r\n### 创建外部表\r\n删除表的时候数据不会被删除\r\n\r\n```sql\r\ncreate external table mytable_ext(sid int ,sname string)\r\nrow format delimited\r\nfields terminated by ',' location '/dbdata'\r\n\r\nshow tables;\r\nselect * from mytable_ext;\r\n```\r\n\r\n### 创建分区表\r\n```sql\r\ncreate table person_p(sid int ,sname string) partitioned by(sex string) \r\nrow format delimited fields\r\nterminated by ','stored as textfile;\r\n\r\nload data local inpath '/testdata/a' into table person_p partition(sex='nan');\r\nload data local inpath '/testdata/a' into table person_p partition(sex='nv');\r\n\r\nshow tables;\r\nselect * from person_p;\r\n```\r\n\r\n### 创建动态分区表\r\n```sql\r\nset hive.exec.dynamic.partition.mode=nonstrict;\r\n\r\ncreate table person_p2(sid int ,sname string) partitioned by(sex string) row format delimited\r\nfields terminated by ','stored as textfile;\r\n\r\ninsert into person_p2 partition(sex) select sid,sname,sex from person_p;\r\n\r\nshow tables;\r\nselect * from person_p2;\r\n```\r\n\r\n## 修改表\r\n```sql\r\nALTER TABLE table_name ADD [IF NOT EXISTS] partition_spec [ LOCATION 'location1' ] partition_spec [ LOCATION 'location2' ] ...\r\npartition_spec:\r\n: PARTITION (partition_col = partition_col_value, partition_col = partiton_col_value, ...)\r\n\r\nALTER TABLE table_name DROP partition_spec, partition_spec,...\r\n```\r\n\r\n### 增加分区\r\n```sql\r\ncreate table person_p3(sid int ,sname string) partitioned by(sex string) \r\nrow format delimited\r\nfields terminated by ','stored as textfile;\r\n\r\nalter table person_p3 add partition(sex='1') partition(sex='2');\r\n\r\nload data local inpath '/testdata/a' into table person_p3 partition(sex='1');\r\nload data local inpath '/testdata/a' into table person_p3 partition(sex='2');\r\n\r\nshow tables;\r\nselect * from person_p3;\r\n```\r\n\r\n### 删除分区\r\n```sql\r\nalter table person_p3 drop partition(sex='2')\r\n```\r\n\r\n###  重命名表\r\n```sql\r\nALTER TABLE person_p3 RENAME TO person_p4;\r\n```\r\n\r\n### 新增列\r\nADD 是代表新增一字段，字段位置在所有列后面(partition 列前)，REPLACE 则是表示替换表中所有字段。\r\n```sql\r\nALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...\r\n```\r\n\r\n```sql\r\ncreate table person_p5(sid int ,sname string) partitioned by(sex string) \r\nrow format delimited\r\nfields terminated by \r\n\r\nAlter table person_p5 add COLUMNS (age int);\r\ndesc person_p5;\r\n\r\nAlter table person_p5 REPLACE COLUMNS (age2 int);\r\ndesc person_p5;\r\n```\r\n\r\n### 修改列\r\n```sql\r\nALTER TABLE table_name CHANGE [COLUMN] col_old_name col_new_name column_type\r\n[COMMENT col_comment] [FIRST|AFTER column_name]\r\n```\r\n\r\n```sql\r\nalter table person_p5 change column age2 age2 string;\r\n\r\ndesc person_p5;\r\n```\r\n\r\n## 显示命令\r\n```sql\r\nshow tablese;\r\nshow databasese;\r\nshow partitions table_namee;\r\nshow functionse;\r\ndesc extended table_name;\r\ndesc formatted table_name;\r\n```\r\n\r\n## Load 操作\r\n```sql\r\nLOAD DATA [LOCAL] INPATH 'filepath' [OVERWRITE] INTO\r\nTABLE tablename [PARTITION (partcol1=val1, partcol2=val2 ...)]\r\n```\r\n\r\n## Insert\r\n```sql\r\nINSERT INTO TABLE VALUES(XX,YY,ZZ);\r\n\r\nINSERT OVERWRITE [INTO] TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...)]\r\nselect_statement1 \r\n```\r\n\r\n## SELECT\r\n```sql\r\nSELECT [ALL | DISTINCT] select_expr, select_expr, ... FROM table_reference\r\n[WHERE where_condition]\r\n[GROUP BY col_list [HAVING condition]]\r\n[CLUSTER BY col_list\r\n| [DISTRIBUTE BY col_list] [SORT BY| ORDER BY col_list]\r\n]\r\n[LIMIT number]\r\n```\r\n\r\n1. `order by` 会对输入做全局排序，因此只有一个 reducer，会导致当输入规模较大时，需要较长的计算时间。\r\n2. `sort by` 不是全局排序，其在数据进入 reducer 前完成排序。因此，如果用 `sort by` 进行排序，并且设置 `mapred.reduce.tasks>1`，则 `sort by` 只保证每个 reducer 的输出有序，**不保证全局有序**。\r\n3. `distribute by`(字段) 根据指定的字段将数据分到不同的 reducer，且分发算法是 **hash 散列**。\r\n4. `Cluster by`(字段) 除了具有 `Distribute by` 的功能外，还会对该字段进行**排序**。\r\n\r\n因此，如果分桶和 sort 字段是同一个时，此时，`cluster by = distribute by + sort by`\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.2. Hive 常用命令 dd 与 dmll",
+      "lvl1": "创建表",
+      "lvl2": "修改表",
+      "lvl3": "显示命令",
+      "lvl4": "Load 操作",
+      "lvl5": "Insert",
+      "lvl6": "SELECT"
+    },
+    "frontmatter": {
+      "title": "12.2. Hive 常用命令 dd 与 dmll",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.3. Hive 分桶",
+    "path": "/docs/architect/hadoop/Hadoop-12.3.Hivefentong.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.3.Hivefentong.html",
+    "content": "---\r\ntitle: 12.3. Hive 分桶\r\ndate: 2025/07/02\r\n---\r\n\r\n## 创建桶表\r\n```sql\r\nset hive.enforce.bucketing=true;\r\nset mapreduce.job.reduces=4;\r\n\r\ndrop table person_buck;\r\n\r\ncreate table person_buck(sid int ,sname string)\r\npartitioned by(sex string)\r\nclustered by(sid)\r\nsorted by(sid DESC)\r\ninto 4 buckets\r\nrow format delimited\r\nfields terminated by ',';\r\n\r\ninsert into person_buck partition(sex) select sid,sname,sex from person_p;\r\n```\r\n\r\n## 桶表抽样查询\r\n```sql\r\nselect * from table_name tablesample(bucket X out of Y on field);\r\n\r\nselect * from person_buck tablesample(bucket 1 out of 2 on sid);\r\n```\r\n\r\n* X 表示从哪个桶中开始抽取\r\n* Y 表示相隔多少个桶再次抽取\r\n    * Y 必须为分桶数量的倍数或者因子，比如分桶数为 6，Y 为 6，则表示只从桶中抽取 1 个 bucket 的数据；若 Y 为 3，则表示从桶中抽取 6/3 (2)个 bucket 的数据\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.3. Hive 分桶",
+      "lvl1": "创建桶表",
+      "lvl2": "桶表抽样查询"
+    },
+    "frontmatter": {
+      "title": "12.3. Hive 分桶",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.4. Hive Demo 大小写转换 UDF 自定义函数",
+    "path": "/docs/architect/hadoop/Hadoop-12.4.HiveDemodaxiaoxiezhuanhuanUDFzidingyihanshu.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.4.HiveDemodaxiaoxiezhuanhuanUDFzidingyihanshu.html",
+    "content": "---\r\ntitle: 12.4. Hive Demo 大小写转换 UDF 自定义函数\r\ndate: 2025/07/02\r\n---\r\n\r\n## pom.xml\r\n```xml\r\n<dependency>\r\n    <groupId>org.apache.hive</groupId>\r\n    <artifactId>hive-exec</artifactId>\r\n</dependency>\r\n```\r\n\r\n## Lower.java\r\n```java\r\npublic final class Lower extends UDF {\r\n    public Text evaluate(final Text s){\r\n        if(s==null){return null;}\r\n        return new Text(s.toString().toLowerCase());\r\n    }\r\n}\r\n```\r\n\r\n## 测试\r\n将代码打成 jar 包上传到服务器\r\n\r\n```sql\r\nadd JAR /path/to/udf.jar\r\n\r\ncreate temporary function tolowercase as 'cn.enjoy.hive.Lower'\r\n\r\nselect tolowercase(\"AAA\");\r\nselect sid,tolowercase(sname),sex from person_p;\r\n```\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.4. Hive Demo 大小写转换 UDF 自定义函数",
+      "lvl1": "pom.xml",
+      "lvl2": "Lower.java",
+      "lvl3": "测试"
+    },
+    "frontmatter": {
+      "title": "12.4. Hive Demo 大小写转换 UDF 自定义函数",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.5.1. Hive 不支援 10 验证类型",
+    "path": "/docs/architect/hadoop/Hadoop-12.5.1.Hivebuzhiyuan10yanzhengleixing.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.5.1.Hivebuzhiyuan10yanzhengleixing.html",
+    "content": "---\r\ntitle: 12.5.1. Hive 不支援 10 验证类型\r\ndate: 2025/07/02\r\n---\r\n\r\n:::danger\r\n- 报错：PSQLException: 不支援 10 验证类型。请核对您已经组态 pg_hba.conf 文件包含客户端的IP位址或网路区段，以及驱动程序所支援的验证架构模式已被支援\r\n:::\r\n\r\n原因：驱动不兼容（需要更新驱动版本）\r\n\r\n1. 去官网或者使用Maven下载新的驱动jar包\r\n2. 添加到 hive/lib 目录中\r\n3. 将目录中旧的驱动jar包移出 hive/lib 目录\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.5.1. Hive 不支援 10 验证类型"
+    },
+    "frontmatter": {
+      "title": "12.5.1. Hive 不支援 10 验证类型",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "12.5.2. Hive WstxParsingException",
+    "path": "/docs/architect/hadoop/Hadoop-12.5.2.HiveWstxParsingException.html",
+    "url": "/docs/architect/hadoop/Hadoop-12.5.2.HiveWstxParsingException.html",
+    "content": "---\r\ntitle: 12.5.2. Hive WstxParsingException\r\ndate: 2025/07/02\r\n---\r\n\r\n:::danger\r\n- Hive-WstxParsingException: Illegal character entity: expansion character\r\n:::\r\n\r\n`hive-site.xml` 文件第 3215 行左右有一个特殊字符 (`&#8;`)，删掉它:\r\n\r\n```xml\r\n214      <description>\r\n3215       Ensures commands with OVERWRITE (such as INSERT OVERWRITE) acquire Exclusive      locks for&#8;transactional tables.  This ensures that inserts (w/o overwrite) runni     ng concurrently\r\n3216       are not hidden by the INSERT OVERWRITE.\r\n3217     </description>\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "12.5.2. Hive WstxParsingException"
+    },
+    "frontmatter": {
+      "title": "12.5.2. Hive WstxParsingException",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13. HBase 特点",
+    "path": "/docs/architect/hadoop/Hadoop-13-HBase-tedian.html",
+    "url": "/docs/architect/hadoop/Hadoop-13-HBase-tedian.html",
+    "content": "---\r\ntitle: 13. HBase 特点\r\ndate: 2025/07/02\r\n---\r\n\r\n## HBase 列式数据库简介\r\nHBase 是一个开源的非关系型分布式数据库（NoSql） 原型是 Google 的 BigTable 论文，受到了该论文思想的启发，目前作为Hadoop 的子项目来开发维护。它介于 nosql 和 RDBMS 之间，仅能通过主键(row key)和主键的 range 来检索数据，可通过 hive 支持来实现多表 join 等复杂操作。\r\n\r\n## HBase 特点\r\n\r\n* **海量存储**: Hbase 适合存储 PB 级别的海量数据，在 PB 级别的数据以及采用廉价 PC 存储的情况下，能在几十到百毫秒内返回数据。这与 Hbase 的极易扩展性息息相关。正式因为 Hbase 良好的扩展性，才为海量数据的存储提供了便利。\r\n* **列式存储**: 这里的列式存储其实说的是列族（ColumnFamily）存储，Hbase 是根据列族来存储数据的。列族下面可以有非常多的列，列族在创建表的时候就必须指定。\r\n* **极易扩展**: Hbase 的扩展性主要体现在两个方面，一个是基于上层处理能力（RegionServer）的扩展，一个是基于存储的扩展（HDFS）。通过横向添加RegionSever 的机器，进行水平扩展，提升 Hbase 上层的处理能力，提升 Hbsae 服务更多 Region 的能力。\r\n* **高并发**: 由于目前大部分使用 Hbase 的架构，都是采用的廉价 PC，因此单个 IO 的延迟其实并不小，一般在几十到上百 ms 之间。这里说的高并发，主要是在并发的情况下，Hbase 的单个 IO 延迟下降并不多。能获得高并发、低延迟的服务。\r\n* **稀疏**: 稀疏主要是针对 Hbase 列的灵活性，在列族中，你可以指定任意多的列，在列数据为空的情况下，是不会占用存储空间的。\r\n\r\n适用场景:\r\n* 持久化存储大量数据（TB、PB）\r\n* 对扩展伸缩性有要求\r\n* 需要良好的随机读写性能\r\n* 简单的业务 KV 查询(不支持复杂的查询比如表关联等)\r\n* 能够同时处理结构化和非结构化的数据\r\n* 订单流水、交易记录、需要记录历史版本的数据等\r\n\r\n不适用场景:\r\n* 几千、几百万那种还不如使用 RDBMS\r\n* 需要类型列\r\n* 需要跨行事务，目前 HBase 只支持单行事务\r\n* SQL 查询\r\n\r\n## HBase 数据模型\r\n<table>\r\n    <tr>\r\n        <th>Row Key</th>\r\n        <th>Time Stamp</th>\r\n        <th>CF1</th>\r\n        <th>CF2</th>\r\n        <th>CF3</th>\r\n    </tr>\r\n    <tr>\r\n        <td rowspan=\"3\">rk00001</td>\r\n        <td>t1</td>\r\n        <td></td>\r\n        <td>CF2:q1=val1</td>\r\n        <td>CF3:q2=val2</td>\r\n    </tr>\r\n    <tr>\r\n        <td>t2</td>\r\n        <td></td>\r\n        <td></td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>t3</td>\r\n        <td>CF1:q3=val3</td>\r\n        <td></td>\r\n        <td></td>\r\n    </tr>\r\n</table>\r\n\r\n* ROW KEY\r\n    * 决定一行数据\r\n    * 按照字典顺序排序的\r\n    * ROW KEY 只能存储 64k 的字节数据\r\n* Column Family 列族 & qualifier 列\r\n    * HBase 表中的每个列都归属于某个列族，列族必须作为表模式(schema)定义的一部分预先给出。`create 'test', 'course'`\r\n    * 列名以列族作为前缀， 每个“列族”都可以有多个列成员(column) ； 如 `course:math`,`course:english`, 新的列族成员（列）可以随后按需、动态加入；\r\n    * 权限控制、存储以及调优都是在列族层面进行的；\r\n    * HBase 把同一列族里面的数据存储在同一目录下，由几个文件保存\r\n* Timestamp 时间戳\r\n    * 在HBase 每个 cell 存储单元对同一份数据有多个版本，根据唯一的时间戳来区分每个版本之间的差异，不同版本的数据按照时间倒序排序，最新的数据版本排在最前面\r\n    * 时间戳的类型是 64 位整型\r\n    * 时间戳可以由HBase(在数据写入时自动)赋值，此时时间戳是精确到毫秒的当前系统时间\r\n    * 时间戳也可以由客户显式赋值\r\n* Cell 单元格\r\n    * 由行和列的坐标交叉决定\r\n    * 单元格是有版本的\r\n    * 单元格的内容是未解析的字节数组\r\n    * 由`{rowkey，column(=<family> +<qualifier>)，version}`唯一确定的单元\r\n    * Cell 中的数据是没有类型的，全部是二进制字节码形式存储\r\n\r\n## HBase 架构\r\n![HBase 架构](static/HBase.png)\r\n\r\n* **Client**: 包含了访问 Hbase 的接口，另外 Client 还维护了对应的 cache 来加速 HBase 的访问，比如 cache 的.META.元数据的信息\r\n* **Zookeeper**: HBase 通过 Zookeeper 来做 master 的高可用、RegionServer 的监控、元数据的入口以及集群配置的维护等工作\r\n    * 通过 Zoopkeeper 来保证集群中只有1个 master 在运行，如果 master 异常，会通过竞争机制\r\n    * 产生新的 master 提供服务\r\n    * 通过 Zoopkeeper 来监控 RegionServer 的状态，当 RegionSevrer 有异常的时候，通过回调的形式通知 Master RegionServer 上下线的信息\r\n    * 通过 Zoopkeeper 存储元数据的统一入口地址\r\n* **HMaster**: \r\n    * 为 RegionServer 分配 Region\r\n    * 维护整个集群的负载均衡\r\n    * 维护集群的元数据信息\r\n    * 发现失效的 Region，并将失效的 Region 分配到正常的 RegionServer 上\r\n    * 当 RegionSever 失效的时候，协调对应 Hlog 的拆分\r\n* **HregionServer**: 直接对接用户的读写请求，是真正的“干活”的节点\r\n    * 管理 master 为其分配的 Region\r\n    * 处理来自客户端的读写请求\r\n    * 负责和底层 HDFS 的交互，存储数据到 HDFS\r\n    * 负责 Region 变大以后的拆分\r\n    * 负责 Storefile 的合并工作\r\n* **HDFS**: 为 Hbase 提供最终的底层数据存储服务，同时为 HBase 提供高可用（Hlog 存储在 HDFS）的支持\r\n    * 提供元数据和表数据的底层分布式存储服务\r\n    * 数据多副本，保证的高可靠和高可用性\r\n\r\n## HBase 中的角色\r\n\r\n* **HMaster**\r\n    * 监控 RegionServer\r\n    * 处理 RegionServer 故障转移\r\n    * 处理元数据的变更\r\n    * 处理 region 的分配或转移\r\n    * 在空闲时间进行数据的负载均衡\r\n    * 通过 Zookeeper 发布自己的位置给客户端\r\n* **RegionServer**\r\n    * 负责存储 HBase 的实际数据\r\n    * 处理分配给它的 Region\r\n    * 刷新缓存到 HDFS\r\n    * 维护 Hlog\r\n    * 执行压缩\r\n    * 负责处理 Region 分片\r\n* **Write-Ahead logs (WAL)**\r\n    * HBase 的修改记录，当对 HBase 读写数据的时候，数据不是直接写进磁盘，它会在内存中保留一段时间（时间以及数据量阈值可以设定）。但把数据保存在内存中可能有更高的概率引起数据丢失，为了解决这个问题，数据会先写在一个叫做 Write-Ahead logfile 的文件中，然后再写入内存中。所以在系统出现故障的时候，数据可以通过这个日志文件重建。\r\n* **Region**\r\n    * Hbase 表的分片，HBase 表会根据 RowKey 值被切分成不同的 region 存储在 RegionServer 中，在一个 RegionServer 中可以有多个不同的 region\r\n* **Store**\r\n    * HFile 存储在 Store 中，一个 Store 对应 HBase 表中的一个列族(列簇， ColumnFamily)\r\n* **MemStore**\r\n    * 顾名思义，就是内存存储，位于内存中，用来保存当前的数据操作，所以当数据保存在 WAL 中之后，RegsionServer 会在内存中存储键值对\r\n* **HFile**\r\n    * 这是在磁盘上保存原始数据的实际的物理文件，是实际的存储文件。StoreFile 是以 HFile 的形式存储在 HDFS 的\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13. HBase 特点",
+      "lvl1": "HBase 列式数据库简介",
+      "lvl2": "HBase 特点",
+      "lvl3": "HBase 数据模型",
+      "lvl4": "HBase 架构",
+      "lvl5": "HBase 中的角色"
+    },
+    "frontmatter": {
+      "title": "13. HBase 特点",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.1. HBase 常用命令",
+    "path": "/docs/architect/hadoop/Hadoop-13.1.HBasechangyongmingling.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.1.HBasechangyongmingling.html",
+    "content": "---\r\ntitle: 13.1. HBase 常用命令\r\ndate: 2025/07/02\r\n---\r\n\r\n`hbase shell` 进入shell\r\n`help` 命令查看帮助文档\r\n`list` 命令查看数据库中的表\r\n\r\n## 创建表\r\n创建 person 表，包含 info, data 两个列族\r\n然后查看表结构\r\n```sql\r\ncreate 'person', 'info', 'data'\r\ndescribe 'person'\r\n```\r\n\r\n## 插入数据\r\n```sql\r\n-- 向person 表中插入信息，row key 为rk0001，列族info 中添加name 列标示符，值为zhangsan\r\nput 'person', 'rk0001', 'info:name', 'zhangsan'\r\n\r\n-- 向person 表中插入信息，row key 为rk0001，列族info 中添加gender 列标示符，值为female\r\nput 'person', 'rk0001', 'info:gender', 'female'\r\n\r\n-- 向person 表中插入信息，row key 为rk0001，列族info 中添加age 列标示符，值为20\r\nput 'person', 'rk0001', 'info:age', 20\r\n\r\n-- 向person 表中插入信息，row key 为rk0001，列族data 中添加pic 列标示符，值为picture\r\nput 'person', 'rk0001', 'data:pic', 'picture'\r\n```\r\n\r\n## 查询数据\r\n`get` 适用于获取单个记录或少量记录的场景，`scan` 适用于获取大量记录的场景\r\n```sql\r\n-- 获取person 表中row key 为rk0001 的所有信息\r\nget 'person', 'rk0001'\r\n\r\n-- 获取person 表中row key 为rk0001，info 列族的所有信息\r\nget 'person', 'rk0001', 'info'\r\n\r\n-- 获取person 表中row key 为rk0001，info 列族的name、age 列标示符的信息\r\nget 'person', 'rk0001', 'info:name', 'info:age'\r\n\r\n-- 获取person 表中row key 为rk0001，info、data 列族的信息\r\nget 'person', 'rk0001', 'info', 'data'\r\n\r\nget 'person', 'rk0001', {COLUMN => ['info', 'data']}\r\nget 'person', 'rk0001', {COLUMN => ['info:name', 'data:pic']}\r\n\r\n-- 获取person 表中row key 为rk0001，列族为info，版本号最新5 个的信息\r\nget 'person', 'rk0001', {COLUMN => 'info', VERSIONS => 5}\r\n\r\nget 'person', 'rk0001', {COLUMN => 'info:name', VERSIONS => 5}\r\nget 'person', 'rk0001', {COLUMN => 'info:name', VERSIONS => 5, TIMERANGE => [1567491377530,1567491377590]}\r\n\r\n-- 获取person 表中row key 为rk0001，cell 的值为zhangsan 的信息\r\nget 'person', 'rk0001', {FILTER => \"ValueFilter(=, 'binary:zhangsan')\"}\r\n\r\n-- 获取person 表中row key 为rk0001，列标示符中含有a 的信息\r\nget 'person', 'rk0001', {FILTER => \"(QualifierFilter(=,'substring:a'))\"}\r\n\r\nput 'person', 'rk0002', 'info:name', 'fanbingbing'\r\nput 'person', 'rk0002', 'info:gender', 'female'\r\nput 'person', 'rk0002', 'info:nationality', '中国'\r\nget 'person', 'rk0002', {FILTER => \"ValueFilter(=, 'binary:中国')\"}\r\n\r\n-- 查询person 表中的所有信息\r\nscan 'person'\r\n\r\n-- 查询person 表中列族为info 的信息\r\nscan 'person', {COLUMNS => 'info'}\r\n\r\n-- 查询person 表中列族为info 和data 的信息\r\nscan 'person', {COLUMNS => ['info', 'data']}\r\nscan 'person', {COLUMNS => ['info:name', 'data:pic']}\r\n\r\n-- 查询person 表中列族为info、列标示符为name 的信息\r\nscan 'person', {COLUMNS => 'info:name'}\r\n\r\n-- 查询person 表中列族为info、列标示符为name 的信息,并且版本最新的5 个\r\nscan 'person', {COLUMNS => 'info:name', VERSIONS => 5}\r\n\r\n-- 查询person 表中列族为info 和data 且列标示符中含有a 字符的信息\r\nscan 'person', {COLUMNS => ['info', 'data'], FILTER => \"(QualifierFilter(=,'substring:a'))\"}\r\n\r\n-- 查询person 表中列族为info，rk 范围是[rk0001, rk0003)的数据\r\nscan 'person', {COLUMNS => 'info', STARTROW => 'rk0001', ENDROW => 'rk0003'}\r\n\r\n-- 查询person 表中row key 以rk 字符开头的\r\nscan 'person',{FILTER=>\"PrefixFilter('rk')\"}\r\n\r\n-- 查询person 表中指定范围的数据\r\nscan 'person', {TIMERANGE => [1392368783980, 1392380169184]}\r\n```\r\n\r\n## 删除数据\r\n```sql\r\n-- 删除person 表row key 为rk0001，列标示符为info:name 的数据\r\ndelete 'person', 'rk0001', 'info:name'\r\n\r\n-- 删除person 表row key 为rk0001，列标示符为info:name，timestamp 为1392383705316 的数据\r\ndelete 'person', 'rk0001', 'info:name', 1392383705316\r\n\r\n-- 清空person 表中的数据\r\ntruncate 'person'\r\n```\r\n\r\n## 修改表结构\r\n```sql\r\n-- 首先停用person 表\r\ndisable 'person'\r\n\r\n-- 添加两个列族f1 和f2\r\nalter 'person', NAME => 'f1'\r\nalter 'person', NAME => 'f2'\r\n\r\n-- 删除一个列族\r\nalter 'person', NAME => 'f1', METHOD => 'delete'\r\nalter 'person', 'delete' => 'f1'\r\n\r\n-- 添加列族f1 同时删除列族f2\r\nalter 'person', {NAME => 'f1'}, {NAME => 'f2', METHOD => 'delete'}\r\n\r\n-- 将person 表的f1 列族版本号改为5\r\nalter 'person', NAME => 'info', VERSIONS => 5\r\n\r\n-- 启用表\r\nenable 'person'\r\n```\r\n\r\n## 删除表\r\n```sql\r\ndisable 'person'\r\ndrop 'person'\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.1. HBase 常用命令",
+      "lvl1": "创建表",
+      "lvl2": "插入数据",
+      "lvl3": "查询数据",
+      "lvl4": "删除数据",
+      "lvl5": "修改表结构",
+      "lvl6": "删除表"
+    },
+    "frontmatter": {
+      "title": "13.1. HBase 常用命令",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.2. HBase 优化",
+    "path": "/docs/architect/hadoop/Hadoop-13.2.HBaseyouhua.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.2.HBaseyouhua.html",
+    "content": "---\r\ntitle: 13.2. HBase 优化\r\ndate: 2025/07/02\r\n---\r\n\r\n* [13.3. HBase 设计优化 rowkey](./Hadoop-13.3.HBase设计优化rowkey.md)\r\n* 代码优化\r\n    * 创建表的时候，可以通过 `HColumnDescriptor.setInMemory(true)` 将表放到 RegionServer 的缓存中，**保证在读取的时候被 cache 命中**\r\n    * 创建表的时候，可以通过 `HColumnDescriptor.setMaxVersions(int maxVersions)` **设置表中数据的最大版本**，如果只需要保存最新版本的数据，那么可以设置 `setMaxVersions(1)`\r\n    * 创建表的时候，可以通过 `HColumnDescriptor.setTimeToLive(int timeToLive)` **设置表中数据的存储生命期，过期数据将自动被删除**，例如如果只需要存储最近两天的数据，那么可以设置 `setTimeToLive(2 * 24 * 60 * 60)`\r\n* `hdfs-site.xml`: **HDFS 副本数的调整**\r\n    * `dfs.replication`: 如果数据量巨大，且不是非常之重要，可以调整为2~3，如果数据非常之重要，可以调整为3~5\r\n    * `dfs.datanode.max.transfer.threads`: HBase 一般都会同一时间操作大量的文件，根据集群的数量和规模以及数据动作，设置为 4096 或者更高。默认值：4096\r\n* `mapred-site.xml`: **优化数据的写入效率, 减少写入时间 (压缩)**\r\n    * `mapreduce.map.output.compress`: 修改为 `true`\r\n    * `mapreduce.map.output.compress.codec`: 修改为 `org.apache.hadoop.io.compress.GzipCodec` 或者其他压缩方式\r\n* `hbase-site.xml`\r\n    * `hbase.regionserver.handler.count`: 默认值为 30，用于指定 **RPC 监听的数量**，可以根据客户端的请求数进行调整，读写请求较多时，增加此值\r\n    * `hbase.hregion.max.filesize`: 默认值10737418240(10GB)，如果需要运行 HBase 的 MR 任务，可以减小此值，因为**一个 region 对应一个 map 任务**，如果单个 region 过大，会导致 map 任务执行时间过长。该值的意思就是，如果 HFile 的大小达到这个数值，则这个 region 会被切分为两个 Hfile\r\n    * `hbase.client.write.buffer`: 用于指定 HBase 客户端缓存，**增大该值可以减少 RPC 调用次数，但是会消耗更多内存**。一般我们需要设定一定的缓存大小，以达到减少 RPC 次数的目的\r\n    * `hbase.client.scanner.caching`: 用于指定 `scan.next` 方法**获取的默认行数，值越大，消耗内存越大**\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.2. HBase 优化"
+    },
+    "frontmatter": {
+      "title": "13.2. HBase 优化",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.3. HBase 设计优化 rowkey",
+    "path": "/docs/architect/hadoop/Hadoop-13.3.HBaseshejiyouhuarowkey.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.3.HBaseshejiyouhuarowkey.html",
+    "content": "---\r\ntitle: 13.3. HBase 设计优化 rowkey\r\ndate: 2025/07/02\r\n---\r\n\r\n## 性能上考虑\r\n一条数据的唯一标识就是 rowkey，而这行数据最终存储到哪一个分区里面，取决于分区({% post_link architect/Hadoop/HBase-预分区 %})，如果从性能上考虑 rowkey 优化，应该考虑的是让数据均匀的分布在所有的 region 中，**防止数据的倾斜**。\r\n\r\n设计方案:\r\n1. 使用**随机数**, **hash** 等\r\n2. **字符串反转** 10001, 10002 反转成为 10001, 20001\r\n3. **拼接字符串** XX0001 -> 1000XX0001\r\n\r\n## 业务上考虑\r\n\r\n### 列族数目\r\n一个列族和一个 Store 对于，如果经常需要跨列族查询，对应就是需要从多个 Store 中取数据，这样对性能开销挺大，建议**创建表的时候不要太多列族，一般 2-3 个为主**。**基本信息**放到一个列族，**扩展信息**放到一个列族，如果还有另外的**不常用的附件信息**放到第三个列族。\r\n\r\n### 行键设置\r\n\r\n**根据查询要求设置 key**:\r\n* 手机号-日期: \r\n    * `18229955555-20190919`\r\n    * `18229955555-20190920`\r\n* 日期-姓名缩写-类别: 姓名缩写长度需要保持一致 (填充和截断)\r\n    * `20150230-lisi-category`\r\n    * `20150230-zs__-category`\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.3. HBase 设计优化 rowkey",
+      "lvl1": "性能上考虑",
+      "lvl2": "业务上考虑"
+    },
+    "frontmatter": {
+      "title": "13.3. HBase 设计优化 rowkey",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.4. HBase 预分区",
+    "path": "/docs/architect/hadoop/Hadoop-13.4.HBaseyufenqu.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.4.HBaseyufenqu.html",
+    "content": "---\r\ntitle: 13.4. HBase 预分区\r\ndate: 2025/07/02\r\n---\r\n\r\n在默认情况下，在使用 hbase 创建表的时候会自动创建一个 region 分区，所有 hbase 的客户端的数据都写到这个 region 分区里面，一直到 region 足够大的时候才进行切分。每一个 region 维护着 startRow 与 endRowKey，如果加入的数据符合某个 region 维护的 rowKey范围，则该数据交给这个 region 维护, 根据这个特性，我们可以根据以后要插入 hbase 的数据进行一个预估，**将数据大致估算好，提前进行分区，用于提升 hbase 的性能**。\r\n\r\n可以在 `http://hadoop01:16010/`(主节点) 查看分区情况\r\n\r\n## 预分区\r\n* 手动预分区: `create 'p1','info','partition1',SPLITS => ['1000','2000','3000','4000']`\r\n* 16进制分区: `create 'p2','info','partition2',{NUMREGIONS => 15, SPLITALGO => 'HexStringSplit'}`\r\n* 代码分区: 创建表的时候指定分区\r\n    ```java\r\n    public class SplitReginTest {\r\n        private Configuration conf = null;\r\n        private Connection conn = null;\r\n\r\n        @Before\r\n        public void init() throws Exception {\r\n            conf = HBaseConfiguration.create();\r\n            conf.set(\"hbase.zookeeper.quorum\",\"hadoop01:2181,hadoop02:2182,hadoop03:2183\");\r\n            conn = ConnectionFactory.createConnection(conf);\r\n        }\r\n\r\n        @Test\r\n        public void testCreateTable() throws Exception {\r\n            Admin admin = conn.getAdmin();\r\n\r\n            HTableDescriptor htd = new HTableDescriptor(TableName.valueOf(\"split_p\"));\r\n            HColumnDescriptor hcd1 = new HColumnDescriptor(\"base_info\");\r\n            htd.addFamily(hcd1);\r\n\r\n            byte[][] splitKeys = new byte[4][];\r\n            splitKeys[0] = Bytes.toBytes(\"1000\");\r\n            splitKeys[1] = Bytes.toBytes(\"2000\");\r\n            splitKeys[2] = Bytes.toBytes(\"3000\");\r\n            splitKeys[3] = Bytes.toBytes(\"4000\");\r\n\r\n            admin.createTable(htd,splitKeys);\r\n\r\n            admin.close();\r\n            conn.close();\r\n        }\r\n    }\r\n    ```\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.4. HBase 预分区",
+      "lvl1": "预分区"
+    },
+    "frontmatter": {
+      "title": "13.4. HBase 预分区",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.5.1. HBase Demo Java API 常用操作",
+    "path": "/docs/architect/hadoop/Hadoop-13.5.1.HBaseDemoJavaAPIchangyongcaozuo.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.5.1.HBaseDemoJavaAPIchangyongcaozuo.html",
+    "content": "---\r\ntitle: 13.5.1. HBase Demo Java API 常用操作\r\ndate: 2025/07/02\r\n---\r\n\r\n## pom.xml\r\n\r\n```xml\r\n        <dependency>\r\n            <groupId>org.apache.hbase</groupId>\r\n            <artifactId>hbase-server</artifactId>\r\n            <version>2.5.4</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.apache.hbase</groupId>\r\n            <artifactId>hbase-client</artifactId>\r\n            <version>2.5.4</version>\r\n        </dependency>\r\n```\r\n\r\n## 获得连接\r\n```java\r\nprivate Configuration conf = null;\r\nprivate Connection conn = null;\r\n\r\n    @Before\r\n    public void init() throws Exception {\r\n        conf = HBaseConfiguration.create();\r\n        conf.set(\"hbase.zookeeper.quorum\", \"hadoop01:2181,hadoop02:2182,hadoop03:2183\");\r\n        conn = ConnectionFactory.createConnection(conf);\r\n    }\r\n```\r\n\r\n## 建表\r\n```java\r\n    @Test\r\n    public void testCreateTable() throws Exception {\r\n        // 获取一个表管理器\r\n        Admin admin = conn.getAdmin();\r\n\r\n        // 构造一个表描述器，并指定表名\r\n        HTableDescriptor htd = new HTableDescriptor(TableName.valueOf(\"t_person_info\"));\r\n\r\n        // 构造一个列族描述器，并指定列族名\r\n        HColumnDescriptor hcd1 = new HColumnDescriptor(\"base_info\");\r\n        // 构造第二个列族描述器，并指定列族名\r\n        HColumnDescriptor hcd2 = new HColumnDescriptor(\"extra_info\");\r\n\r\n        // 将列族描述器添加到表描述器中\r\n        htd.addFamily(hcd1).addFamily(hcd2);\r\n        admin.createTable(htd);\r\n\r\n        admin.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## 删除表\r\n```java\r\n    @Test\r\n    public void testDrop() throws Exception {\r\n        Admin admin = conn.getAdmin();\r\n\r\n        admin.disableTable(TableName.valueOf(\"t_person_info\"));\r\n        admin.deleteTable(TableName.valueOf(\"t_person_info\"));\r\n\r\n        admin.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## 修改表结构\r\n```java\r\n    @Test\r\n    public void testModify() throws Exception {\r\n        Admin admin = conn.getAdmin();\r\n\r\n        // 修改已有的ColumnFamily\r\n        HTableDescriptor table = admin.getTableDescriptor(TableName.valueOf(\"t_person_info\"));\r\n\r\n        // 添加新的ColumnFamily\r\n        table.addFamily(new HColumnDescriptor(\"other_info\"));\r\n        admin.modifyTable(TableName.valueOf(\"t_person_info\"), table);\r\n\r\n        admin.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## 插入/修改数据\r\n```java\r\n    @Test\r\n    public void testPut() throws Exception {\r\n        Table table = conn.getTable(TableName.valueOf(\"t_person_info\"));\r\n\r\n        ArrayList<Put> puts = new ArrayList<Put>();\r\n        // 构建一个put 对象（kv），指定其行键\r\n        Put put01 = new Put(Bytes.toBytes(\"user001\"));\r\n        put01.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"zhangsan\"));\r\n        Put put02 = new Put(\"user001\".getBytes());\r\n        put02.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"password\"),Bytes.toBytes(\"123456\"));\r\n        Put put03 = new Put(\"user002\".getBytes());\r\n        put03.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"lisi\"));\r\n        put03.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n        Put put04 = new Put(\"zhang_sh_01\".getBytes());\r\n        put04.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"zhang01\"));\r\n        put04.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n        Put put05 = new Put(\"zhang_sh_02\".getBytes());\r\n        put05.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"zhang02\"));\r\n        put05.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n        Put put06 = new Put(\"liu_sh_01\".getBytes());\r\n        put06.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"liu01\"));\r\n        put06.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n        Put put07 = new Put(\"zhang_bj_01\".getBytes());\r\n        put07.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"zhang03\"));\r\n        put07.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n        Put put08 = new Put(\"zhang_bj_01\".getBytes());\r\n        put08.addColumn(Bytes.toBytes(\"base_info\"), Bytes.toBytes(\"username\"),Bytes.toBytes(\"zhang04\"));\r\n        put08.addColumn(Bytes.toBytes(\"extra_info\"), Bytes.toBytes(\"married\"),Bytes.toBytes(\"false\"));\r\n\r\n        puts.add(put01);\r\n        puts.add(put02);\r\n        puts.add(put03);\r\n        puts.add(put04);\r\n        puts.add(put05);\r\n        puts.add(put06);\r\n        puts.add(put07);\r\n        puts.add(put08);\r\n        table.put(puts);\r\n\r\n        table.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## get 查询\r\n```java\r\n    @Test\r\n    public void testGet() throws Exception {\r\n        Table table = conn.getTable(TableName.valueOf(\"t_person_info\"));\r\n\r\n        // 构造一个get 查询参数对象，指定要get 的是哪一行\r\n        Get get = new Get(\"user001\".getBytes());\r\n        Result result = table.get(get);\r\n\r\n        CellScanner cellScanner = result.cellScanner();\r\n        while (cellScanner.advance()) {\r\n            Cell current = cellScanner.current();\r\n            byte[] familyArray = current.getFamilyArray();\r\n            byte[] qualifierArray = current.getQualifierArray();\r\n            byte[] valueArray = current.getValueArray();\r\n            System.out.print(new String(familyArray, current.getFamilyOffset(),current.getFamilyLength()));\r\n            System.out.print(\":\" + new String(qualifierArray, current.getQualifierOffset(),current.getQualifierLength()));\r\n            System.out.println(\" \" + new String(valueArray, current.getValueOffset(),current.getValueLength()));\r\n        }\r\n\r\n        table.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## 删除表中数据\r\n```java\r\n    @Test\r\n    public void testDel() throws Exception {\r\n        Table t_person_info = conn.getTable(TableName.valueOf",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.5.1. HBase Demo Java API 常用操作",
+      "lvl1": "pom.xml",
+      "lvl2": "获得连接",
+      "lvl3": "建表",
+      "lvl4": "删除表",
+      "lvl5": "修改表结构",
+      "lvl6": "插入/修改数据",
+      "lvl7": "get 查询",
+      "lvl8": "删除表中数据",
+      "lvl9": "scan 查询",
+      "lvl10": "过滤查询"
+    },
+    "frontmatter": {
+      "title": "13.5.1. HBase Demo Java API 常用操作",
+      "date": "2025/07/02"
+    },
+    "type": "content",
+    "contentPart": 1,
+    "contentParts": 2
+  },
+  {
+    "title": "13.5.1. HBase Demo Java API 常用操作",
+    "path": "/docs/architect/hadoop/Hadoop-13.5.1.HBaseDemoJavaAPIchangyongcaozuo.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.5.1.HBaseDemoJavaAPIchangyongcaozuo.html",
+    "content": "(\"t_person_info\"));\r\n\r\n        Delete delete = new Delete(\"user001\".getBytes());\r\n        delete.addColumn(\"base_info\".getBytes(), \"password\".getBytes());\r\n\r\n        t_person_info.delete(delete);\r\n\r\n        t_person_info.close();\r\n        conn.close();\r\n    }\r\n```\r\n\r\n## scan 查询\r\n```java\r\n    @Test\r\n    public void testScan() throws Exception {\r\n        Table t_person_info = conn.getTable(TableName.valueOf(\"t_person_info\"));\r\n        Scan scan = new Scan(Bytes.toBytes(\"liu_sh_01\"), Bytes.toBytes(\"zhang_bj_01\" + \"\\000\"));\r\n        ResultScanner scanner = t_person_info.getScanner(scan);\r\n        Iterator<Result> iter = scanner.iterator();\r\n        while (iter.hasNext()) {\r\n            Result result = iter.next();\r\n            CellScanner cellScanner = result.cellScanner();\r\n            while (cellScanner.advance()) {\r\n                Cell current = cellScanner.current();\r\n                byte[] familyArray = current.getFamilyArray();\r\n                byte[] valueArray = current.getValueArray();\r\n                byte[] qualifierArray = current.getQualifierArray();\r\n                byte[] rowArray = current.getRowArray();\r\n                System.out.println(new String(rowArray, current.getRowOffset(),current.getRowLength()));\r\n                System.out.print(new String(familyArray, current.getFamilyOffset(),current.getFamilyLength()));\r\n                System.out.print(\":\" + new String(qualifierArray, current.getQualifierOffset(),current.getQualifierLength()));\r\n                System.out.println(\" \" + new String(valueArray, current.getValueOffset(),current.getValueLength()));\r\n            }\r\n            System.out.println(\"-----------------------\");\r\n        }\r\n    }\r\n```\r\n\r\n## 过滤查询\r\n```java\r\n    @Test\r\n    public void testFilter() throws Exception {\r\n        // 针对行键的前缀过滤器\r\n        Filter pf = new PrefixFilter(Bytes.toBytes(\"liu\"));\r\n        testScan(pf);\r\n\r\n        // 行过滤器\r\n        RowFilter rf1 = new RowFilter(CompareOp.LESS, new BinaryComparator(Bytes.toBytes(\"user002\")));\r\n        RowFilter rf2 = new RowFilter(CompareOp.EQUAL, new SubstringComparator(\"00\"));\r\n        testScan(rf1);\r\n        System.out.println(\"**********\");\r\n        testScan(rf2);\r\n\r\n        // 针对指定一个列的 value 来过滤\r\n        SingleColumnValueFilter scvf = new SingleColumnValueFilter(\"base_info\".getBytes(),\"password\".getBytes(), CompareOp.EQUAL, \"123456\".getBytes());\r\n        scvf.setFilterIfMissing(true); // 如果指定的列缺失，则也过滤掉\r\n        testScan(scvf);\r\n\r\n        ByteArrayComparable comparator1 = new RegexStringComparator(\"^zhang\");\r\n        ByteArrayComparable comparator2 = new SubstringComparator(\"ang\");\r\n        SingleColumnValueFilter scvf = new SingleColumnValueFilter(\"base_info\".getBytes(),\r\n        \"username\".getBytes(), CompareOp.EQUAL, comparator2);\r\n        testScan(scvf);\r\n\r\n        // 针对列族名的过滤器返回结果中只会包含满足条件的列族中的数据\r\n        FamilyFilter ff1 = new FamilyFilter(CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(\"inf\")));\r\n        FamilyFilter ff2 = new FamilyFilter(CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes(\"base\")));\r\n        testScan(ff1);\r\n\r\n        // 针对列名的过滤器返回结果中只会包含满足条件的列的数据\r\n        QualifierFilter qf = new QualifierFilter(CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(\"password\")));\r\n        QualifierFilter qf2 = new QualifierFilter(CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes(\"us\")));\r\n        testScan(qf);\r\n\r\n        // 跟 SingleColumnValueFilter 结果不同，只返回符合条件的该column\r\n        ColumnPrefixFilter cf = new ColumnPrefixFilter(\"passw\".getBytes());\r\n        testScan(cf);\r\n\r\n        byte[][] prefixes = new byte[][]{ Bytes.toBytes(\"username\"),Bytes.toBytes(\"password\") };\r\n        MultipleColumnPrefixFilter mcf = new MultipleColumnPrefixFilter(prefixes);\r\n        testScan(mcf);\r\n\r\n        FamilyFilter ff2 = new FamilyFilter(CompareOp.EQUAL, new BinaryPrefixComparator(Bytes.toBytes(\"base\")));\r\n        ColumnPrefixFilter cf = new ColumnPrefixFilter(\"passw\".getBytes());\r\n        FilterList filterList = new FilterList(Operator.MUST_PASS_ALL);\r\n        filterList.addFilter(ff2);\r\n        filterList.addFilter(cf);\r\n        testScan(filterList);\r\n    }\r\n```\r\n\r\n```java\r\n    private void testScan(Filter filter) throws Exception {\r\n        Table t_person_info = conn.getTable(TableName.valueOf(\"t_person_info\"));\r\n        Scan scan = new Scan();\r\n        scan.setFilter(filter);\r\n        ResultScanner scanner = t_person_info.getScanner(scan);\r\n        Iterator<Result> iter = scanner.iterator();\r\n        while (iter.hasNext()) {\r\n            Result result = iter.next();\r\n            CellScanner cellScanner = result.cellScanner();\r\n            while (cellScanner.advance()) {\r\n                Cell current = cellScanner.current();\r\n                byte[] familyArray = current.getFamilyArray();\r\n                byte[] valueArray = current.getValueArray();\r\n                byte[] qualifierArray = current.getQualifierArray();\r\n                byte[] rowArray = current.getRowArray();\r\n                System.out.println(new String(rowArray, current.getRowOffset(),current.getRowLength()));\r\n                System.out.print(new String(familyArray, current.getFamilyOffset(),current.getFamilyLength()));\r\n                System.out.print(\":\" + new String(qualifierArray, current.getQualifierOffset(),current.getQualifierLength()));\r\n                System.out.println(\" \" + new String(valueArray, current.getValueOffset(),current.getValueLength()));\r\n            }\r\n            System.out.println(\"-----------------------\");\r\n        }\r\n    }\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.5.1. HBase Demo Java API 常用操作",
+      "lvl1": "pom.xml",
+      "lvl2": "获得连接",
+      "lvl3": "建表",
+      "lvl4": "删除表",
+      "lvl5": "修改表结构",
+      "lvl6": "插入/修改数据",
+      "lvl7": "get 查询",
+      "lvl8": "删除表中数据",
+      "lvl9": "scan 查询",
+      "lvl10": "过滤查询"
+    },
+    "frontmatter": {
+      "title": "13.5.1. HBase Demo Java API 常用操作",
+      "date": "2025/07/02"
+    },
+    "type": "content",
+    "contentPart": 2,
+    "contentParts": 2
+  },
+  {
+    "title": "13.6.1. HBase ServerNotRunningYetException",
+    "path": "/docs/architect/hadoop/Hadoop-13.6.1.HBaseServerNotRunningYetException.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.6.1.HBaseServerNotRunningYetException.html",
+    "content": "---\r\ntitle: 13.6.1. HBase ServerNotRunningYetException\r\ndate: 2025/07/02\r\n---\r\n\r\n:::denger ServerNotRunningYetException\r\n- HBase ServerNotRunningYetException: Server is not running yet\r\n:::\r\n\r\n`hbase-site.xml` 中添加:\r\n```xml\r\n  <property>\r\n    <name>hbase.wal.provider</name>\r\n    <value>filesystem</value>\r\n  </property>\r\n```\r\n\r\n重启 HBase 即可\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.6.1. HBase ServerNotRunningYetException"
+    },
+    "frontmatter": {
+      "title": "13.6.1. HBase ServerNotRunningYetException",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "13.6.2. HBase No Hbase Master Found",
+    "path": "/docs/architect/hadoop/Hadoop-13.6.2.HBaseNoHbaseMasterFound.html",
+    "url": "/docs/architect/hadoop/Hadoop-13.6.2.HBaseNoHbaseMasterFound.html",
+    "content": "---\r\ntitle: 13.6.2. HBase No Hbase Master Found\r\ndate: 2025/07/02\r\n---\r\n\r\n:::denger\r\n- HBase-stop-hbase.sh: no hbase master found\r\n:::\r\n\r\n1. `hbase-env.sh` 中添加: `export HBASE_PID_DIR=/var/hbase/pids`\r\n2. `jps` 查看 hbase 相关的 pid, 然后 `kill -9` 结束进程\r\n3. `start-hbase.sh` 启动 hbase\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "13.6.2. HBase No Hbase Master Found"
+    },
+    "frontmatter": {
+      "title": "13.6.2. HBase No Hbase Master Found",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "14. Sqoop 特点",
+    "path": "/docs/architect/hadoop/Hadoop-14-Sqoop-tedian.html",
+    "url": "/docs/architect/hadoop/Hadoop-14-Sqoop-tedian.html",
+    "content": "---\r\ntitle: 14. Sqoop 特点\r\ndate: 2025/07/02\r\n---\r\n\r\n## Sqoop 简介\r\nSqoop 是 apache 旗下的工具，用于实现结构型数据（如关系数据库）和 Hadoop 之间进行数据迁移的工具, 可以讲关系型数据库中的数据导入到 Hadoop 的 HDFS 中，同样也完全可以把 HDFS 的数据导入到关系型数据库里面\r\n* 导入数据：MySQL, Oracle 导入数据到 Hadoop 的 HDFS, HIVE, HBASE 等数据存储系统\r\n* 导出数据：从 Hadoop 的文件系统中导出数据到关系数据库\r\n\r\n![Sqoop](static/sqoop.png)\r\n\r\n## Sqoop 原理\r\nSqoop 把导入或导出命令翻译成 `mapreduce` 代码来实现, 在翻译出的 `mapreduce` 中，其实只是对 `inputformat` 和 `outputformat` 进行了定制\r\n\r\n---\r\n\r\n<font color=\"red\">该项目已于 2021-06 终止, 并移入 Apache Attic</font>\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "14. Sqoop 特点",
+      "lvl1": "Sqoop 简介",
+      "lvl2": "Sqoop 原理"
+    },
+    "frontmatter": {
+      "title": "14. Sqoop 特点",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "14.1. Sqoop 导入数据到 HBase",
+    "path": "/docs/architect/hadoop/Hadoop-14.1.SqoopdaorushujudaoHBase.html",
+    "url": "/docs/architect/hadoop/Hadoop-14.1.SqoopdaorushujudaoHBase.html",
+    "content": "---\r\ntitle: 14.1. Sqoop 导入数据到 HBase\r\ndate: 2025/07/02\r\n---\r\n\r\n1. 创建 HBase 表: `create 'hbase_person','info'`\r\n2. 导入数据到 HBase\r\n    ```bash\r\n    sqoop import \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --table person \\\r\n        --columns \"pid,name,sex\" \\\r\n        --column-family \"info\" \\\r\n        --hbase-create-table \\\r\n        --hbase-row-key \"pid\" \\\r\n        --hbase-table \"hbase_person\" \\\r\n        --num-mappers 1 \\\r\n        --split-by pid\r\n    ```\r\n3. `scan 'hbase_person'`\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "14.1. Sqoop 导入数据到 HBase"
+    },
+    "frontmatter": {
+      "title": "14.1. Sqoop 导入数据到 HBase",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "14.2. Sqoop Hive 与 Mysql 互导",
+    "path": "/docs/architect/hadoop/Hadoop-14.2.SqoopHiveyuMysqlhudao.html",
+    "url": "/docs/architect/hadoop/Hadoop-14.2.SqoopHiveyuMysqlhudao.html",
+    "content": "---\r\ntitle: 14.2. Sqoop Hive 与 Mysql 互导\r\ndate: 2025/07/02\r\n---\r\n\r\n* 导入数据到 HIVE\r\n    ```bash\r\n    sqoop import \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --table person \\\r\n        --num-mappers 1 \\\r\n        --hive-import \\\r\n        --fields-terminated-by \",\" \\\r\n        --hive-overwrite \\\r\n        --hive-table person_hive\r\n    ```\r\n* hive/hdfs 导入数据到 mysql\r\n    ```bash\r\n    sqoop export \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --table person2 \\\r\n        --export-dir /user/hive/warehouse/person_hive \\\r\n        --m 1\r\n    ```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "14.2. Sqoop Hive 与 Mysql 互导"
+    },
+    "frontmatter": {
+      "title": "14.2. Sqoop Hive 与 Mysql 互导",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "14.3. Sqoop Mysql 导入 HDFS",
+    "path": "/docs/architect/hadoop/Hadoop-14.3.SqoopMysqldaoruHDFS.html",
+    "url": "/docs/architect/hadoop/Hadoop-14.3.SqoopMysqldaoruHDFS.html",
+    "content": "---\r\ntitle: 14.3. Sqoop Mysql 导入 HDFS\r\ndate: 2025/07/02\r\n---\r\n\r\n1. Mysql 测试数据\r\n    ```sql\r\n    create database sqooptest;\r\n    Use sqooptest\r\n    create table person(pid int primary key auto_increment, name varchar(20), sex varchar(20));\r\n    insert into person(name, sex) values('james', 'Male');\r\n    insert into person(name, sex) values('lison', 'Female');\r\n    ```\r\n2. 全量导入\r\n    ```bash\r\n    sqoop import \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --table person \\\r\n        --target-dir /user/person \\\r\n        --delete-target-dir \\\r\n        --num-mappers 1 \\\r\n        --fields-terminated-by \",\"\r\n\r\n    hadoop fs -cat /user/person/part-m-00000\r\n    ```\r\n3. 带查询条件导入: `$CONDITIONS` 不能省略, 要链接 sqoop 默认的条件\r\n    ```bash\r\n    sqoop import \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --target-dir /user/person \\\r\n        --delete-target-dir \\\r\n        --num-mappers 1 \\\r\n        --fields-terminated-by \",\" \\\r\n        --query 'select name,sex from person where pid <=1 and $CONDITIONS;'\r\n\r\n    hadoop fs -cat /user/person/part-m-00000\r\n    ```\r\n4. 导入特定列\r\n    ```bash\r\n    sqoop import \\\r\n        --connect jdbc:mysql://192.168.244.100:3306/sqooptest \\\r\n        --username root \\\r\n        --password root1234% \\\r\n        --target-dir /user/person \\\r\n        --delete-target-dir \\\r\n        --num-mappers 1 \\\r\n        --fields-terminated-by \",\" \\\r\n        --columns pid,sex \\\r\n        --table person\r\n    ```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "14.3. Sqoop Mysql 导入 HDFS"
+    },
+    "frontmatter": {
+      "title": "14.3. Sqoop Mysql 导入 HDFS",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.1. Demo 单词统计",
+    "path": "/docs/architect/hadoop/Hadoop-15.1.Demodancitongji.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.1.Demodancitongji.html",
+    "content": "---\r\ntitle: 15.1. Demo 单词统计\r\ndate: 2025/07/02\r\n---\r\n\r\n导入 `hadoop` 和 `hadoop.mapreduce` 包下的类\r\n\r\n## WCMapper.java\r\n```java\r\n// 泛型分别是：输入的键值类型; 输出的键值类型 \r\npublic class WCMapper extends Mapper<LongWritable, Text, Text, IntWritable> {\r\n\r\n    @Override\r\n    protected void map(LongWritable key, @NotNull Text value, Context context) throws IOException, InterruptedException {\r\n        String line = value.toString();\r\n        String[] words = line.split(\" \");\r\n        for (String word : words) {\r\n            context.write(new Text(word), new IntWritable(1));\r\n        }\r\n    }\r\n\r\n}\r\n```\r\n\r\n## WCReducer.java\r\n```java\r\n// 泛型分别是：输入的键值类型; 输出的键值类型 \r\npublic class WCReducer extends Reducer<Text, IntWritable, Text, IntWritable> {\r\n\r\n    @Override\r\n    protected void reduce(Text key, @NotNull Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {\r\n        int count = 0;\r\n        for (IntWritable v : values) {\r\n            count += v.get();\r\n        }\r\n        context.write(key, new IntWritable(count));\r\n    }\r\n\r\n}\r\n```\r\n\r\n## WCJob.java\r\n```java\r\npublic class WCJob {\r\n\r\n    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n\r\n        job.setJarByClass(WCJob.class);\r\n\r\n        job.setMapperClass(WCMapper.class);\r\n        job.setReducerClass(WCReducer.class);\r\n        \r\n//        Mapper 输出键值类型\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(IntWritable.class);\r\n\r\n//        Reducer 输出键值类型\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(IntWritable.class);\r\n\r\n        job.setInputFormatClass(TextInputFormat.class);\r\n        job.setOutputFormatClass(TextOutputFormat.class);\r\n\r\n//         前期准备, 在 Hadoop /wc/input 目录中上传进待分析的文件\r\n        FileInputFormat.setInputPaths(job, new Path(\"/wc/input\"));\r\n        FileOutputFormat.setOutputPath(job, new Path(\"/wc/output\"));\r\n\r\n//        等待执行完并检查是否执行成功\r\n        System.exit(job.waitForCompletion(true)? 0:-1);\r\n    }\r\n\r\n}\r\n```\r\n\r\n## pom.xml\r\n```xml\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.apache.maven.plugins</groupId>\r\n                <artifactId>maven-jar-plugin</artifactId>\r\n                <version>3.3.0</version>\r\n                <configuration>\r\n                    <archive>\r\n                        <manifest>\r\n                            <addClasspath>true</addClasspath>\r\n                            <classpathPrefix>lib/</classpathPrefix>\r\n                            <mainClass>org.jxch.study.hadoop.mr.wc.WCJob</mainClass>\r\n                        </manifest>\r\n                    </archive>\r\n                </configuration>\r\n            </plugin>\r\n        </plugins>\r\n    </build>\r\n```\r\n\r\n## 运行\r\n编译 jar 包: `mvn package -Dmaven.test.skip=true -f pom.xml`\r\n将 jar 包上传到 Hadoop 服务器之后，执行命令: `hadoop jar /home/jxch/study-hadoop-1.0-SNAPSHOT.jar `\r\n\r\n跑完后，检查运行结果:\r\n* `hadoop fs -ls /wc/output`\r\n* `hadoop fs -cat /wc/output/part-r-00000`\r\n\r\n---\r\n\r\n## 依赖包\r\n```xml\r\n    <dependencies>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-common</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-hdfs</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-client</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>junit</groupId>\r\n            <artifactId>junit</artifactId>\r\n            <version>4.13.2</version>\r\n        </dependency>\r\n\r\n        <dependency>\r\n            <groupId>org.slf4j</groupId>\r\n            <artifactId>slf4j-api</artifactId>\r\n            <version>2.0.7</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.slf4j</groupId>\r\n            <artifactId>slf4j-simple</artifactId>\r\n            <version>2.0.7</version>\r\n            <scope>test</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.projectlombok</groupId>\r\n            <artifactId>lombok</artifactId>\r\n            <version>1.18.26</version>\r\n            <scope>provided</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.jetbrains</groupId>\r\n            <artifactId>annotations</artifactId>\r\n            <version>RELEASE</version>\r\n            <scope>compile</scope>\r\n        </dependency>\r\n    </dependencies>\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.1. Demo 单词统计",
+      "lvl1": "WCMapper.java",
+      "lvl2": "WCReducer.java",
+      "lvl3": "WCJob.java",
+      "lvl4": "pom.xml",
+      "lvl5": "运行",
+      "lvl6": "依赖包"
+    },
+    "frontmatter": {
+      "title": "15.1. Demo 单词统计",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.2. Demo 单词分组排序统计",
+    "path": "/docs/architect/hadoop/Hadoop-15.2.Demodancifenzupaixutongji.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.2.Demodancifenzupaixutongji.html",
+    "content": "---\r\ntitle: 15.2. Demo 单词分组排序统计\r\ndate: 2025/07/02\r\n---\r\n\r\n先进行单词统计: [15.Demo单词统计](./Hadoop-15.Demo单词统计.md)\r\n\r\n## 排序\r\n利用对Mapper输出的Key的自动排序进行排序\r\n\r\n```java\r\npublic class WCSortMapper extends Mapper<LongWritable, Text, DescIntWritable, Text> {\r\n    @Override\r\n    protected void map(LongWritable key, @NotNull Text value, @NotNull Context context) throws IOException, InterruptedException {\r\n        String line = value.toString();\r\n        String[] words = line.split(\"\\t\");\r\n        if (words.length == 2) {\r\n            context.write(new DescIntWritable(Integer.parseInt(words[1])), new Text(words[0]));\r\n        }\r\n    }\r\n}\r\n```\r\n\r\n```java\r\npublic class WCSortReducer extends Reducer<DescIntWritable, Text, Text, IntWritable> {\r\n    @Override\r\n    protected void reduce(DescIntWritable key, @NotNull Iterable<Text> values, Context context) throws IOException, InterruptedException {\r\n        for (Text word : values) {\r\n            context.write(word, key);\r\n        }\r\n    }\r\n}\r\n```\r\n\r\n```java\r\npublic class DescIntWritable extends IntWritable {\r\n\r\n    public DescIntWritable() {\r\n    }\r\n\r\n    public DescIntWritable(int value) {\r\n        super(value);\r\n    }\r\n\r\n    @Override\r\n    public int compareTo(IntWritable o) {\r\n        return -super.compareTo(o);\r\n    }\r\n}\r\n```\r\n\r\n## 分组\r\n\r\n```java\r\npublic class WCPartitioner extends Partitioner<DescIntWritable, Text> {\r\n\r\n    @Override\r\n    public int getPartition(DescIntWritable descIntWritable, @NotNull Text text, int numPartitions) {\r\n        return text.toString().contains(\"jxch\") ? 0 : 1;\r\n    }\r\n\r\n}\r\n```\r\n\r\n## Job\r\n先完成单词统计的任务，然后在此基础上进行分组排序\r\n```java\r\npublic class WCSortJob {\r\n    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {\r\n        Job job = Job.getInstance(new Configuration());\r\n\r\n        job.setJarByClass(WCSortJob.class);\r\n\r\n        job.setMapperClass(WCMapper.class);\r\n        job.setReducerClass(WCReducer.class);\r\n\r\n//        Mapper 输出键值类型\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(IntWritable.class);\r\n\r\n//        Reducer 输出键值类型\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(IntWritable.class);\r\n\r\n        job.setInputFormatClass(TextInputFormat.class);\r\n        job.setOutputFormatClass(TextOutputFormat.class);\r\n\r\n        FileInputFormat.setInputPaths(job, new Path(\"/wc/input\"));\r\n        FileOutputFormat.setOutputPath(job, new Path(\"/wc/output\"));\r\n\r\n//        等待执行完并检查是否执行成功\r\n        if (job.waitForCompletion(true)) {\r\n            Job sortJob = Job.getInstance(new Configuration());\r\n\r\n            sortJob.setJarByClass(WCSortJob.class);\r\n            sortJob.setMapperClass(WCSortMapper.class);\r\n            sortJob.setReducerClass(WCSortReducer.class);\r\n            sortJob.setMapOutputKeyClass(DescIntWritable.class);\r\n            sortJob.setMapOutputValueClass(Text.class);\r\n            sortJob.setOutputKeyClass(Text.class);\r\n            sortJob.setOutputValueClass(IntWritable.class);\r\n            sortJob.setInputFormatClass(TextInputFormat.class);\r\n            sortJob.setOutputFormatClass(TextOutputFormat.class);\r\n            sortJob.setPartitionerClass(WCPartitioner.class);\r\n            sortJob.setNumReduceTasks(2);\r\n\r\n            FileInputFormat.setInputPaths(sortJob, new Path(\"/wc/output\"));\r\n            FileOutputFormat.setOutputPath(sortJob, new Path(\"/wc/output_sort\"));\r\n\r\n            System.exit(sortJob.waitForCompletion(true)? 0:-1);\r\n        }\r\n    }\r\n}\r\n```\r\n\r\n## pom.xml\r\n```xml\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.apache.maven.plugins</groupId>\r\n                <artifactId>maven-jar-plugin</artifactId>\r\n                <version>3.3.0</version>\r\n                <configuration>\r\n                    <archive>\r\n                        <manifest>\r\n                            <addClasspath>true</addClasspath>\r\n                            <classpathPrefix>lib/</classpathPrefix>\r\n                            <mainClass>org.jxch.study.hadoop.mr.wc.sort.WCSortJob</mainClass>\r\n                        </manifest>\r\n                    </archive>\r\n                </configuration>\r\n            </plugin>\r\n        </plugins>\r\n    </build>\r\n```\r\n\r\n## 运行\r\n编译 jar 包: `mvn package -Dmaven.test.skip=true -f pom.xml`\r\n将 jar 包上传到 Hadoop 服务器之后，执行命令: `hadoop jar /home/jxch/study-hadoop-1.1-SNAPSHOT.jar `\r\n\r\n跑完后，检查运行结果:\r\n* `hadoop fs -ls /wc/output_sort`\r\n* `hadoop fs -cat /wc/output_sort/part-r-00000`\r\n* `hadoop fs -cat /wc/output_sort/part-r-00001`\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.2. Demo 单词分组排序统计",
+      "lvl1": "排序",
+      "lvl2": "分组",
+      "lvl3": "Job",
+      "lvl4": "pom.xml",
+      "lvl5": "运行"
+    },
+    "frontmatter": {
+      "title": "15.2. Demo 单词分组排序统计",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.3. Demo 倒排索引-文章单词统计",
+    "path": "/docs/architect/hadoop/Hadoop-15.3.Demodaopaisuoyin-wenzhangdancitongji.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.3.Demodaopaisuoyin-wenzhangdancitongji.html",
+    "content": "---\r\ntitle: 15.3. Demo 倒排索引-文章单词统计\r\ndate: 2025/07/02\r\n---\r\n\r\n## 思路 (倒推法)\r\n\r\n第二步:\r\n* Reduce\r\n    * key:单词\r\n    * values[] 文章--次数\r\n* Map \r\n    * key: 单词\r\n    * value: 文章--次数\r\n\r\n第一步:\r\n* Reduce\r\n    * key: 单词--文档位置 \r\n    * value: 单词次数\r\n* Map\r\n    * key: 单词--文档位置 \r\n    * value: 1\r\n\r\n---\r\n\r\n## JAVA 代码\r\n\r\n### IndexStepOne.java\r\n```java\r\npublic class IndexStepOne {\r\n    public static class IndexStepOneMapper extends Mapper<LongWritable, Text, Text, IntWritable>{\r\n        Text k = new Text();\r\n        IntWritable v = new IntWritable(1);\r\n\r\n        @Override\r\n        protected void map(LongWritable key, Text value,Context context) throws IOException, InterruptedException {\r\n            String line = value.toString();\r\n            String[] words = line.split(\" \");\r\n            FileSplit Split = (FileSplit)context.getInputSplit();\r\n            String filename = Split.getPath().getName();\r\n            //输出 key :单词--文件名 value:1\r\n            for(String word : words){\r\n                k.set(word +\"--\"+ filename);\r\n                context.write(k, v);\r\n            }\r\n        }\r\n    }\r\n\r\n    public static class IndexStepOneReducer extends Reducer<Text, IntWritable, Text, IntWritable>{\r\n        IntWritable v = new IntWritable();\r\n\r\n        @Override\r\n        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {\r\n            int count = 0;\r\n            for(IntWritable value : values){\r\n                count += value.get();\r\n            }\r\n            v.set(count);\r\n            context.write(key, v);\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) throws Exception {\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(IndexStepOne.class);\r\n        job.setMapperClass(IndexStepOneMapper.class);\r\n        job.setReducerClass(IndexStepOneReducer.class);\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(IntWritable.class);\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(IntWritable.class);\r\n        //这里可以进行 combiner 组件的设置\r\n        job.setCombinerClass(IndexStepOneReducer.class);\r\n        job.setInputFormatClass(TextInputFormat.class);\r\n        job.setOutputFormatClass(TextOutputFormat.class);\r\n        FileInputFormat.setInputPaths(job, new Path(\"D:/index/input\"));\r\n        FileOutputFormat.setOutputPath(job, new Path(\"D:/index/output-1\"));\r\n        boolean res = job.waitForCompletion(true);\r\n        System.exit(res?0:1);\r\n    }\r\n}\r\n```\r\n\r\n### IndexStepTwo.java\r\n```java\r\npublic class IndexStepTwo {\r\n    public static class IndexStepTwoMapper extends Mapper<LongWritable, Text, Text, Text>{\r\n        Text k = new Text();\r\n        Text v = new Text();\r\n        \r\n        @Override\r\n        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {\r\n            String line = value.toString();\r\n            String[] fields = line.split(\"\\t\");\r\n            String word_file = fields[0];\r\n            String count = fields[1];\r\n            String[] split = word_file.split(\"--\");\r\n            String word = split[0];\r\n            String file = split[1];\r\n            k.set(word);\r\n            v.set(file+\"--\"+count);\r\n            context.write(k, v);\r\n        }\r\n    }\r\n\r\n    public static class IndexStepTwoReducer extends Reducer<Text, Text, Text, Text>{\r\n        Text v = new Text();\r\n\r\n        @Override\r\n        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {\r\n            StringBuffer sBuffer = new StringBuffer();\r\n            for (Text value : values) {\r\n                sBuffer.append(value.toString()).append(\" \");\r\n            }\r\n            v.set(sBuffer.toString());\r\n            context.write(key, v);\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) throws Exception {\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(IndexStepTwo.class);\r\n        //告诉程序，我们的程序所用的 mapper 类和 reducer 类是什么\r\n        job.setMapperClass(IndexStepTwoMapper.class);\r\n        job.setReducerClass(IndexStepTwoReducer.class);\r\n        //告诉框架，我们程序输出的数据类型\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(Text.class);\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(Text.class);\r\n        //这里可以进行 combiner 组件的设置\r\n        job.setCombinerClass(IndexStepTwoReducer.class);\r\n        //告诉框架，我们要处理的数据文件在那个路劲下\r\n        FileInputFormat.setInputPaths(job, new Path(\"D:/index/output-1\"));\r\n        //告诉框架，我们的处理结果要输出到什么地方\r\n        FileOutputFormat.setOutputPath(job, new Path(\"D:/index/output-2\"));\r\n        boolean res = job.waitForCompletion(true);\r\n        System.exit(res?0:1);\r\n    }\r\n}\r\n```\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.3. Demo 倒排索引-文章单词统计",
+      "lvl1": "思路 (倒推法)",
+      "lvl2": "JAVA 代码"
+    },
+    "frontmatter": {
+      "title": "15.3. Demo 倒排索引-文章单词统计",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.4. Demo 共同好友",
+    "path": "/docs/architect/hadoop/Hadoop-15.4.Demogongtonghaoyou.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.4.Demogongtonghaoyou.html",
+    "content": "---\r\ntitle: 15.4. Demo 共同好友\r\ndate: 2025/07/02\r\n---\r\n\r\n## 思路\r\n原数据:\r\n```text\r\nA:B,C,D,F,E,O\r\nB:A,C,E,K\r\nC:F,A,D,I\r\nD:A,E,F,L\r\nE:B,C,D,M,L\r\nF:A,s,C,D,E,O,M\r\nG:A,C,D,E,F\r\nH:A,C,D,E,O\r\nI:A,O\r\nJ:B,O\r\nK:A,C,D\r\nL:D,E,F\r\nM:E,F,G\r\nO:A,H,I,J\r\n```\r\n\r\n1. 先找出一个用户是哪些用户的共同好友（比如 C 是哪些用户的共同好友，以上题目中的 C 是用户 A,B,E,F,G,H,K 的共同好友，所以 AB 的共同好友为 C，AE 的共同好友为 C，以此类推。。。）\r\n2. 经过第一步推算，得到 AE 的 共同好友还有 D，最后将 AE 的共同好友合并得到 C,D，这只是举个例子，他们的共同好友还有很多，即将两两用户作为 key，好友作为 value，以此类推，因此需要写两个 mapreduce\r\n\r\n## JAVA 代码\r\n### FriendsStepOne.java\r\n```java\r\npublic class FriendsStepOne {\r\n    public static class FriendsStepOneMapper extends Mapper<LongWritable, Text, Text, Text>{\r\n        @Override\r\n        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {\r\n            String line = value.toString();\r\n            String[] splits = line.split(\":\");\r\n            String person = splits[0];\r\n            String[] friends = splits[1].split(\",\");\r\n            for(String fString :friends){\r\n                context.write(new Text(fString), new Text(person));\r\n            }\r\n        }\r\n    }\r\n\r\n    public static class FriendsStepOneReducer extends Reducer<Text, Text, Text, Text>{\r\n        @Override\r\n        protected void reduce(Text friend, Iterable<Text> persons, Context context) throws IOException, InterruptedException {\r\n            StringBuffer sBuffer = new StringBuffer();\r\n            for(Text pText :persons){\r\n                sBuffer.append(pText).append(\"-\");\r\n            }\r\n            context.write(friend, new Text(sBuffer.toString()));\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) throws Exception {\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(FriendsStepOne.class);\r\n        job.setMapperClass(FriendsStepOneMapper.class);\r\n        job.setReducerClass(FriendsStepOneReducer.class);\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(Text.class);\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(Text.class);\r\n        FileInputFormat.setInputPaths(job, new Path(\"D:\\\\friends\\\\input\"));\r\n        FileOutputFormat.setOutputPath(job, new Path(\"D:\\\\friends\\\\output-1\"));\r\n        boolean res = job.waitForCompletion(true);\r\n        System.exit(res?0:1);\r\n    }\r\n}\r\n```\r\n\r\n### FriendsStepTwo.java\r\n```java\r\npublic class FriendsStepTwo {\r\n    public static class FriendsStepTwoMapper extends Mapper<LongWritable, Text, Text, Text>{\r\n        @Override\r\n        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {\r\n            String line = value.toString();\r\n            String[] splits = line.split(\"\\t\");\r\n            String friend = splits[0];\r\n            String[] persons = splits[1].split(\"-\");\r\n            Arrays.sort(persons);\r\n            for (int i = 0; i < persons.length-1; i++) {\r\n                for (int j = i+1; j < persons.length; j++) {\r\n                    context.write(new Text(persons[i]+\"-\"+persons[j]), new Text(friend));\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    public static class FriendsStepTwoReducer extends Reducer<Text, Text, Text, Text>{\r\n        @Override\r\n        protected void reduce(Text person_pair, Iterable<Text> friends, Context context) throws IOException, InterruptedException {\r\n            StringBuffer sBuffer = new StringBuffer();\r\n            for(Text fText : friends){\r\n                sBuffer.append(fText).append(\" \");\r\n            }\r\n            context.write(person_pair, new Text(sBuffer.toString()));\r\n        }\r\n    }\r\n\r\n    public static void main(String[] args) throws Exception {\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(FriendsStepTwo.class);\r\n        job.setMapperClass(FriendsStepTwoMapper.class);\r\n        job.setReducerClass(FriendsStepTwoReducer.class);\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(Text.class);\r\n        job.setOutputKeyClass(Text.class);\r\n        job.setOutputValueClass(Text.class);\r\n        FileInputFormat.setInputPaths(job, new Path(\"D:\\\\friends\\\\output-1\"));\r\n        FileOutputFormat.setOutputPath(job, new Path(\"D:\\\\friends\\\\output-2\"));\r\n        boolean res = job.waitForCompletion(true);\r\n        System.exit(res?0:1);\r\n    }\r\n}\r\n```\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.4. Demo 共同好友",
+      "lvl1": "思路",
+      "lvl2": "JAVA 代码"
+    },
+    "frontmatter": {
+      "title": "15.4. Demo 共同好友",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.5. Demo 自定义 InputFileFormat",
+    "path": "/docs/architect/hadoop/Hadoop-15.5.DemozidingyiInputFileFormat.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.5.DemozidingyiInputFileFormat.html",
+    "content": "---\r\ntitle: 15.5. Demo 自定义 InputFileFormat\r\ndate: 2025/07/02\r\n---\r\n\r\n以 excel 的文件举例\r\n\r\n## pom.xml\r\n```xml\r\n<dependency>\r\n    <groupId>net.sourceforge.jexcelapi</groupId>\r\n    <artifactId>jxl</artifactId>\r\n    <version>2.6.12</version>\r\n</dependency>\r\n```\r\n\r\n## ExcelInputFormat.java\r\n```java\r\npublic class ExcelFileInputFormat extends FileInputFormat<IntWritable,Text> {\r\n    @Override\r\n    protected boolean isSplitable(JobContext context, Path filename) {\r\n        return false;\r\n    }\r\n    public RecordReader<IntWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {\r\n        return new ExcelRecordReader();\r\n    }\r\n}\r\n```\r\n\r\n## ExcelRecordReader.java\r\n```java\r\npublic class ExcelRecordReader extends RecordReader<IntWritable,Text> {\r\n    private int rows;\r\n    private int current = -1;\r\n    private Sheet sheet;\r\n    private Workbook workbook;\r\n    \r\n    @Override\r\n    public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {\r\n        FileSplit filesplit = (FileSplit) split;\r\n        Configuration conf= context.getConfiguration();\r\n        Path filePath =filesplit.getPath();\r\n        FileSystem fs=filePath.getFileSystem(conf);\r\n        FSDataInputStream inputStream = fs.open(filePath);\r\n        try {\r\n            workbook = Workbook.getWorkbook(inputStream);\r\n            sheet = workbook.getSheets()[0];\r\n            rows = sheet.getRows();\r\n        } catch (BiffException e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean nextKeyValue() throws IOException, InterruptedException {\r\n        if(current<rows-1) {\r\n            current++;\r\n            return true;\r\n        }\r\n        return false;\r\n    }\r\n\r\n    @Override\r\n    public IntWritable getCurrentKey() throws IOException, InterruptedException {\r\n        return new IntWritable(current);\r\n    }\r\n\r\n    @Override\r\n    public Text getCurrentValue() throws IOException, InterruptedException {\r\n        StringBuffer sb = new StringBuffer(\"\");\r\n        for(int i=0; i<sheet.getColumns(); i++){\r\n            Cell cell = sheet.getCell(i, current);\r\n            sb.append(cell.getContents() + \" \");\r\n        }\r\n        return new Text(sb.toString());\r\n    }\r\n\r\n    @Override\r\n    public float getProgress() throws IOException, InterruptedException {\r\n        return current/rows;\r\n    }\r\n\r\n    @Override\r\n    public void close() throws IOException {\r\n        workbook.close();\r\n    }\r\n}\r\n```\r\n\r\n## ExcelMapper.java\r\n```java\r\npublic class ExcelMapper extends Mapper<IntWritable,Text,IntWritable,Text> {\r\n    @Override\r\n    protected void map(IntWritable key, Text value, Context context) throws IOException, InterruptedException {\r\n        super.map(key, value, context);\r\n    }\r\n}\r\n```\r\n\r\n## ExcelJob.java\r\n```java\r\npublic class ExcelJob {\r\n    public static void main(String[] args) throws Exception{\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(ExcelJob.class);\r\n        job.setMapperClass(ExcelMapper.class);\r\n        job.setMapOutputKeyClass(IntWritable.class);\r\n        job.setMapOutputValueClass(Text.class);\r\n        job.setInputFormatClass(ExcelFileInputFormat.class);\r\n        //不需要Reduce\r\n        job.setNumReduceTasks(0);\r\n        //指定文件得读取位置\r\n        FileInputFormat.setInputPaths(job, new Path(\"/wc/excel\"));\r\n        //指定文件得输出位置\r\n        FileOutputFormat.setOutputPath(job, new Path(\"/wc/excelout\"));\r\n\r\n        System.exit(job.waitForCompletion(true) ? 0 : -1);\r\n    }\r\n}\r\n```\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.5. Demo 自定义 InputFileFormat",
+      "lvl1": "pom.xml",
+      "lvl2": "ExcelInputFormat.java",
+      "lvl3": "ExcelRecordReader.java",
+      "lvl4": "ExcelMapper.java",
+      "lvl5": "ExcelJob.java"
+    },
+    "frontmatter": {
+      "title": "15.5. Demo 自定义 InputFileFormat",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.6. Demo 自定义 OutputFileFormat",
+    "path": "/docs/architect/hadoop/Hadoop-15.6.DemozidingyiOutputFileFormat.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.6.DemozidingyiOutputFileFormat.html",
+    "content": "---\r\ntitle: 15.6. Demo 自定义 OutputFileFormat\r\ndate: 2025/07/02\r\n---\r\n\r\n如果单词是老师人名，放到一个目录，否则放到另外一个目录\r\n\r\n## TeacherOutPutFormat.java\r\n```java\r\npublic class TeacherOutPutFormat extends FileOutputFormat<Text,NullWritable> {\r\n    \r\n    public RecordWriter<Text,NullWritable> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {\r\n        FileSystem fs = FileSystem.get(job.getConfiguration());\r\n        Path teacherPath = new Path(\"/wc/excelteacher/excelteacher.txt\");\r\n        Path otherPath = new Path(\"/wc/excelother/excelother.txt\");\r\n        FSDataOutputStream teacherOut = fs.create(teacherPath);\r\n        FSDataOutputStream otherOut = fs.create(otherPath);\r\n        return new TeacherRecordWriter(teacherOut,otherOut);\r\n    }\r\n\r\n    static class TeacherRecordWriter extends RecordWriter<Text,NullWritable> {\r\n        FSDataOutputStream teacherOut;\r\n        FSDataOutputStream otherOut;\r\n        \r\n        public TeacherRecordWriter(FSDataOutputStream teacherOut, FSDataOutputStream otherOut) {\r\n            this.teacherOut = teacherOut;\r\n            this.otherOut = otherOut;\r\n        }\r\n\r\n        public void write(Text key, NullWritable value) throws IOException, InterruptedException {\r\n            String keyStr = key.toString()+\"\\n\";\r\n            if(keyStr.contains(\":teacher\")){\r\n                String resultKey = keyStr.replace(\":teacher\", \"\");\r\n                teacherOut.write(resultKey.getBytes());\r\n            }else {\r\n                otherOut.write(keyStr.getBytes());\r\n            }\r\n        }\r\n\r\n        public void close(TaskAttemptContext context) throws IOException, InterruptedException {\r\n            if(teacherOut !=null) {\r\n                teacherOut.close();\r\n            }\r\n            if(otherOut !=null) {\r\n                otherOut.close();\r\n            }\r\n        }\r\n    }\r\n}\r\n```\r\n\r\n## ExcelMapper.java\r\n```java\r\npublic class ExcelMapper extends Mapper<IntWritable,Text,Text,NullWritable> {\r\n    private List<String> teachers = null;\r\n    \r\n    @Override\r\n    protected void map(IntWritable key, Text value, Context context) throws IOException, InterruptedException {\r\n        String[] words = value.toString().split(\" \");\r\n        for(String word :words) {\r\n            if(teachers.contains(word)) {\r\n                word = word+\":teacher\";\r\n            }\r\n            context.write(new Text(word),NullWritable.get());\r\n        }\r\n    }\r\n\r\n    @Override\r\n    protected void setup(Context context) throws IOException, InterruptedException {\r\n        teachers = new ArrayList<String>();\r\n        teachers.add(\"deer\");\r\n        teachers.add(\"james\");\r\n        teachers.add(\"peter\");\r\n        teachers.add(\"lison\");\r\n        teachers.add(\"king\");\r\n        teachers.add(\"mark\");\r\n    }\r\n}\r\n```\r\n\r\n## ExcelJob.java\r\n```java\r\npublic class ExcelJob {\r\n    public static void main(String[] args) throws Exception{\r\n        Configuration conf = new Configuration();\r\n        Job job = Job.getInstance(conf);\r\n        job.setJarByClass(ExcelJob.class);\r\n        job.setMapperClass(ExcelMapper.class);\r\n        job.setMapOutputKeyClass(Text.class);\r\n        job.setMapOutputValueClass(NullWritable.class);\r\n        job.setInputFormatClass(ExcelFileInputFormat.class);\r\n        job.setOutputFormatClass(TeacherOutPutFormat.class);\r\n        //不需要Reduce\r\n        job.setNumReduceTasks(0);\r\n        //指定文件得读取位置\r\n        FileInputFormat.setInputPaths(job,new Path(\"D:\\\\wc\\\\excel\"));\r\n        //指定文件得输出位置 还有success文件需要输出 \r\n        FileOutputFormat.setOutputPath(job,new Path(\"D:\\\\wc\\\\excelout\"));\r\n\r\n        System.exit(job.waitForCompletion(true) ? 0 : -1);\r\n    }\r\n}\r\n```\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.6. Demo 自定义 OutputFileFormat",
+      "lvl1": "TeacherOutPutFormat.java",
+      "lvl2": "ExcelMapper.java",
+      "lvl3": "ExcelJob.java"
+    },
+    "frontmatter": {
+      "title": "15.6. Demo 自定义 OutputFileFormat",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "15.7. Demo 文件操作 FileSystem",
+    "path": "/docs/architect/hadoop/Hadoop-15.7.DemowenjiancaozuoFileSystem.html",
+    "url": "/docs/architect/hadoop/Hadoop-15.7.DemowenjiancaozuoFileSystem.html",
+    "content": "---\r\ntitle: 15.7. Demo 文件操作 FileSystem \r\ndate: 2025/07/02\r\n---\r\n\r\n\r\n## FSTest.java\r\n```java\r\n/**\r\n * 需要安装Hadoop程序, 并配置环境变量(HADOOP_HOME)\r\n * 不配置也可以使用部分功能\r\n * 配置本地的hosts文件, 对应hadoop01的ip地址\r\n */\r\n@Slf4j\r\npublic class FSTest {\r\n\r\n    public static FileSystem fileSystem;\r\n\r\n\r\n    @Before\r\n    public void init() throws URISyntaxException, IOException, InterruptedException {\r\n        fileSystem = FileSystem.get(new URI(\"hdfs://hadoop01:9000\"), new Configuration(), \"root\");\r\n    }\r\n\r\n    @After\r\n    public void close() throws IOException {\r\n        fileSystem.close();\r\n    }\r\n\r\n    //显示根目录下文件\r\n    @Test\r\n    public void showRootFiles() throws Exception {\r\n        RemoteIterator<LocatedFileStatus> files = fileSystem.listFiles(new Path(\"/\"), false);\r\n        while (files.hasNext()) {\r\n            LocatedFileStatus fileStatus = files.next();\r\n            Path path = fileStatus.getPath();\r\n            String name = path.getName();\r\n            log.info(\"{} -> {}\", path, name);\r\n        }\r\n    }\r\n\r\n    //测试上传文件\r\n    @Test\r\n    public void testCopyFromLocalFile() throws Exception {\r\n        Path src = new Path(\"E:\\\\work\\\\test.txt\");\r\n        Path dst = new Path(\"/\");\r\n        fileSystem.copyFromLocalFile(src, dst);\r\n    }\r\n\r\n    //测试删除文件\r\n    @Test\r\n    public void testDelete() throws Exception {\r\n        Path dst = new Path(\"/test.txt\");\r\n        fileSystem.delete(dst, true);\r\n    }\r\n\r\n    //测试使用流的方式上传\r\n    @Test\r\n    public void testUploadUseStream() throws Exception {\r\n        FileInputStream fis = new FileInputStream(\"E:\\\\work\\\\test.txt\");\r\n        Path path = new Path(\"/test.txt\");\r\n        FSDataOutputStream fos = fileSystem.create(path);\r\n        IOUtils.copy(fis, fos);\r\n    }\r\n\r\n    //测试下载文件\r\n    @Test\r\n    public void testCopyToLocalFile() throws Exception {\r\n//        这种方式只有配置了HADOOP_HOME之后才能使用\r\n//        fileSystem.copyToLocalFile(new Path(\"/test.txt\"), new Path(\"E:\\\\work\\\\test2.txt\"));\r\n\r\n//        使用Java默认的方式 (RawLocalFileSystem)\r\n        fileSystem.copyToLocalFile(false, new Path(\"/test.txt\"), new Path(\"E:\\\\work\\\\test2.txt\"), true);\r\n    }\r\n}\r\n```\r\n\r\n\r\n## pom.xml\r\n```xml\r\n    <dependencies>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-common</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-hdfs</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.apache.hadoop</groupId>\r\n            <artifactId>hadoop-client</artifactId>\r\n            <version>3.3.5</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>junit</groupId>\r\n            <artifactId>junit</artifactId>\r\n            <version>4.13.2</version>\r\n        </dependency>\r\n\r\n        <dependency>\r\n            <groupId>org.slf4j</groupId>\r\n            <artifactId>slf4j-api</artifactId>\r\n            <version>2.0.7</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.slf4j</groupId>\r\n            <artifactId>slf4j-simple</artifactId>\r\n            <version>2.0.7</version>\r\n            <scope>test</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.projectlombok</groupId>\r\n            <artifactId>lombok</artifactId>\r\n            <version>1.18.26</version>\r\n            <scope>provided</scope>\r\n        </dependency>\r\n    </dependencies>\r\n```\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "15.7. Demo 文件操作 FileSystem",
+      "lvl1": "FSTest.java",
+      "lvl2": "pom.xml"
+    },
+    "frontmatter": {
+      "title": "15.7. Demo 文件操作 FileSystem",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "16.1. 启动时没有启动 datanode",
+    "path": "/docs/architect/hadoop/Hadoop-16.1.qidongshimeiyouqidongdatanode.html",
+    "url": "/docs/architect/hadoop/Hadoop-16.1.qidongshimeiyouqidongdatanode.html",
+    "content": "---\r\ntitle: 16.1. 启动时没有启动 datanode\r\ndate: 2025/07/02\r\n---\r\n\r\n原因:\r\n在第一次格式化`dfs`后，启动并使用了`hadoop`，后来又重新执行了格式化命令 `hdfs namenode -format`，这时`namenode`的`clusterID`会重新生成，而`datanode`的`clusterID` 保持不变。\r\n\r\n解决方法:\r\n1. 删除目录，重新格式化\r\n2. 将`name/current`下的`VERSION`中的`clusterID`复制到`data/current`下的`VERSION`中，覆盖掉原来的`clusterID`\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "16.1. 启动时没有启动 datanode"
+    },
+    "frontmatter": {
+      "title": "16.1. 启动时没有启动 datanode",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "16.2. ClassNotFoundException",
+    "path": "/docs/architect/hadoop/Hadoop-16.2.ClassNotFoundException.html",
+    "url": "/docs/architect/hadoop/Hadoop-16.2.ClassNotFoundException.html",
+    "content": "---\r\ntitle: 16.2. ClassNotFoundException\r\ndate: 2025/07/02\r\n---\r\n\r\n1. 输入命令 `hadoop classpath`, 将结果复制下来\r\n2. `mapred-site.xml` 中加入:\r\n```xml\r\n  <property>\r\n     <name>mapreduce.application.classpath</name>\r\n     <value>刚才复制的值</value>\r\n   </property>\r\n```\r\n1. `yarn-site.xml` 中加入:\r\n```xml\r\n  <property>\r\n     <name>yarn.application.classpath</name>\r\n     <value>刚才复制的值</value>\r\n   </property>\r\n\r\n```\r\n4. 重启 hadoop 集群\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "16.2. ClassNotFoundException"
+    },
+    "frontmatter": {
+      "title": "16.2. ClassNotFoundException",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "17.1. 常用命令 fs",
+    "path": "/docs/architect/hadoop/Hadoop-17.1.changyongminglingfs.html",
+    "url": "/docs/architect/hadoop/Hadoop-17.1.changyongminglingfs.html",
+    "content": "---\r\ntitle: 17.1. 常用命令 fs\r\ndate: 2025/07/02\r\n---\r\n\r\n|命令|作用|\r\n|-|-|\r\n|`hadoop fs -help`|帮助命令|\r\n|`hadoop fs -ls /`|显示目录信息|\r\n|`hadoop fs -ls hdfs://hadoop01:9000/`|显示目录信息(使用Nn节点)|\r\n|`hadoop fs -mkdir -p /path1/path2/path3`|创建目录|\r\n|`hadoop fs -moveFromLocal /file/a.txt /path1/path2`|从本地剪切粘贴到hdfs|\r\n|`hadoop fs -appendToFile  b.txt /file/a.txt`|追加文件|\r\n|`hadoop fs -cat /a.txt`|显示文件|\r\n|`hadoop fs -chmod 666 /file/a.txt`|改权限|\r\n|`hadoop fs -chown root:root /file/a.txt`|改组和拥有者|\r\n|`hadoop fs -chgrp group /file/a.txt`|改组|\r\n|`hadoop fs -copyFromLocal ./b.txt /`|拷贝文件到HDFS (上传)|\r\n|`hadoop fs -copyToLocal /b.txt /c.txt`|拷贝HDFS文件到本地 (下载)|\r\n|`hadoop fs -cp /aa.txt /bbb.txt`|复制|\r\n|`hadoop fs -mv /aa.txt /bbb.txt`|移动|\r\n|`hadoop fs -get /aa.txt`|下载|\r\n|`hadoop fs -put aa.txt /file`|上传|\r\n|`hadoop fs -getmerge /file bb.txt`|合并下载某个目录中的多个文件|\r\n|`hadoop fs -rmdir /file1/file2`|删除空目录|\r\n|`hadoop fs -rm -r /d.txt`|删除文件或文件夹|\r\n|`hadoop fs -df -h /`|统计文件系统可用空间|\r\n|`hadoop fs -du -s -h /file`|统计文件夹大小|\r\n|`hadoop fs -count /file`|统计文件夹节点数量|\r\n|`hadoop fs -setrep 3 /aa.txt`|设置副本数量|\r\n|`hdfs dfsadmin -report`|查看集群状态|\r\n\r\n---\r\n[官方文档](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html)\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "17.1. 常用命令 fs"
+    },
+    "frontmatter": {
+      "title": "17.1. 常用命令 fs",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "2.节点",
+    "path": "/docs/architect/hadoop/Hadoop-2.jiedian.html",
+    "url": "/docs/architect/hadoop/Hadoop-2.jiedian.html",
+    "content": "---\r\ntitle: 2.节点\r\ndate: 2025/07/02\r\n---\r\n\r\n* NN: NameNode fdfs 节点的 leader\r\n* DN: DataNode fdfs 的数据节点\r\n* SNN SecondaryNameNode fdfs 节点的镜像复制节点\r\n* RM: resoucemanager yarn 资源管理器的主节点\r\n* NM: nodemanager yarn 资源管理器的从节点\r\n* JN: JournalNode 日志节点\r\n\r\n---\r\n\r\n* ZKFC: DFSZKFailoverController Zookeeper 高可用控制\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "2.节点"
+    },
+    "frontmatter": {
+      "title": "2.节点",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "3. HDFS 读写文件流程",
+    "path": "/docs/architect/hadoop/Hadoop-3.HDFSduxiewenjianliucheng.html",
+    "url": "/docs/architect/hadoop/Hadoop-3.HDFSduxiewenjianliucheng.html",
+    "content": "---\r\ntitle: 3. HDFS 读写文件流程\r\ndate: 2025/07/02\r\n---\r\n\r\n## HDFS 特点\r\n\r\n1. hdfs 里的文件是分块（block）存储的，默认大小是 128M\r\n2. hdfs 使用统一的抽象目录树管理文件，客户端不需要关心具体的文件分块\r\n    * 例如：hdfs://hadoop01:port/path1/path2/file\r\n3. 抽象目录树以及分块的信息由 namenode 节点管理\r\n4. 具体的 block 存储在每一个节点上，并且每一个 block 可以有多个副本（dfs.replication）\r\n5. Hdfs 适合设计成一次写入多次读取的情况，不支持修改\r\n\r\n## HDFS 写文件流程\r\n\r\n![HDFS 写文件流程](static/HDFS-W.png)\r\n\r\n举例来说，现在要上传一个 hadoop.jar 文件, 200M（按默认得配置应该分成两个 block [128,72]）\r\n对应命令是： `hadoop fs put hadoop.jar /`\r\n\r\n1. 客户端使用 FIleSystem 上传\r\n2. FIleSystem 与 namenode 进行通信，nn 会检查自己维护得目录树，判断当前目录是否存在\r\n3. 当 namenode 正确返回后，客户端再向 namenode 请求上传第一个 block, namenode 确认 datanode 的状态，把健康的 datanode 集合返回给客户端，客户端会根据返回的 datanode 集合挑选一个进行连接\r\n4. 客户端对每一个用于传输的节点都建立 pipeline 管道，并对传输第一个 block 块的数据（每次传输的并不是一整个 block 块，而是一个 packet，默认大小为 64K，64K 的 packet 中每次传输 512b 的数据时（一个 chunk）会进行一次校验）所以你可以把 packet 又理解成 chunk的集合\r\n5. 每个 datenode 写完个 block 后再返回确认信息\r\n6. 所有写完了，关闭输出流\r\n7. 整个完成后最后通知 namdenode 完成数据上传\r\n\r\n\r\n## HDFS 读文件流程\r\n\r\n![HDFS 写文件流程](static/HDFS-R.png)\r\n\r\n`hadoop fs get /hadoop.jar`\r\n\r\n1. client 访问 NameNode，查询元数据信息，获得这个文件的数据块位置列表，返回输入流对象。\r\n2. 就近挑选一台 datanode 服务器，请求建立输入流\r\n3. DataNode 向输入流中中写数据，以 packet 为单位\r\n4. 关闭输入流\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "3. HDFS 读写文件流程",
+      "lvl1": "HDFS 特点",
+      "lvl2": "HDFS 写文件流程",
+      "lvl3": "HDFS 读文件流程"
+    },
+    "frontmatter": {
+      "title": "3. HDFS 读写文件流程",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "4.元数据管理 edits fsimage",
+    "path": "/docs/architect/hadoop/Hadoop-4.yuanshujuguanli-edits_fsimage.html",
+    "url": "/docs/architect/hadoop/Hadoop-4.yuanshujuguanli-edits_fsimage.html",
+    "content": "---\r\ntitle: 4.元数据管理 edits fsimage\r\ndate: 2025/07/02\r\n---\r\n\r\n## 元数据的存储形式\r\nhdfs 的读写流程都离不开 namenode，在 namenode 中维护了文件、文件块的信息，这些信息统统称之为元数据\r\n\r\n元数据在 hdfs 中有 3 种存在形式 (<font color=\"red\">内存的数据 = fsimage + edits 文件</font>)\r\n1. 存在内存中，这个最全的元数据\r\n2. fsimage 磁盘元数据镜像文件\r\n3. 最新的操作日志文件\r\n\r\n查看存储结构:\r\n* `cd /soft/data/tmp/dfs/name/current`\r\n* `hdfs oev -i edits_0000000000000001913-0000000000000001959 -o edits.xml`\r\n* `hdfs oiv -i fsimage_0000000000000001972 -p XML -o fsimage.xml`\r\n\r\n## checkpoint\r\n当达到某个条件后，secondary namenode 会把 namenode 上保存的 edits 和最新的 fsimage 下载到本地，并把这些 edits 和 fsimage 进行合并，产生新的 fsimage，这整个过程把他称作 <font color=\"red\">checkpoint</font> ([官方文档](http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml))\r\n\r\ncheckpoint 的条件配置 (hdfs-site.xml):\r\n```properties\r\n#检查触发条件是否满足的频率，60 秒\r\ndfs.namenode.checkpoint.check.period=60 \r\n\r\n# 以下两个参数做checkpoint 操作时，代表 secondary namenode 的本地工作目录\r\ndfs.namenode.checkpoint.dir=file://${hadoop.tmp.dir}/dfs/namesecondary\r\ndfs.namenode.checkpoint.edits.dir=${dfs.namenode.checkpoint.dir} \r\n\r\n#最大重试次数\r\ndfs.namenode.checkpoint.max-retries=3 \r\n#两次 checkpoint 之间的时间间隔 3600 秒\r\ndfs.namenode.checkpoint.period=3600 \r\n#两次 checkpoint 之间最大的操作记录\r\ndfs.namenode.checkpoint.txns=1000000 \r\n```\r\n\r\n## checkpoint 工作机制\r\n\r\n![checkpoint 工作机制](static/checkpoint.png)\r\n\r\n1. SecondaryNameNode 会定时的和 NameNode 通信，请求其停止使用 edits 文件，暂时将新的写操作写到一个新的文件 edits.new 上，这个操作是瞬时完成的，上层的写日志函数完全感觉不到差别\r\n2. econdaryNameNode 通过 HTTP 的 get 方法从 NameNode 上获取到 fsimage 和 edits 文件，SecondaryNameNode 将 fsimage 文件载入内存中，逐一执行 edits 文件中的事务，创建新的合并后的 fsimage 文件，<font color=\"red\">使得内存中的 fsimage 保存最新</font>。\r\n3. SecondaryNameNode 执行完 2 之后，会通过 post 方法将新的 fsimage 文件发送到 NameNode 节点上\r\n4. NameNode 将从 SecondaryNameNode 接收到的新的 fsimage 文件保存为.ckpt 文件\r\n5. NameNode 重新命名 fsimage.ckpt 为 fsimage 替换旧的 fsimage 文件，同时将 edits.new 替换为 edits 文件，<font color=\"red\">通过这个过程 edits 文件就变小了</font>。\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.元数据管理 edits fsimage",
+      "lvl1": "元数据的存储形式",
+      "lvl2": "checkpoint",
+      "lvl3": "checkpoint 工作机制"
+    },
+    "frontmatter": {
+      "title": "4.元数据管理 edits fsimage",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "5. mapreduce 工作机制",
+    "path": "/docs/architect/hadoop/Hadoop-5.mapreducegongzuojizhi.html",
+    "url": "/docs/architect/hadoop/Hadoop-5.mapreducegongzuojizhi.html",
+    "content": "---\r\ntitle: 5. mapreduce 工作机制\r\ndate: 2025/07/02\r\n---\r\n\r\n一个完整的 mapreduce 程序在分布式运行时有三类实例进程：\r\n1. MRAppMaster：负责整个程序的过程调度及状态协调\r\n2. MapTask：负责 map 阶段的整个数据处理流程\r\n3. ReduceTask：负责 reduce 阶段的整个数据处理流程\r\n\r\n---\r\n流程:\r\n1. 一个 mr 程序启动的时候，最先启动的是 MRAppMaster，MRAppMaster 启动后根据本次 job 的描述信息，计算出需要的 maptask 实例数量，然后向集群申请机器启动相应数量的 maptask 进程（这里先理解成一个文件一个 maptask）\r\n2. maptask 进程启动之后，根据给定的数据切片范围进行数据处理，主体流程为：\r\n    1. 利用客户指定的 inputformat 来获取数据，形成输入 K，V 对\r\n    2. 将输入 KV 对传递给客户定义的 `map()` 方法，做逻辑运算，并将 `map()` 方法输出的 KV 对收集到缓存\r\n    3. 将缓存中的 KV 对按照 K 分区排序后不断溢写到磁盘文件\r\n3. MRAppMaster 监控到所有 maptask 进程任务完成之后，会根据客户指定的参数启动相应数量的 reducetask 进程，并告知 reducetask 进程要处理的数据范围（数据分区）\r\n4. Reducetask 进程启动之后，根据 MRAppMaster 告知的待处理数据所在位置，从若干台 maptask 运行所在机器上获取到若干个 maptask 输出结果文件，并在本地进行重新归并排序，然后按照相同 key 的 KV 为一个组，调用客户定义的 `reduce()` 方法进行逻辑运算，并收集运算输出的结果 KV，然后调用客户指定的 outputformat 将结果数据输出到外部存储\r\n\r\n---\r\n\r\n{% mermaid %}\r\ngraph TD\r\n    M -.->|开启两个MapTask| C1\r\n    M -.->|所有maptask进程完成后<br>开启两个ReduceTask<br>告知数据所在位置| R1\r\n    M(MRAppMaster) --> A(input dir)\r\n    A --> B1([1.txt])\r\n    A --> B2([2.txt])\r\n    B1 --InputFormat<br>TextInputFormat--> C1([MapTask1])\r\n    B2 --InputFormat<br>TextInputFormat--> C2([MapTask2])\r\n    M -.->|开启两个MapTask| C2\r\n    C1 --Mapper.map-->D1([context.write])\r\n    C2 --Mapper.map-->D2([context.write])\r\n    D1 --> E1(内存缓存-环形缓冲区)\r\n    D2 --> E2(内存缓存-环形缓冲区)\r\n    E1 --按照KEY分区排序<br>写入磁盘--> F1(溢出文件1) \r\n    E1 --按照KEY分区排序<br>写入磁盘--> F2(溢出文件2) \r\n    E2 --按照KEY分区排序<br>写入磁盘--> F3(溢出文件3) \r\n    E2 --按照KEY分区排序<br>写入磁盘--> F4(溢出文件4)\r\n    F1 --> H1([Shuffle流程])\r\n    F2 --> H1([Shuffle流程])\r\n    F3 --> H2([Shuffle流程])\r\n    F4 --> H2([Shuffle流程])\r\n    H1 -.-> F5(所有客户机的数据)\r\n    H2 -.-> F5\r\n    F5 --从客户机获取溢出文件<br>key.hashcode%2=0--> R1([ReduceTask1])\r\n    F5 --从客户机获取溢出文件<br>key.hashcode%2=1--> R2([ReduceTask2])\r\n    M -.->|所有maptask进程完成后<br>开启两个ReduceTask<br>告知数据所在位置| R2\r\n    R1 --归并排序分组<br>Reducer.reduce--> G1([context.write])\r\n    R2 --归并排序分组<br>Reducer.reduce--> G2([context.write])\r\n    G1 --OutputFormat<br>TextOutputFormat--> P1(part-r-00000)\r\n    G2 --OutputFormat<br>TextOutputFormat--> P2(part-r-00001)\r\n{% endmermaid %}\r\n\r\n---\r\n\r\n关于Shuffle流程: [6.提交任务流程与Shuffle流程](./Hadoop-6.提交任务流程与Shuffle流程.md)\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "5. mapreduce 工作机制"
+    },
+    "frontmatter": {
+      "title": "5. mapreduce 工作机制",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "6.提交任务流程与 Shuffle 流程",
+    "path": "/docs/architect/hadoop/Hadoop-6.tijiaorenwuliuchengyuShuffleliucheng.html",
+    "url": "/docs/architect/hadoop/Hadoop-6.tijiaorenwuliuchengyuShuffleliucheng.html",
+    "content": "---\r\ntitle: 6.提交任务流程与 Shuffle 流程\r\ndate: 2025/07/02\r\n---\r\n\r\n\r\nshuffle 并不是个组件，而是 mr 处理流程中的一个子过程，它过程开始于 maptask 把数据写入环形缓存一直到数据到 reduce 之间的整个过程\r\n\r\n![Shuffle 流程](static/shuffle.png)\r\n\r\n1. maptask 收集我们的 `map()` 方法输出的 kv 对，放到内存缓冲区中\r\n2. 从内存缓冲区不断溢出本地磁盘文件，可能会溢出多个文件\r\n3. 多个溢出文件会被合并成大的溢出文件\r\n4. <font color=\"orange\">在溢出过程中，及合并 Combine 的过程中，都要调用 partitoner 进行分组和针对 key 进行排序 (compare)</font>\r\n5. reducetask 根据自己的分区号，去各个 maptask 机器上取相应的结果分区数据\r\n6. reducetask 会取到同一个分区的来自不同 maptask 的结果文件，<font color=\"orange\">reducetask 会将这些文件再进行合并（归并排序）</font>\r\n7. 合并成大文件后，shuffle 的过程也就结束了，后面进入 reducetask 的逻辑运算过程（从文件中取出一个个的键值对 group，调用用户自定义的 `reduce()`方法）\r\n8. 缓冲区的大小可以通过参数调整, 参数：`mapreduce.task.io.sort.mb` 默认 100M\r\n\r\n---\r\n[官方文档](http://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "6.提交任务流程与 Shuffle 流程"
+    },
+    "frontmatter": {
+      "title": "6.提交任务流程与 Shuffle 流程",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "7.切片逻辑",
+    "path": "/docs/architect/hadoop/Hadoop-7-qiepianluoji.html",
+    "url": "/docs/architect/hadoop/Hadoop-7-qiepianluoji.html",
+    "content": "---\r\ntitle: 7.切片逻辑\r\ndate: 2025/07/02\r\n---\r\n\r\n默认切片的大小与 hdfs 的 block 的 size 相等\r\n切片大小: `Math.max(minSize, Math.min(maxSize, blockSize))`\r\n* `mapreduce.input.fileinputformat.split.minsize` 默认值 `1`\r\n* `mapreduce.input.fileinputformat.split.maxsize` 默认值 `Long.MAX_VALUE`\r\n\r\n切片规则: `剩余长度 / splitsize < 1.1`\r\n\r\n---\r\n\r\n流程:\r\n\r\n{% mermaid %}\r\ngraph TD\r\n    A(input.txt) --> F([FileInputFormat])\r\n    F --> J([Jobsubmit])\r\n    J -.->|剩余/splitsize<1.1| S1([切片1])\r\n    J -.->|剩余/splitsize<1.1| S2([切片2])\r\n    S1 --写入文件--> JS(job.split)\r\n    S2 --写入文件--> JS(job.split)\r\n    JS --MrAppMaster--> M1([MapTask1])\r\n    JS --MrAppMaster--> M2([MapTask2])\r\n{% endmermaid %}\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "7.切片逻辑"
+    },
+    "frontmatter": {
+      "title": "7.切片逻辑",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "8.YARN流程",
+    "path": "/docs/architect/hadoop/Hadoop-8-YARNliucheng.html",
+    "url": "/docs/architect/hadoop/Hadoop-8-YARNliucheng.html",
+    "content": "---\r\ntitle: 8.YARN流程\r\ndate: 2025/07/02\r\n---\r\n\r\nYARN 是运算资源调度系统，他只做运算资源的分配和调度，不参与用户程序内部的具体工作，所以 YARN 可以作为一个通用的资源调度平台\r\n\r\n在 Hadoop1.x 的时候其实是没有 YRAN，当初的 MapReduce 由两个组件组成\r\n* Job Tracker: 相当于 RM + MrAppMaster\r\n* Task Tracker: 相当于 NM + Task(MapTask, ReduceTask)\r\n\r\n---\r\n\r\n![YARN 流程](static/YARN.png)\r\n\r\n1. 客户端程序向 ResourceManager 提交应用并请求一个 ApplicationMaster 实例\r\n2. ResourceManager 找到一个可以运行一个 Container 的 NodeManager，并在这个 Container 中启动 ApplicationMaster 实例\r\n3. ApplicationMaster 向 ResourceManager 进行注册 ，注册之后客户端就可以查询 ResourceManager 获得自己 ApplicationMaster 的详细信息 ，以后就可以和自己的 ApplicationMaster 直接交互了（这个时候，客户端主动和 ApplicationMaster 交互，应用先向 ApplicationMaster 发送一个满足自己需求的资源请求）\r\n4. 在平常的操作过程中，ApplicationMaster 根据协议向 ResourceManager 发送资源请求\r\n5. 当 Container 被成功分配后，ApplicationMaster 通过向 NodeManager 发送信息来启动 Container，信息包含了能够让 Container 和 ApplicationMaster 交互所需要的资料\r\n6. 应用程序的代码以 task 形式在启动的 Container 中运行，并把运行的进度、状态等信息通过协议发送给 ApplicationMaster\r\n7. 在应用程序运行期间，提交应用的客户端主动和 ApplicationMaster 交流获得应用的运行状态、进度更新等信息\r\n8. 一旦应用程序执行完成并且所有相关工作也已经完成，ApplicationMaster 向 ResourceManager 取消注册然后关闭，用到所有的 Container 也归还给系统\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "8.YARN流程"
+    },
+    "frontmatter": {
+      "title": "8.YARN流程",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "9. mapreduce YARN 流程",
+    "path": "/docs/architect/hadoop/Hadoop-9-mapreduce-YARNliucheng.html",
+    "url": "/docs/architect/hadoop/Hadoop-9-mapreduce-YARNliucheng.html",
+    "content": "---\r\ntitle: 9. mapreduce YARN 流程\r\ndate: 2025/07/02\r\n---\r\n\r\n![mapreduce-YARN流程](static/YARN-MR.png)\r\n\r\n1. 应用申请运行RM的JOB\r\n2. RM返回JOBID以及提交资源的目录\r\n3. 应用提交相关文件到资源目录\r\n4. 通知RM, JOB资源提交完毕\r\n5. RM初始任务TASK, 加入调度队列\r\n6. 空闲NM领取任务\r\n7. NM根据任务信息创建Container (并且从资源目录获取JOB资源)\r\n8. 应用发送指令启动NM的MrAppMaster\r\n9. MrAppMaster向RM请求运算节点\r\n10. MrAppMaster向请求回来的运算节点中启动MapTask\r\n11. MrAppMaster向请求回来的运算节点中启动ReduceTask\r\n12. JOB执行完成后, MrAppMaster向RM注销自己\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "9. mapreduce YARN 流程"
+    },
+    "frontmatter": {
+      "title": "9. mapreduce YARN 流程",
+      "date": "2025/07/02"
+    },
+    "type": "content"
+  },
+  {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
     },
     "type": "content"
   },
