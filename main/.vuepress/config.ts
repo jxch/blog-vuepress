@@ -46,6 +46,14 @@ export default defineUserConfig({
             "rocketmq/RocketMQ-6.常见问题",
           ],
         }, {
+          text: "Kafka",
+          children: [
+            "kafka/Kafka-1.基础",
+            "kafka/Kafka-2.代码模板",
+            "kafka/Kafka-3.设计原理",
+            "kafka/Kafka-4.优化",
+          ],
+        }, {
           text: "Hadoop",
           children: [
             "hadoop/Hadoop-1.生态",
