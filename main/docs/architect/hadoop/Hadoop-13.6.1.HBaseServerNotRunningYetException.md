@@ -3,7 +3,7 @@ title: 13.6.1. HBase ServerNotRunningYetException
 date: 2025/07/02
 ---
 
-:::denger ServerNotRunningYetException
+:::danger ServerNotRunningYetException
 - HBase ServerNotRunningYetException: Server is not running yet
 :::
 

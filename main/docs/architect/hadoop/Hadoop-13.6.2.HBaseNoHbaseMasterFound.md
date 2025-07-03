@@ -3,7 +3,7 @@ title: 13.6.2. HBase No Hbase Master Found
 date: 2025/07/02
 ---
 
-:::denger
+:::danger
 - HBase-stop-hbase.sh: no hbase master found
 :::
 
