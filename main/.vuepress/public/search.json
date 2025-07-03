@@ -1192,6 +1192,343 @@
     "type": "content"
   },
   {
+    "title": "1. 基础",
+    "path": "/docs/architect/rocketmq/RocketMQ-1.jichu.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-1.jichu.html",
+    "content": "---\r\ntitle: 1. 基础\r\ndate: 2025/07/03\r\n---\r\n\r\n\r\n- RocketMQ 集群架构 \r\n\t- ![](static/RocketMQ-基础-1.png)\r\n\t- Producer：消息生产者集群。通常是业务系统中的一个功能模块。 \r\n\t- Consumer：消息消费者集群。通常也是业务系统中的一个功能模块。\r\n\t- Broker：实际处理消息存储、转发等服务的核心组件。\r\n\t- NameServer : 提供轻量级的Broker路由服务。 管理Broker\r\n\t\t- 所以我们要启动RocketMQ服务，需要先启动NameServer。\r\n\t- Topic：区分消息的种类；\r\n\t\t- 一个发送者可以发送消息给一个或者多个Topic\r\n\t\t- 一个消息的接收者可以订阅一个或者多个Topic消息\r\n\t- Message Queue：相当于是Topic的分区；用于并行发送和接收消息\r\n\t- 这种主从结构是只做数据备份，没有容灾功能\r\n- Dledger 高可用集群：基于Raft协议\r\n\t- 修改conf/dleger下的配置文件\r\n- 系统参数调优\r\n\t- 配置RocketMQ的JVM内存大小 `runbroker.sh`\r\n\t\t- `-XX:+UseG1GC` 使用G1垃圾回收器\r\n\t\t- `-XX:G1HeapRegionSize=16m` 将G1的region块大小设为16M\r\n\t\t- `-XX:G1ReservePercent` 在G1的老年代中预留25%空闲内存\r\n\t\t- `-XX:InitiatingHeapOccupancyPercent=30` 当堆内存的使用率达到30%之后就会启动G1垃圾回收器尝试回收垃圾\r\n\t- RocketMQ的其他一些核心参数\r\n\t\t- `sendMessageThreadPoolNums=16` RocketMQ内部用来发送消息的线程池的线程数量是16个\r\n\t- Linux内核参数定制\r\n\t\t- ulimit，需要进行大量的网络通信和磁盘IO\r\n\t\t- vm.extra_free_kbytes，告诉VM在后台回收（kswapd）启动的阈值与直接回收（通过分配进程）的阈值之间保留额外的可用内存。RocketMQ使用此参数来避免内存分配中的长延迟\r\n\t\t- vm.min_free_kbytes，如果将其设置为低于1024KB，将会巧妙的将系统破坏，并且系统在高负载下容易出现死锁\r\n\t\t- vm.max_map_count，限制一个进程可能具有的最大内存映射区域数。RocketMQ将使用mmap加载CommitLog和ConsumeQueue，因此建议将为此参数设置较大的值\r\n\t\t- vm.swappiness，定义内核交换内存页面的积极程度。较高的值会增加攻击性，较低的值会减少交换量。建议将值设置为10来避免交换延迟\r\n\t\t- File descriptor limits，RocketMQ需要为文件（CommitLog和ConsumeQueue）和网络连接打开文件描述符。我们建议设置文件描述符的值为655350\r\n\t\t\t- `/proc/sys/vm`\r\n\t\t- 另外，RocketMQ的bin目录下有个`os.sh`里面设置了RocketMQ建议的系统内核参数\r\n- RocketMQ消息转发模型\r\n\t- ![](static/RocketMQ-基础-2.png)\r\n\t- 消息模型（Message Model） \r\n\t\t- RocketMQ 主要由 Producer、Broker、Consumer 三部分组成\r\n\t\t- Producer 负责生产消息，Consumer 负责消费消息，Broker 负责存储消息\r\n\t\t- Broker 在实际部署过程中对应一台服务器\r\n\t\t\t- 每个 Broker 可以存储多个Topic的消息，每个Topic 的消息也可以分片存储于不同的 Broker\r\n\t\t- Message Queue 用于存储消息的物理地址\r\n\t\t\t- 每个Topic中的消息地址存储于多个 Message Queue 中\r\n\t\t- ConsumerGroup 由多个Consumer 实例构成\r\n\t- 消息生产者（Producer） \r\n\t\t- 一个消息生产者会把业务应用系统里产生的消息发送到broker服务器\r\n\t\t- 同步发送、异步发送、顺序发送、单向发送\r\n\t\t\t- 同步和异步方式均需要Broker返回确认信息，单向发送不需要\r\n\t\t-  生产者中，会把同一类Producer组成一个集合，叫做生产者组\r\n\t\t\t- 同一组的Producer被认为是发送同一类消息且发送逻辑一致\r\n\t- 消息消费者（Consumer） \r\n\t\t-  负责消费消息，一般是后台系统负责异步消费\r\n\t\t- 一个消息消费者会从Broker服务器拉取消息、并将其提供给应用程序\r\n\t\t- 拉取式消费\r\n\t\t\t- 拉取式消费的应用通常主动调用Consumer的拉消息方法从Broker服务器拉消息、主动权由应用控制。一旦获取了批量消息，应用就会启动消费过程\r\n\t\t- 推动式消费\r\n\t\t\t- 推动式消费模式下Broker收到数据后会主动推送给消费端，该消费模式一般实时性较高\r\n\t\t-  消费者同样会把同一类Consumer组成一个集合，叫做消费者组\r\n\t\t\t- 这类Consumer通常消费同一类消息且消费逻辑一致\r\n\t\t\t- 消费者组使得在消息消费方面，实现负载均衡和容错的目标变得非常容易\r\n\t\t\t- 消费者组的消费者实例必须订阅完全相同的Topic\r\n\t\t- 集群消费模式下,  相同Consumer Group的每个Consumer实例平均分摊消息\r\n\t\t- 广播消费模式下，相同Consumer Group的每个Consumer实例都接收全量的消息\r\n\t- 主题（Topic）\r\n\t\t- 表示一类消息的集合，每个主题包含若干条消息，每条消息只能属于一个主题，是RocketMQ进行消息订阅的基本单位\r\n\t\t-  Topic只是一个逻辑概念，并不实际保存消息\r\n\t\t- 同一个Topic下的消息，会分片保存到不同的Broker上，而每一个分片单位，就叫做MessageQueue\r\n\t\t- MessageQueue是一个具有FIFO特性的队列结构，生产者发送消息与消费者消费消息的最小单位\r\n\t- 代理服务器（Broker Server） \r\n\t\t- 消息中转角色，负责存储消息、转发消息\r\n\t\t\t- 负责接收从生产者发送来的消息并存储、同时为消费者的拉取请求作准备\r\n\t\t\t- 也存储消息相关的元数据，包括消费者组、消费进度偏移和主题和队列消息等\r\n\t\t- Broker Server是RocketMQ真正的业务核心，包含了多个重要的子模块\r\n\t\t\t- Remoting Module：整个Broker的实体，负责处理来自clients端的请求\r\n\t\t\t- Client Manager：负责管理客户端(Producer/Consumer)和维护Consumer的Topic订阅信息\r\n\t\t\t- Store Service：提供方便简单的API接口处理消息存储到物理硬盘和查询功能\r\n\t\t\t- HA Service：高可用服务，提供Master Broker 和 Slave Broker之间的数据同步\r\n\t\t\t- Index Service：根据特定的Message key对投递到Broker的消息进行索引服务\r\n\t\t- RocketMQ中有两种Broker架构模式\r\n\t\t\t- 普通集群\r\n\t\t\t\t- 这种集群模式下会给每个节点分配一个固定的角色\r\n\t\t\t\t- master负责响应客户端的请求，并存储消息\r\n\t\t\t\t- slave则只负责对master的消息进行同步保存，并响应部分客户端的读请求\r\n\t\t\t\t- 消息同步方式分为同步同步和异步同步\r\n\t\t\t\t- 这种集群模式下各个节点的角色无法进行切换\r\n\t\t\t\t\t- 也就是说，master节点挂了，这一组Broker就不可用了\r\n\t\t\t- Dledger高可用集群\r\n\t\t\t\t- 集群会随机选出一个节点作为master\r\n\t\t\t\t\t- 当master节点挂了后，会从slave中自动选出一个节点升级成为master\r\n\t\t\t\t- 完成master节点往slave节点的消息同步\r\n\t- 名字服务（Name Server） \r\n\t\t- 名称服务充当路由消息的提供者\r\n\t\t- Broker Server会在启动时向所有的Name Server注册自己的服务信息\r\n\t\t\t- 后续通过心跳请求的方式保证这个服务信息的实时性\r\n\t\t- 生产者或消费者能够通过名字服务查找各主题相应的Broker IP列表\r\n\t\t- 多个Namesrv实例组成集群，但相互独立，没有信息交换\r\n\t\t\t-  这种特性也就意味着NameServer中任意的节点挂了，只要有一台服务节点正常，整个路由服务就不会有影响\r\n\t- 消息（Message） \r\n\t\t- 消息系统所传输信息的物理载体，生产和消费数据的最小单位，每条消息必须属于一个主题Topic\r\n\t\t- RocketMQ中每个消息拥有唯一的Message ID，且可以携带具有业务标识的Key\r\n\t\t\t- 系统提供了通过Message ID和Key查询消息的功能\r\n\t\t- 并且Message上有一个为消息设置的标志，Tag标签\r\n\t\t\t- 用于同一主题下区分不同类型的消息\r\n\t\t\t- 来自同一业务单元的消息，可以根据不同业务目的在同一主题下设置不同标签\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "1. 基础"
+    },
+    "frontmatter": {
+      "title": "1. 基础",
+      "date": "2025/07/03"
+    },
+    "type": "content"
+  },
+  {
+    "title": "2.消息类型&ACL",
+    "path": "/docs/architect/rocketmq/RocketMQ-2.xiaoxileixing_ACL.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-2.xiaoxileixing_ACL.html",
+    "content": "---\r\ntitle: 2.消息类型&ACL\r\ndate: 2025/07/03\r\n---\r\n\r\n- 消息类型\r\n- ACL 权限控制 \r\n\r\n---\r\n## 消息类型\r\n\r\n- 顺序消息 \r\n\t- 保证的是消息的局部有序，而不是全局有序\r\n\t- 消息发送者会采取Round Robin轮询方式把消息发送到不同的 MessageQueue (分区队列)\r\n\t\t- 消费者消费的时候也从多个MessageQueue上拉取消息，这种情况下消息是不能保证顺序的\r\n\t\t- 而只有当一组有序的消息发送到同一个MessageQueue上时，才能利用MessageQueue先进先出的特性保证这一组消息有序\r\n\t\t- MessageListenerConcurrently这个消息监听器则不会锁队列，每次都是从多个Message中取一批数据（默认不超过32条）。因此也无法保证消息有序\r\n\t- 消费者会从多个消息队列上去拿消息\r\n\t\t- 这时虽然每个消息队列上的消息是有序的，但是多个队列之间的消息仍然是乱序的\r\n\t\t- 消费者端要保证消息有序，就需要按队列一个一个来取消息，即取完一个队列的消息后，再去取下一个队列的消息\r\n\t\t- 而给consumer注入的MessageListenerOrderly对象，在RocketMQ内部就会通过锁队列的方式保证消息是一个一个队列来取的\r\n- 广播消息 \r\n- 延迟消息：`Message#setDelayTimeLevel`\r\n\t- 在调用producer.send方法后，消息并不会立即发送出去，而是会等一段时间再发送出去\r\n\t- 只支持18个固定的延迟级别（18种消息队列）\r\n- 批量消息 \r\n\t- 将多条消息合并成一个批量消息，一次发送出去\r\n\t- 如果批量消息大于1MB就不要用一个批次发送，而要拆分成多个批次消息发送\r\n\t\t- 实际最大的限制是4MB\r\n\t- 这些消息应该有相同的Topic，相同的waitStoreMsgOK\r\n\t- 而且不能是延迟消息、事务消息等\r\n- 过滤消息\r\n\t- 可以使用Message的Tag属性来简单快速的过滤信息\r\n\t- 一个应用可以就用一个Topic，而应用中的不同业务就用TAG来区分\r\n\t- 可以使用SQL表达式来对消息进行过滤：`MessageSelector#bySql`\r\n\t\t- 只有推模式的消费者可以使用SQL过滤\r\n- 事务消息\r\n\t- `TransactionMQProducer -> TransactionListener`\r\n\t- 事务消息只保证消息发送者的本地事务与发消息这两个操作的原子性\r\n\t\t- 但是并不保证消费者本地事务的原子性\r\n\t- 事务消息不支持延迟消息和批量消息\r\n\t- 默认将单个消息的检查次数限制为 15 次 `transactionCheckMax`\r\n\t\t- 超过则 Broker 将丢弃此消息，默认情况下同时打印错误日志 `AbstractTransactionCheckListener`\r\n\t- 事务消息将在 Broker 配置文件中的参数 transactionMsgTimeout 这样的特定时间长度之后被检查\r\n\t\t- 用户还可以通过设置用户属性 CHECK_IMMUNITY_TIME_IN_SECONDS 来改变这个限制\r\n\t\t\t- 该参数优先于 transactionMsgTimeout 参数\r\n\t- 事务性消息可能不止一次被检查或消费\r\n\t- 提交给用户的目标主题消息可能会失败，目前这依日志的记录而定\r\n\t\t- 如果希望确保事务消息不丢失、并且事务完整性得到保证，建议使用同步的双重写入机制\r\n\t- 事务消息的生产者 ID 不能与其他类型消息的生产者 ID 共享\r\n\t\t- 事务消息允许反向查询、MQ服务器能通过它们的生产者 ID 查询到消费者\r\n\t- 事务消息的实现机制\r\n\t\t- ![](static/RocketMQ-消息类型-ACL-1.png)\r\n\t\t\t- 在发送消息时，会将消息转为一个half半消息，并存入RocketMQ内部的一个 RMQ_SYS_TRANS_HALF_TOPIC 这个Topic，这样对消费者是不可见的\r\n\t\t\t- 再经过一系列事务检查通过后，再将消息转存到目标Topic，这样对消费者就可见了\r\n\t- 事务消息的作用\r\n\t\t- 事务消息只保证了分布式事务的一半\r\n\t\t- 对于复杂的分布式事务，RocketMQ提供的事务消息也是目前业内最佳的降级方案\r\n\r\n---\r\n## ACL 权限控制 \r\n\r\n- 权限控制（ACL）主要为RocketMQ提供Topic资源级别的用户访问控制\r\n- 用户在使用RocketMQ权限控制时，可以在Client客户端通过 RPCHook注入AccessKey和SecretKey签名\r\n\t- 同时，将对应的权限控制属性（包括Topic访问权限、IP白名单和AccessKey和SecretKey签名等）设置在`$ROCKETMQ_HOME/conf/plain_acl.yml`的配置文件中\r\n- Broker端对AccessKey所拥有的权限进行校验，校验不过，抛出异常\r\n- Broker端要在broker.conf中打开acl的标志\r\n\t- 这个配置文件是热加载的，也就是说要修改配置时，只要修改配置文件就可以了，不用重启Broker服务\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "2.消息类型&ACL",
+      "lvl1": "消息类型",
+      "lvl2": "ACL 权限控制"
+    },
+    "frontmatter": {
+      "title": "2.消息类型&ACL",
+      "date": "2025/07/03"
+    },
+    "type": "content"
+  },
+  {
+    "title": "3.代码示例",
+    "path": "/docs/architect/rocketmq/RocketMQ-3.daimashili.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-3.daimashili.html",
+    "content": "---\r\ntitle: 3.代码示例\r\ndate: 2025/07/03\r\n---\r\n\r\n:::tip\r\n- 消息发送者的固定步骤\r\n\t- 同步发送消息\r\n\t- 异步发送消息\r\n\t- 单向发送消息：只管把消息发出去\r\n- 消息消费者的固定步骤\r\n\t- 拉模式\r\n\t\t- DefaultMQPullConsumerImpl 这个消费者类已标记为过期\r\n\t\t- 替换的类是 DefaultLitePullConsumerImpl\r\n\t- 推模式\r\n- 顺序消息\r\n- 广播消息\r\n- 延迟消息\r\n- 批量消息\r\n- 过滤消息\r\n- 事务消息\r\n- ACL 权限控制 \r\n- SpringBoot 整合 RocketMQ \r\n:::\r\n\r\n---\r\n## 消息发送者的固定步骤 \r\n\r\n1. 创建消息生产者producer，并制定生产者组名 \r\n2. 指定Nameserver地址\r\n3. 启动producer \r\n4. 创建消息对象，指定主题Topic、Tag和消息体 \r\n5. 发送消息：同步发送、异步发送以及单向发送\r\n6. 关闭生产者producer\r\n\r\n```java\r\nDefaultMQProducer producer = new DefaultMQProducer(\"ProducerGroupName\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nMessage msg = new Message(\"TopicTest\",\"TagA\",\"OrderID188\", \r\n\t\"Hello world\".getBytes(RemotingHelper.DEFAULT_CHARSET));\r\n// 同步发送消息\r\nSendResult sendResult = producer.send(msg);\r\n// 异步发送消息\r\nproducer.setRetryTimesWhenSendAsyncFailed(3);\r\nproducer.send(msg, new SendCallback() { });\r\n// 单向发送消息\r\nproducer.sendOneway(msg);\r\nproducer.shutdown();\r\n```\r\n\r\n---\r\n## 消息消费者的固定步骤\r\n \r\n1. 创建消费者Consumer，制定消费者组名 \r\n2. 指定Nameserver地址\r\n3. 订阅主题Topic和Tag \r\n4. 设置回调函数，处理消息\r\n\t- 拉模式；推模式（推模式也是由拉模式封装出来的）\r\n5. 启动消费者consumer\r\n\r\n```java\r\n// 拉模式\r\nDefaultMQPullConsumer consumer = new DefaultMQPullConsumer(\"group_name\");\r\nconsumer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nconsumer.start();\r\nSet<MessageQueue> mqs = consumer.fetchSubscribeMessageQueues(\"TopicTest\");\r\nfor (MessageQueue mq : mqs) {\r\n\t// 从每个 MQ 中拉消息，指定 offset 和 maxNums\r\n\tPullResult pullResult = consumer.pullBlockIfNotFound(mq, null, 0, 32);\r\n\t// 该 MQ 中下一个消息的 offset\r\n\tlong offset = pullResult.getNextBeginOffset()\r\n\tswitch (pullResult.getPullStatus()) {\r\n\t\t// 如果该 MQ 中的消息没取完，应该继续取\r\n\t}\r\n}\r\nconsumer.shutdown();\r\n```\r\n```java\r\n// 订阅-拉模式\r\nDefaultLitePullConsumer litePullConsumer = new DefaultLitePullConsumer(\"lite_pull_consumer\");\r\nlitePullConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);\r\nlitePullConsumer.subscribe(\"TopicTest\", \"*\");\r\nlitePullConsumer.start();\r\nwhile (running) {\r\n\tList<MessageExt> messageExts = litePullConsumer.poll();\r\n}\r\nlitePullConsumer.shutdown();\r\n```\r\n```java\r\n// 分派-拉模式\r\nDefaultLitePullConsumer litePullConsumer = new DefaultLitePullConsumer(\"group_name\");\r\nlitePullConsumer.setAutoCommit(false);\r\nlitePullConsumer.start();\r\nCollection<MessageQueue> mqSet = litePullConsumer.fetchMessageQueues(\"TopicTest\");\r\nList<MessageQueue> list = new ArrayList<>(mqSet);\r\n// list -add-> assignList\r\nList<MessageQueue> assignList = new ArrayList<>();\r\nlitePullConsumer.assign(assignList);\r\nlitePullConsumer.seek(assignList.get(0), 10);\r\nwhile (running) {\r\n\tList<MessageExt> messageExts = litePullConsumer.poll();\r\n\tlitePullConsumer.commitSync();\r\n}\r\n\r\nlitePullConsumer.shutdown();\r\n```\r\n```java\r\n// 推模式\r\nDefaultMQPushConsumer consumer = new DefaultMQPushConsumer(\"CID_JODIE_1\");\r\nconsumer.setNamesrvAddr(\"worker1:9876\");\r\nconsumer.subscribe(\"TopicTest\", \"*\");\r\nconsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);\r\nconsumer.registerMessageListener(new MessageListenerConcurrently() {\r\n\t@Override\r\n\tpublic ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, \r\n\t\t\tConsumeConcurrentlyContext context) {\r\n\t\t// 消费 msgs 之后确认已经消费完毕\r\n\t\treturn ConsumeConcurrentlyStatus.CONSUME_SUCCESS;\r\n\t}\r\n};\r\nconsumer.start();\r\n```\r\n\r\n---\r\n## 顺序消息 \r\n\r\n```java\r\n// 生产者\r\nDefaultMQProducer producer = new DefaultMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nMessage msg = new Message(\"OrderTopicTest\", \"order_\" + orderId, \"KEY\" + orderId,\r\n\t (\"order_\"+orderId+\" step \" + j).getBytes(RemotingHelper.DEFAULT_CHARSET));\r\nSendResult sendResult = producer.send(msg, new MessageQueueSelector() {\r\n\t@Override\r\n\tpublic MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {\r\n\t\t// 根据传入的 arg (即 producer#send 的第二个参数，orderId) 选一个 MessageQueue\r\n\t\treturn mqs.get(index);\r\n\t}\r\n}, orderId);\r\nproducer.shutdown();\r\n```\r\n```java\r\n// 消费者\r\nDefaultMQPushConsumer consumer = new DefaultMQPushConsumer(\"group_name\");\r\nconsumer.setNamesrvAddr(\"localhost:9876\");\r\nconsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);\r\nconsumer.subscribe(\"OrderTopicTest\", \"*\");\r\n// 需要使用 MessageListenerOrderly 保证顺序性，而不是 MessageListenerConcurrently\r\nconsumer.registerMessageListener(new MessageListenerOrderly() {\r\n\t@Override\r\n\tpublic ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, \r\n\t\t\tConsumeOrderlyContext context) {\r\n\t\tcontext.setAutoCommit(true);\r\n\t\t// 消费 msgs 后确认消费完毕\r\n\t\treturn ConsumeOrderlyStatus.SUCCESS;\r\n\t}\r\n});\r\n\r\nconsumer.start();\r\n```\r\n\r\n---\r\n## 广播消息\r\n\r\n```java\r\n// 消费者\r\nDefaultMQPushConsumer consumer = new DefaultMQPushConsumer(\"group_name\");\r\nconsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);\r\nconsumer.setMessageModel(MessageModel.BROADCASTING);\r\nconsumer.subscribe(\"TopicTest\", \"*\");\r\nconsumer.registerMessageListener(new MessageListenerConcurrently() {\r\n\t@Override\r\n\tpublic ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,\r\n\t\t\tConsumeConcurrentlyContext context) {\r\n\t\t// 消费 msgs 后确认消费完毕\r\n\t\treturn ConsumeConcurrentlyStatus.CONSUME_SUCCESS;\r\n\t}\r\n});\r\nconsumer.start();\r\n```\r\n\r\n---\r\n## 延迟消息 \r\n\r\n```java\r\n// 生产者\r\nDefaultMQProducer producer = new DefaultMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nMessage message = new Message(\"TestTopic\", (\"Hello scheduled message \").g",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "3.代码示例",
+      "lvl1": "消息发送者的固定步骤",
+      "lvl2": "消息消费者的固定步骤",
+      "lvl3": "顺序消息",
+      "lvl4": "广播消息",
+      "lvl5": "延迟消息",
+      "lvl6": "批量消息",
+      "lvl7": "过滤消息",
+      "lvl8": "事务消息",
+      "lvl9": "ACL 权限控制",
+      "lvl10": "SpringBoot 整合 RocketMQ"
+    },
+    "frontmatter": {
+      "title": "3.代码示例",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 1,
+    "contentParts": 2
+  },
+  {
+    "title": "3.代码示例",
+    "path": "/docs/architect/rocketmq/RocketMQ-3.daimashili.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-3.daimashili.html",
+    "content": "etBytes());\r\nmessage.setDelayTimeLevel(3);\r\nproducer.send(message);\r\nproducer.shutdown();\r\n```\r\n\r\n---\r\n## 批量消息 \r\n\r\n```java\r\nDefaultMQProducer producer = new DefaultMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nproducer.send(List<Message> messages);\r\nproducer.shutdown();\r\n```\r\n\r\n---\r\n## 过滤消息 \r\n\r\n```java\r\n// tag-生产者\r\nDefaultMQProducer producer = new DefaultMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nMessage msg = new Message(\"TagFilterTest\", \"TagA\", \r\n\t \"Hello world\".getBytes(RemotingHelper.DEFAULT_CHARSET));\r\nSendResult sendResult = producer.send(msg);\r\nproducer.shutdown();\r\n\r\n// tag-消费者\r\nDefaultMQPushConsumer consumer = new DefaultMQPushConsumer(\"group_name\");\r\nconsumer.subscribe(\"TagFilterTest\", \"TagA || TagC\");\r\nconsumer.registerMessageListener(new MessageListenerConcurrently() {\r\n\t@Override\r\n\tpublic ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,\r\n\t\t\tConsumeConcurrentlyContext context) {\r\n\t\t// 消费 msgs 后确认消费完毕\r\n\t\treturn ConsumeConcurrentlyStatus.CONSUME_SUCCESS;\r\n\t}\r\n});\r\nconsumer.start();\r\n```\r\n```java\r\n// sql-生产者\r\nDefaultMQProducer producer = new DefaultMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"192.168.232.128:9876\");\r\nproducer.start();\r\nMessage msg = new Message(\"SqlFilterTest\",\"TagA\",\r\n\t(\"Hello RocketMQ\").getBytes(RemotingHelper.DEFAULT_CHARSET));\r\nmsg.putUserProperty(\"a\", String.valueOf(i));\r\nSendResult sendResult = producer.send(msg);\r\nproducer.shutdown();\r\n\r\n// sql-消费者\r\nDefaultMQPushConsumer consumer = new DefaultMQPushConsumer(\"group_name\");\r\nconsumer.subscribe(\"SqlFilterTest\",\r\n\tMessageSelector.bySql(\"(TAGS is not null and TAGS in ('TagA', 'TagB'))\" +\r\n\t\"and (a is not null and a between 0 and 3)\"));\r\nconsumer.registerMessageListener(new MessageListenerConcurrently() {\r\n\t@Override\r\n\tpublic ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs,\r\n\t\t\tConsumeConcurrentlyContext context) {\r\n\t\t// 消费 msgs 后确认消费完毕\r\n\t\treturn ConsumeConcurrentlyStatus.CONSUME_SUCCESS;\r\n\t}\r\n});\r\nconsumer.start();\r\n```\r\n\r\n---\r\n## 事务消息 \r\n\r\n```java\r\npublic class TransactionListenerImpl implements TransactionListener {\r\n\t@Override\r\n\tpublic LocalTransactionState executeLocalTransaction(Message msg, Object arg) {\r\n\t\t// COMMIT_MESSAGE ROLLBACK_MESSAGE UNKNOW\r\n\t\tmsg.getTransactionId(); // 事务ID\r\n\t\treturn LocalTransactionState.COMMIT_MESSAGE;\r\n\t}\r\n\t@Override\r\n\tpublic LocalTransactionState checkLocalTransaction(MessageExt msg) {\r\n\t\t// COMMIT_MESSAGE ROLLBACK_MESSAGE UNKNOW\r\n\t\tmsg.getTransactionId(); // 事务ID\r\n\t\treturn LocalTransactionState.COMMIT_MESSAGE;\r\n\t}\r\n}\r\n```\r\n```java\r\nTransactionListener transactionListener = new TransactionListenerImpl();\r\nTransactionMQProducer producer = new TransactionMQProducer(\"group_name\");\r\nproducer.setNamesrvAddr(\"127.0.0.1:9876\");\r\nproducer.setExecutorService(executorService);\r\nproducer.setTransactionListener(transactionListener);\r\nproducer.start();\r\nMessage msg = new Message(\"TopicTest\", \"TagA\", \"KEY\", \r\n\t(\"Hello RocketMQ \").getBytes(RemotingHelper.DEFAULT_CHARSET));\r\nSendResult sendResult = producer.sendMessageInTransaction(msg, null);\r\nproducer.shutdown();\r\n```\r\n\r\n---\r\n## ACL 权限控制 \r\n- `<artifactId>rocketmq-acl</artifactId>`\r\n- `broker.conf -> aclEnable=true`\r\n- `plan_acl.yml`\r\n```yaml\r\n#全局白名单，不受ACL控制 \r\n#通常需要将主从架构中的所有节点加进来 \r\nglobalWhiteRemoteAddresses:\r\n- 10.10.103.*\r\n- 192.168.0.*\r\n\r\naccounts:\r\n#第一个账户\r\n- accessKey: RocketMQ\r\n  secretKey: 12345678 \r\n  whiteRemoteAddress: \r\n  admin: false \r\n  defaultTopicPerm: DENY #默认Topic访问策略是拒绝 \r\n  defaultGroupPerm: SUB #默认Group访问策略是只允许订阅 \r\n  topicPerms:\r\n  - topicA=DENY #topicA拒绝\r\n  - topicB=PUB|SUB #topicB允许发布和订阅消息\r\n  - topicC=SUB #topicC只允许订阅\r\n  groupPerms:\r\n  # the group should convert to retry topic\r\n  - groupA=DENY\r\n  - groupB=PUB|SUB\r\n  - groupC=SUB\r\n#第二个账户，只要是来自192.168.1.*的IP，就可以访问所有资源 \r\n- accessKey: rocketmq2\r\n  secretKey: 12345678 \r\n  whiteRemoteAddress: 192.168.1.*\r\n  # if it is admin, it could access all resources \r\n  admin: true\r\n```\r\n\r\n---\r\n## SpringBoot 整合 RocketMQ \r\n\r\n```properties\r\n#NameServer地址 \r\nrocketmq.name-server=192.168.232.128:9876 \r\n#默认的消息生产者组 \r\nrocketmq.producer.group=springBootGroup\r\n```\r\n```java\r\n// 生产者\r\n@Component\r\npublic class SpringProducer {\r\n\t@Resource\r\n\tprivate RocketMQTemplate rocketMQTemplate;\r\n\t// 发送普通消息\r\n\tpublic void sendMessage(String topic,String msg){\r\n\t\tthis.rocketMQTemplate.convertAndSend(topic,msg);\r\n\t}\r\n\t// 发送事务消息\r\n\tpublic void sendMessageInTransaction(String topic,String msg) {\r\n\t\tString destination =topic + \":\" + \"TagA\";\r\n\t\tMessage<String> message = MessageBuilder.withPayload(msg).build();\r\n\t\tSendResult sendResult = rocketMQTemplate.sendMessageInTransaction(\r\n\t\t\tdestination, message, destination);\r\n\t}\r\n}\r\n// 事务消息监听器\r\n@RocketMQTransactionListener(rocketMQTemplateBeanName = \"rocketMQTemplate\")\r\npublic class MyTransactionImpl implements RocketMQLocalTransactionListener{\r\n\t@Override\r\n\tpublic RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {\r\n\t\t// COMMIT ROLLBACK UNKNOWN\r\n\t\t// SpringBoot 的消息对象中，并没有 transactionId 这个属性\r\n\t\treturn RocketMQLocalTransactionState.COMMIT;\r\n\t}\r\n\t@Override\r\n\tpublic RocketMQLocalTransactionState checkLocalTransaction(Message msg){\r\n\t\t// COMMIT ROLLBACK UNKNOWN\r\n\t\treturn RocketMQLocalTransactionState.COMMIT;\r\n\t}\r\n}\r\n// 消费者\r\n@Component\r\n@RocketMQMessageListener(consumerGroup = \"MyConsumerGroup\", topic = \"TestTopic\")\r\npublic class SpringConsumer implements RocketMQListener<String> {\r\n    @Override\r\n    public void onMessage(String message) { \r\n        System.out.println(\"Received message : \"+ message);\r\n    }\r\n}\r\n```\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "3.代码示例",
+      "lvl1": "消息发送者的固定步骤",
+      "lvl2": "消息消费者的固定步骤",
+      "lvl3": "顺序消息",
+      "lvl4": "广播消息",
+      "lvl5": "延迟消息",
+      "lvl6": "批量消息",
+      "lvl7": "过滤消息",
+      "lvl8": "事务消息",
+      "lvl9": "ACL 权限控制",
+      "lvl10": "SpringBoot 整合 RocketMQ"
+    },
+    "frontmatter": {
+      "title": "3.代码示例",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 2,
+    "contentParts": 2
+  },
+  {
+    "title": "4.核心原理",
+    "path": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "content": "---\r\ntitle: 4.核心原理\r\ndate: 2025/07/03\r\n---\r\n\r\n:::tip\r\n- 读队列与写队列\r\n- 消息持久化\r\n- 过期文件删除\r\n- 高效文件写\r\n\t- 零拷贝\r\n\t- 顺序写\r\n\t- 刷盘机制\r\n- 消息主从复制\r\n- 负载均衡\r\n- 消息重试\r\n- 死信队列\r\n- 消息幂等\r\n- Dledger 集群\r\n\t- 选举\r\n\t- 消息同步\r\n:::\r\n\r\n---\r\n## 读队列与写队列\r\n\r\n- 通常在运行时，都需要设置读队列=写队列\r\n- 读写分离\r\n\t- 写队列会真实的创建对应的存储文件，负责消息写入\r\n\t- 读队列会记录Consumer的Offset，负责消息读取\r\n-  在往写队列里写Message时，会同步写入到一个对应的读队列中\r\n\t- ![](static/RocketMQ-核心原理-1.png)\r\n- 如果写队列大于读队列，就会有一部分写队列无法写入到读队列中，这一部分的消息就无法被读取，就会造成消息丢失（消息存入了，但是读不出来）\r\n- 如果写队列小于读队列，那就有一部分读队列里是没有消息写入的。如果有一个消费者被分配的是这些没有消息的读队列，那这些消费者就无法消费消息，造成消费者空转，极大的浪费性能\r\n- 对Topic的MessageQueue进行缩减的时候，可以考虑将读写队列设置为不一致\r\n\t- 例如原来四个队列，现在要缩减成两个队列\r\n\t- 如果立即缩减读写队列，那么被缩减的MessageQueue上没有被消费的消息，就会丢失\r\n\t- 这时，可以先缩减写队列，待空出来的读队列上的消息都被消费完了之后，再来缩减读队列，这样就可以比较平稳的实现队列缩减了\r\n\r\n---\r\n## 消息持久化\r\n\r\n- RocketMQ消息直接采用磁盘文件保存消息，默认路径在`${user_home}/store`目录（`broker.conf`）\r\n- 存储文件主要分为三个部分\r\n\t- CommitLog：存储消息的元数据\r\n\t\t- 所有消息都会顺序存入到CommitLog文件当中\r\n\t\t- CommitLog由多个文件组成，每个文件固定大小1G\r\n\t\t- 以第一条消息的偏移量为文件名\r\n\t- ConsumerQueue：存储消息在CommitLog的索引\r\n\t\t- 一个MessageQueue一个文件\r\n\t\t- 记录当前MessageQueue被哪些消费者组消费到了哪一条CommitLog\r\n\t- IndexFile\r\n\t\t- 为了消息查询提供了一种通过key或时间区间来查询消息的方法\r\n\t\t- 这通过IndexFile来查找消息的方法不影响发送与消费消息的主流程\r\n\t- CommitLog文件和ConsumeQueue文件都是以偏移量命名\r\n- 还有几个辅助的存储文件\r\n\t- checkpoint：数据存盘检查点\r\n\t\t- 里面主要记录commitlog文件、ConsumeQueue文件以及IndexFile文件最后一次刷盘的时间戳\r\n\t- `config/*.json`：这些文件是将RocketMQ的一些关键配置信息进行存盘保存\r\n\t\t- 例如Topic配置、消费者组配置、消费者组消息偏移量Offset 等等一些信息\r\n\t- abort：这个文件是RocketMQ用来判断程序是否正常关闭的一个标识文件\r\n\t\t- 正常情况下，会在启动时创建，而关闭服务时删除\r\n\t\t- 但是如果遇到一些服务器宕机，这个abort文件就不会删除\r\n\t\t- 因此RocketMQ就可以判断上一次服务是非正常关闭的，后续就会做一些数据恢复的操作\r\n- 整体的消息存储结构\r\n\t- ![](static/RocketMQ-核心原理-2.png)\r\n- CommitLog文件存储所有消息实体\r\n\t- 所有生产者发过来的消息，都会无差别的依次存储到Commitlog文件当中\r\n\t\t- 这样的好处是可以减少查找目标文件的时间，让消息以最快的速度落盘\r\n\t\t- 对比Kafka存文件时，需要寻找消息所属的Partition文件，再完成写入，当Topic比较多时，这样的Partition寻址就会浪费比较多的时间，所以Kafka不太适合多Topic的场景\r\n\t\t- 而RocketMQ的这种快速落盘的方式在多Topic场景下，优势就比较明显\r\n\t-  文件结构：CommitLog的文件大小是固定的，但是其中存储的每个消息单元长度是不固定的\r\n\t\t- 所以RocketMQ在每次存CommitLog文件时，都会去检查当前CommitLog文件空间是否足够\r\n\t\t\t- 如果不够的话，就重新创建一个CommitLog文件\r\n\t\t\t- 文件名为当前消息的偏移量\r\n- ConsumeQueue文件主要是加速消费者的消息索引\r\n\t- 他的每个文件夹对应RocketMQ中的一个MessageQueue\r\n\t\t- 文件夹下的文件记录了每个MessageQueue中的消息在CommitLog文件当中的偏移量\r\n\t\t- 这样，消费者通过ComsumeQueue文件，就可以快速找到CommitLog文件中感兴趣的消息记录\r\n\t\t- 而消费者在ConsumeQueue文件当中的消费进度，会保存在`config/consumerOffset.json`文件当中\r\n\t- 文件结构：每个ConsumeQueue文件固定由30万个固定大小20byte的数据块组成，数据块的内容包括\r\n\t\t- msgPhyOffset (8byte，消息在文件中的起始位置)\r\n\t\t- msgSize (4byte，消息在文件中占用的长度)\r\n\t\t- msgTagCode (8byte，消息的tag的Hash值)\r\n- IndexFile文件主要是辅助消息检索\r\n\t- 消费者进行消息消费时，通过ConsumeQueue文件就足够完成消息检索了，但是如果要按照MeessageId或者MessageKey来检索文件，比如RocketMQ管理控制台的消息轨迹功能，ConsumeQueue文件就不够用了\r\n\t- 他的文件名比较特殊，不是以消息偏移量命名，而是用的时间命名\r\n\t- 文件结构：也是一个固定大小的文件\r\n\t\t- indexHeader (固定40byte)\r\n\t\t- slot (固定500W个，每个固定20byte)\r\n\t\t- index (最多`500W*4`个，每个固定20byte) \r\n\r\n---\r\n## 过期文件删除\r\n\r\n- 判断过期文件：唯一标准就是非当前写文件的保留时间（`broker.conf -> fileReservedTime`）\r\n\t- 如果超过了一定的保留时间，那么这些文件都会被认为是过期文件，随时可以删除\r\n\t- 并不关心文件当中的消息是否被消费过\r\n\t\t- 所以，RocketMQ的消息堆积也是有时间限度的\r\n- 删除过期文件\r\n\t- 内部有一个定时任务，对文件进行扫描，并且触发文件删除的操作\r\n\t\t- `broker.conf -> deleteWhen`，默认是凌晨四点\r\n\t- 还会检查服务器的磁盘空间是否足够，如果磁盘空间的使用率达到一定的阈值，也会触发过期文件删除\r\n\t\t- broker的",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.核心原理",
+      "lvl1": "读队列与写队列",
+      "lvl2": "消息持久化",
+      "lvl3": "过期文件删除",
+      "lvl4": "高效文件写",
+      "lvl5": "消息主从复制",
+      "lvl6": "负载均衡",
+      "lvl7": "消息重试",
+      "lvl8": "死信队列",
+      "lvl9": "消息幂等",
+      "lvl10": "Dledger 集群"
+    },
+    "frontmatter": {
+      "title": "4.核心原理",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 1,
+    "contentParts": 5
+  },
+  {
+    "title": "4.核心原理",
+    "path": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "content": "磁盘空间不要少于4\r\n\r\n---\r\n## 高效文件写\r\n\r\n### 零拷贝\r\n\r\n- 所谓的零拷贝技术，其实并不是不拷贝，而是要尽量减少CPU拷贝\r\n- 引入DMA拷贝之后，在读写请求的过程中，CPU不再需要参与具体的工作\r\n\t- DMA可以独立完成数据在系统内部的复制\r\n\t- 但是，数据复制过程中，依然需要借助数据总进线\r\n\t\t- 当系统内的IO操作过多时，还是会占用过多的数据总线，造成总线冲突，最终还是会影响数据读写性能\r\n- 为了避免DMA总线冲突对性能的影响，后来又引入了Channel通道的方式\r\n\t- Channel，是一个完全独立的处理器，专门负责IO操作\r\n\t- 既然是处理器，Channel就有自己的IO指令，与CPU无关，他也更适合大型的IO操作，性能更高\r\n- mmap：`FileChannel#map`\r\n\t- mmap机制适合操作小文件，如果文件太大，映射信息也会过大，容易造成很多问题\r\n\t- 通常mmap机制建议的映射文件大小不要超过2G\r\n\t- RocketMQ的CommitLog文件保持在1G固定大小，也是为了方便文件映射\r\n\t- ![](static/RocketMQ-核心原理-3.png)\r\n- sendFile：`FileChannel#transferTo`\r\n\t- 在拷贝过程中，并不直接拷贝文件的内容，而是只拷贝一个带有文件位置和长度等信息的文件描述符FD\r\n\t\t- 这样就大大减少了需要传递的数据\r\n\t- 而真实的数据内容，会交由DMA控制器，从页缓存中打包异步发送到socket中\r\n\t- sendfile机制在内核态直接完成了数据的复制，不需要用户态的参与，所以这种机制的传输效率是非常稳定的\r\n\t- sendfile机制非常适合大数据的复制转移\r\n\t- ![](static/RocketMQ-核心原理-4.png)\r\n\r\n### 顺序写\r\n\r\n- 在磁盘中提前申请一块连续的磁盘空间\r\n\t- 每次写数据时，就可以避免这些寻址操作，直接在之前写入的地址后面接着写就行\r\n- 顺序写的性能基本能够达到内存级别\r\n\r\n### 刷盘机制\r\n\r\n- 在操作系统层面\r\n\t- 当应用程序写入一个文件时，文件内容并不会直接写入到硬件当中，而是会先写入到操作系统中的一个缓存PageCache中\r\n\t\t- PageCache缓存以4K大小为单位，缓存文件的具体内容\r\n\t\t- 这些写入到PageCache中的文件，在应用程序看来，是已经完全落盘保存好了的\r\n\t\t- 但是，本质上，PageCache依然是内存状态，所以一断电就会丢失\r\n\t\t- 因此，需要将内存状态的数据写入到磁盘当中，这样数据才能真正完成持久化，断电也不会丢失\r\n\t\t\t- 这个过程就称为刷盘\r\n\t- PageCache是源源不断产生的，操作系统只会在某些特定的时刻将PageCache写入到磁盘\r\n\t\t- 正常关机时\r\n\t\t- 当 Dirty Page (脏页) 的比例达到一定的阈值时（对于有数据修改的PageCache，会标记为Dirty状态）\r\n\t- 可以通过/proc/meminfo文件查看到Page Cache的状态\r\n\t- fsync：可以让应用程序完成PageCache的强制刷盘\r\n-  RocketMQ对于何时进行刷盘，也设计了两种刷盘机制，同步刷盘和异步刷盘 \r\n\t- `broker.conf -> flushDiskType`\r\n\t- ![](static/RocketMQ-核心原理-5.png)\r\n\t- 同步刷盘：在返回写成功状态时，消息已经被写入磁盘\r\n\t\t- 消息写入内存的PAGECACHE后，立刻通知刷盘线程刷盘\r\n\t\t-  然后等待刷盘完成\r\n\t\t- 刷盘线程执行完成后唤醒等待的线程，返回消息写成功的状态\r\n\t- 异步刷盘：在返回写成功状态时，消息可能只是被写入了内存的PAGECACHE\r\n\t\t- 写操作的返回快，吞吐量大\r\n\t\t- 当内存里的消息量积累到一定程度时，统一触发写磁盘动作，快速写入\r\n\t- 同步刷盘机制会更频繁的调用fsync，所以吞吐量相比异步刷盘会降低，但是数据的安全性会得到提高\r\n\r\n---\r\n## 消息主从复制 \r\n\r\n- 同步复制：等Master和Slave都写入消息成功后才反馈给客户端写入成功的状态\r\n\t- 如果Master节点故障，Slave上有全部的数据备份，这样容易恢复数据\r\n\t- 但是同步复制会增大数据写入的延迟，降低系统的吞吐量\r\n- 异步复制：只要master写入消息成功，就反馈给客户端写入成功的状态\r\n\t- 然后再异步的将消息复制给Slave节点\r\n\t- 系统拥有较低的延迟和较高的吞吐量\r\n\t- 但是如果master节点故障，而有些数据没有完成复制，就会造成数据丢失\r\n- `broker.conf -> brokerRole`\r\n\t- ASYNC_MASTER、 SYNC_MASTER、SLAVE\r\n\r\n---\r\n## 负载均衡\r\n\r\n- Producer 负载均衡 \r\n\t- ![](static/RocketMQ-核心原理-6.png)\r\n\t- Producer发送消息时，默认会轮询目标Topic下的所有MessageQueue，并采用递增取模的方式往不同的MessageQueue上发送消息，以达到让消息平均落在不同的queue上的目的\r\n\t- 由于MessageQueue是分布在不同的Broker上的，所以消息也会发送到不同的broker上\r\n\t- 同时生产者在发送消息时，可以指定一个MessageQueueSelector\r\n\t\t- 通过这个对象来将消息发送到自己指定的MessageQueue上\r\n\t\t- 这样可以保证消息局部有序\r\n- Consumer负载均衡： Consumer也是以MessageQueue为单位来进行负载均衡\r\n\t- 集群模式 \r\n\t\t- 每条消息只需要投递到订阅这个topic的Consumer Group下的一个实例即可\r\n\t\t- RocketMQ采用主动拉取的方式拉取并消费消息\r\n\t\t\t- 在拉取的时候需要明确指定拉取哪一条message queue\r\n\t\t- 每当实例的数量有变更，都会触发一次所有实例的负载均衡\r\n\t\t\t- 这时候会按照queue的数量和实例的数量平均分配queue给每个实例\r\n\t\t- 每次分配时，都会将MessageQueue和消费者ID进行排序后，再用不同的分配算法进行分配\r\n\t\t- 内置的分配的算法共有六种，分别对应AllocateMessageQueueStrategy下的六种实现类\r\n\t\t\t- 可以在consumer中直接set来指定。默认情况下使用的是最简单的平均分配策略\r\n\t- 广播模式\r\n\t\t- 每一条消息都会投递给订阅了Topic的所有消费者实例，所以也就没有消息分配这一说\r\n\t\t- 在实现上，就是在Consumer分配Queue时，所有Consumer都分到所有的Queue\r\n\t\t- 实现",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.核心原理",
+      "lvl1": "读队列与写队列",
+      "lvl2": "消息持久化",
+      "lvl3": "过期文件删除",
+      "lvl4": "高效文件写",
+      "lvl5": "消息主从复制",
+      "lvl6": "负载均衡",
+      "lvl7": "消息重试",
+      "lvl8": "死信队列",
+      "lvl9": "消息幂等",
+      "lvl10": "Dledger 集群"
+    },
+    "frontmatter": {
+      "title": "4.核心原理",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 2,
+    "contentParts": 5
+  },
+  {
+    "title": "4.核心原理",
+    "path": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "content": "的关键是将消费者的消费偏移量不再保存到broker当中\r\n\t\t\t- 而是保存到客户端当中，由客户端自行维护自己的消费偏移量\r\n- 集群模式分配算法\r\n\t- AllocateMachineRoomNearby： 将同机房的Consumer和Broker优先分配在一起\r\n\t\t- 可以通过一个machineRoomResolver对象来定制Consumer和Broker的机房解析规则\r\n\t\t- 然后还需要引入另外一个分配策略来对同机房的Broker和Consumer进行分配\r\n\t\t\t- 一般也就用简单的平均分配策略或者轮询分配策略\r\n\t- AllocateMessageQueueAveragely（默认）：平均分配。将所有MessageQueue平均分给每一个消费者\r\n\t- AllocateMessageQueueAveragelyByCircle： 轮询分配。轮流的给一个消费者分配一个MessageQueue\r\n\t- AllocateMessageQueueByConfig： 不分配，直接指定一个messageQueue列表\r\n\t\t- 类似于广播模式，直接指定所有队列\r\n\t- AllocateMessageQueueByMachineRoom：按逻辑机房的概念进行分配\r\n\t\t- 又是对BrokerName和ConsumerIdc有定制化的配置\r\n\t- AllocateMessageQueueConsistentHash：一致性哈希策略\r\n\t\t- 只需要指定一个虚拟节点数，是用的一个哈希环的算法\r\n\t\t- 虚拟节点是为了让Hash数据在换上分布更为均匀\r\n\r\n---\r\n## 消息重试\r\n\r\n- 集群消费方式下，消息消费失败后期望消息重试，需要在消息监听器接口的实现中明确进行配置 \r\n\t- `MessageListener#consume`\r\n\t- 返回 Action.ReconsumeLater（推荐） 消息重试\r\n\t- 返回 Action.CommitMessage 消费失败后不重试\r\n\t- 返回 null\r\n\t- 抛出异常\r\n- 处理重试消息\r\n\t- 重试的消息会进入一个 “%RETRY%”+ConsumeGroup 的队列中\r\n\t- 默认允许每条消息最多重试16次\r\n\t\t- 这个重试时间跟延迟消息的延迟级别是对应的\r\n\t\t- 不过取的是延迟级别的后16级别\r\n\t- `consumer#setMaxReconsumeTimes` 定制重试次数\r\n\t\t- 当定制的重试次数超过16次后，消息的重试时间间隔均为2小时\r\n\t- 如果消息重试16次后仍然失败，消息将不再投递。转为进入死信队列\r\n\t- 一条消息无论重试多少次，这些重试消息的MessageId始终都是一样的\r\n\t\t- 在4.9.1版本中，每次重试MessageId都会重建\r\n\t- 配置覆盖\r\n\t\t- 消息最大重试次数的设置对相同GroupID下的所有Consumer实例有效\r\n\t\t- 并且最后启动的Consumer会覆盖之前启动的Consumer的配置\r\n\r\n---\r\n## 死信队列\r\n\r\n- 如果消息重试16次（`consumer#setMaxReconsumeTimes`）后仍然失败，消息将不再投递。转为进入死信队列\r\n- 死信队列的名称是 %DLQ%+ConsumGroup\r\n- 死信队列的特征\r\n\t- 一个死信队列对应一个ConsumGroup，而不是对应某个消费者实例\r\n\t- 如果一个ConsumeGroup没有产生死信队列，RocketMQ就不会为其创建相应的死信队列\r\n\t- 一个死信队列包含了这个ConsumeGroup里的所有死信消息，而不区分该消息属于哪个Topic\r\n\t- 死信队列中的消息不会再被消费者正常消费\r\n\t- 死信队列的有效期跟正常消息相同。默认3天（`broker.conf -> fileReservedTime`）\r\n\t\t- 超过这个最长时间的消息都会被删除，而不管消息是否消费过\r\n- 一般需要人工去查看死信队列中的消息，对错误原因进行排查\r\n\t- 然后对死信消息进行处理，比如转发到正常的Topic重新进行消费，或者丢弃\r\n- 默认创建出来的死信队列，他里面的消息是无法读取的，在控制台和消费者中都无法读取\r\n\t- 这些默认的死信队列，他们的权限 perm 被设置成了 2:禁读\r\n\t\t- 权限有三种：2:禁读，4:禁写，6:可读可写\r\n\t- 需要手动将死信队列的权限配置成 6，才能被消费\r\n\r\n---\r\n## 消息幂等\r\n\r\n- 在MQ系统中，对于消息幂等有三种实现语义\r\n\t- at most once 最多一次：每条消息最多只会被消费一次\r\n\t- at least once 至少一次：每条消息至少会被消费一次\r\n\t- exactly once 刚刚好一次：每条消息都只会确定的消费一次\r\n- RocketMQ 只能保证 at least once，保证不了 exactly once\r\n\t- 所以，使用RocketMQ时，需要由业务系统自行保证消息的幂等性\r\n- 消息重复\r\n\t- 发送时消息重复\r\n\t\t- 当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败\r\n\t\t- 此时生产者意识到消息发送失败并尝试再次发送消息\r\n\t\t- 消费者后续会收到两条内容相同并且 Message ID 也相同的消息\r\n\t- 投递时消息重复\r\n\t\t- 消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断\r\n\t\t- 为了保证消息至少被消费一次，消息队列 RocketMQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息\r\n\t\t- 消费者后续会收到两条内容相同并且 Message ID 也相同的消息\r\n\t- 负载均衡时消息重复：网络抖动、Broker 重启以及订阅方应用重启\r\n\t\t- 当消息队列 RocketMQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息\r\n- 处理方式：要在业务上自行来保证消息消费的幂等性\r\n\t- RocketMQ的每条消息都有一个唯一的 MessageId，这个参数在多次投递的过程中是不会改变的\r\n\t- 业务上可以用这个MessageId来作为判断幂等的关键依据\r\n\t- 但是，这个MessageId是无法保证全局唯一的，也会有冲突的情况\r\n\t- 所以在一些对幂等性要求严格的场景，最好是使用业务上唯一的一个标识比较靠谱\r\n\t- 而这个业务标识可以使用Message的Key来进行传递\r\n\r\n---\r\n## Dledger 集群\r\n\r\n- 高可用集群：基于Raft，在RocketMQ的主从集群基础上，增加了自动选举的功能\r\n- Dledger集群主要包含两个功能\r\n\t- 从集群中选举产生master节点\r\n\t- 优化master节点往slave节点的消息同步机制\r\n\r\n### 选举\r\n\r\n- Dledger是使用Raft算法来进行节点选举\r\n\t- 节点有三个状态，Leader，follower 和 candidate (候选人)\r\n\t\t- 正常运行的情况下",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.核心原理",
+      "lvl1": "读队列与写队列",
+      "lvl2": "消息持久化",
+      "lvl3": "过期文件删除",
+      "lvl4": "高效文件写",
+      "lvl5": "消息主从复制",
+      "lvl6": "负载均衡",
+      "lvl7": "消息重试",
+      "lvl8": "死信队列",
+      "lvl9": "消息幂等",
+      "lvl10": "Dledger 集群"
+    },
+    "frontmatter": {
+      "title": "4.核心原理",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 3,
+    "contentParts": 5
+  },
+  {
+    "title": "4.核心原理",
+    "path": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "content": "，集群中会有一个leader，其他都是follower\r\n\t\t- follower只响应Leader和Candidate的请求\r\n\t\t- 客户端的请求全部由Leader处理\r\n\t\t\t- 即使有客户端请求到了一个follower，也会将请求转发到leader\r\n\t- 选举流程\r\n\t\t- 集群刚启动时，每个节点都是follower状态\r\n\t\t- 之后集群内部会发送一个timeout信号\r\n\t\t- 所有follower就转成candidate去拉取选票，获得大多数选票的节点选为leader，其他候选人转为follower\r\n\t\t- 如果一个timeout信号发出时，没有选出leader，将会重新开始一次新的选举\r\n\t- 心跳\r\n\t\t- Leader节点会往其他节点发送心跳信号，确认他的leader状态\r\n\t\t- 然后follower会启动定时器，如果在指定时间内没有收到Leader的心跳，就会转为Candidate状态\r\n\t\t- 然后向其他成员发起投票请求，如果收到半数以上成员的投票，则Candidate会晋升为Leader\r\n\t\t\t- 然后leader也有可能会退化成follower\r\n- 在Raft协议中，会将时间分为一些任意时间长度的时间片段，叫做term\r\n\t- ![](static/RocketMQ-核心原理-7.png)\r\n\t- term会使用一个全局唯一，连续递增的编号作为标识，也就是起到了一个逻辑时钟的作用\r\n\t- 在每一个term时间片里，都会进行新的选举，每一个Candidate都会努力争取成为leader\r\n\t\t- 获得票数最多的节点就会被选举为Leader\r\n\t- 被选为Leader的这个节点，在一个term时间片里就会保持leader状态\r\n\t\t- 保证在同一时间段内，集群中只会有一个Leader\r\n\t- 在某些情况下，选票可能会被各个节点瓜分，形成不了多数派，那这个term可能直到结束都没有leader\r\n\t\t- 直到下一个term再重新发起选举，这也就没有了Zookeeper中的脑裂问题\r\n\t- 在每次重新选举的过程中， leader也有可能会退化成为follower\r\n\t\t- 也就是说，在这个集群中， leader节点是会不断变化的\r\n- 每次选举的过程中，每个节点都会存储当前term编号，并在节点之间进行交流时，都会带上自己的term编号\r\n\t- 如果一个节点发现他的编号比另外一个小，那么他就会将自己的编号更新为较大的那一个\r\n\t- 如果leader或者candidate发现自己的编号不是最新的，他就会自动转成follower\r\n\t- 如果接收到的请求term编号小于自己的编号，term将会拒绝执行\r\n-  在选举过程中，Raft协议会通过心跳机制发起leader选举\r\n\t- 节点都是从follower状态开始的，如果收到了来自leader或者candidate的心跳RPC请求，那他就会保持follower状态，避免争抢成为candidate\r\n\t- leader会往其他节点发送心跳信号，来确认自己的地位\r\n\t- 如果follower一段时间(两个timeout信号)内没有收到Leader的心跳信号，他就会认为leader挂了，发起新一轮选举\r\n-  选举开始后，每个follower会增加自己当前的term，并将自己转为candidate\r\n\t- 然后向其他节点发起投票请求，请求时会带上自己的编号和term，也就是说都会默认投自己一票\r\n\t- 之后candidate状态可能会发生以下三种变化\r\n\t\t- 赢得选举，成为leader\r\n\t\t\t- 如果它在一个term内收到了大多数的选票，将会在接下的剩余term时间内称为leader\r\n\t\t\t- 然后就可以通过发送心跳确立自己的地位\r\n\t\t\t- 每一个server在一个term内只能投一张选票，并且按照先到先得的原则投出\r\n\t\t- 其他节点成为leader\r\n\t\t\t- 在等待投票时，可能会收到其他server发出心跳信号，说明其他leader已经产生了\r\n\t\t\t- 这时通过比较自己的term编号和RPC过来的term编号\r\n\t\t\t\t- 如果比对方大，说明leader的term过期了，就会拒绝该RPC,并继续保持候选人身份\r\n\t\t\t\t- 如果对方编号不比自己小,则承认对方的地位,转为follower\r\n\t\t- 选票被瓜分,选举失败\r\n\t\t\t- 如果没有candidate获取大多数选票, 则没有leader产生\r\n\t\t\t- candidate们等待超时后发起另一轮选举\r\n\t\t\t- 为了防止下一次选票还被瓜分, raft采用随机electiontimeout(随机休眠时间)的机制防止选票被持续瓜分\r\n\t\t\t- 通过将timeout随机设为一段区间上的某个值, 因此很大概率会有某个candidate率先超时然后赢得大部分选票\r\n- 所以以三个节点的集群为例，选举过程会是这样的\r\n\t- 集群启动时，三个节点都是follower，发起投票后，三个节点都会给自己投票。这样一轮投票下来，三个节点的term都是1，是一样的，这样是选举不出Leader的\r\n\t- 当一轮投票选举不出Leader后，三个节点会进入随机休眠，例如A休眠1秒，B休眠3秒，C休眠2秒\r\n\t- 一秒后，A节点醒来，会把自己的term加一票，投为2。然后2秒时，C节点醒来，发现A的term已经是2，比自己的1大，就会承认A是Leader，把自己的term也更新为2。实际上这个时候，A已经获得了集群中的多数票，2票，A就会被选举成Leader。这样，一般经过很短的几轮选举，就会选举出一个Leader来\r\n\t- 到3秒时，B节点会醒来，他也同样会承认A的term最大，他是Leader，自己的term也会更新为2。这样集群中的所有Candidate就都确定成了leader和follower\r\n\t- 然后在一个任期内，A会不断发心跳给另外两个节点。当A挂了后，另外的节点没有收到A的心跳，就会都转化成Candidate状态，重新发起选举\r\n\r\n### 消息同步\r\n\r\nDledger还会采用Raft协议进行多副本的消息同步：\r\n- 使用Dledger集群后，数据主从同步会分为两个阶段，一个是uncommitted阶段，一个是commited阶段\r\n- Leader Broker上的Dledger收到一条数据后，会标记为uncommitted状态，然后他通过自己的DledgerServer组件把这个uncommitted数据发给Follower Broker的DledgerServer组件\r\n- 接着Follower Broker的DledgerServer收到uncommitted消息之后，必须返回一个ack给Leader Broker的Dledger。然后如果Leader Broker收到超过半数的Follower Broker返回的ack之后，就会把消息标记为committed状态\r\n-  再接下来， Leader Broker上的DledgerServer就",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.核心原理",
+      "lvl1": "读队列与写队列",
+      "lvl2": "消息持久化",
+      "lvl3": "过期文件删除",
+      "lvl4": "高效文件写",
+      "lvl5": "消息主从复制",
+      "lvl6": "负载均衡",
+      "lvl7": "消息重试",
+      "lvl8": "死信队列",
+      "lvl9": "消息幂等",
+      "lvl10": "Dledger 集群"
+    },
+    "frontmatter": {
+      "title": "4.核心原理",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 4,
+    "contentParts": 5
+  },
+  {
+    "title": "4.核心原理",
+    "path": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-4.hexinyuanli.html",
+    "content": "会发送committed消息给Follower Broker上的DledgerServer，让他们把消息也标记为committed状态。这样，就基于Raft协议完成了两阶段的数据同步\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4.核心原理",
+      "lvl1": "读队列与写队列",
+      "lvl2": "消息持久化",
+      "lvl3": "过期文件删除",
+      "lvl4": "高效文件写",
+      "lvl5": "消息主从复制",
+      "lvl6": "负载均衡",
+      "lvl7": "消息重试",
+      "lvl8": "死信队列",
+      "lvl9": "消息幂等",
+      "lvl10": "Dledger 集群"
+    },
+    "frontmatter": {
+      "title": "4.核心原理",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 5,
+    "contentParts": 5
+  },
+  {
+    "title": "5.整体架构",
+    "path": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "content": "---\r\ntitle: 5.整体架构\r\ndate: 2025/07/03\r\n---\r\n\r\n:::tip\r\n- NameServer的结构\r\n- Broker的结构\r\n- Netty服务注册框架\r\n- RocketMQ的同步结果推送与异步结果推送\r\n- Broker心跳注册过程\r\n- Producer发送消息过程\r\n- Consumer拉取消息过程\r\n- 文件存储\r\n- 延迟消息\r\n- 长轮询机制\r\n:::\r\n\r\n---\r\n## NameServer的结构\r\n\r\n- NameServer的核心作用\r\n\t- 一是维护Broker的服务地址并进行及时的更新\r\n\t- 二是给Producer和Consumer提供服务获取Broker列表\r\n- NameServer的启动入口为NamesrvStartup类的main方法\r\n- 整个NameServer的核心就是一个NamesrvController对象\r\n\r\n![](static/RocketMQ-整体架构-1.png)\r\n\r\n---\r\n## Broker的结构\r\n\r\n- Broker是整个RocketMQ的业务核心，所有消息存储、转发这些最为重要的业务都是在Broker中进行处理的\r\n- Broker启动的入口在BrokerStartup这个类的main方法\r\n- 重点也是围绕一个BrokerController对象\r\n- 在BrokerStartup.createBrokerController方法中可以看到Broker的几个核心配置\r\n\t- BrokerConfig \r\n\t- NettyServerConfig  ：Netty服务端占用了10911端口。同样也可以在配置文件中覆盖\r\n\t- NettyClientConfig  \r\n\t- MessageStoreConfig\r\n\r\n![](static/RocketMQ-整体架构-2.png)\r\n\r\n---\r\n## Netty服务注册框架\r\n\r\n- RocketMQ使用Netty框架提供了一套基于服务码的服务注册机制，让各种不同的组件都可以按照自己的需求，注册自己的服务方法\r\n- Netty的所有远程通信功能都由remoting模块实现。RemotingServer模块里包含了RPC的服务端RemotingServer以及客户端RemotingClient\r\n- RocketMQ基于Netty保持客户端与服务端的长连接Channel\r\n- 所有的请求都封装成RemotingCommand对象。而每个处理消息的服务逻辑，会封装成一个NettyRequestProcessor对象\r\n- 服务端和客户端都维护了一个processorTable，这是个HashMap，key是服务码requestCode，value是对应的运行单元\r\n\t- Pair<NettyRequestProcessor, ExecutorService>  类型，包含了处理逻辑Prcessor和执行线程池ExecutorService\r\n- 服务端的注册BrokerController.registerProcessor() ，客户端的服务注册见MQClientAPIImpl。NameServer则会注册一个大的DefaultRequestProcessor，统一处理所有的服务\r\n- 服务注册流程：\r\n\r\n![](static/RocketMQ-整体架构-3.png)\r\n\r\n- NameServer会维护Broker的路由列表，并对路由列表进行实时更新\r\n- BrokerController.this.registerBrokerAll方法会发起向NameServer注册心跳。启动时会立即注册，同时也会启动一个线程池，以10秒延迟，默认30秒的间隔持续向NameServer发送心跳\r\n-  BrokerController.this.registerBrokerAll这个方法就是注册心跳的入口\r\n- 然后，在NameServer中也会启动一个定时任务，扫描不活动的Broker。具体观察NamesrvController.initialize方法\r\n\r\n![](static/RocketMQ-整体架构-4.png)\r\n\r\n---\r\n## RocketMQ的同步结果推送与异步结果推送\r\n\r\n- RocketMQ的RemotingServer服务端，会维护一个responseTable，这是一个线程同步的Map结构。 key为请求的ID，value是异步的消息结果 ConcurrentMap<Integer  , ResponseFuture>\r\n- 处理同步请求(NettyRemotingAbstract#invokeSyncImpl)时，处理的结果会存入responseTable，通过ResponseFuture提供一定的服务端异步处理支持，提升服务端的吞吐量。 请求返回后，立即从responseTable中移除请求记录\r\n-  处理异步请求(NettyRemotingAbstract#invokeAsyncImpl)时，处理的结果依然会存入responsTable，等待客户端后续再来请求结果。但是他保存的依然是一个ResponseFuture，也就是在客户端请求结果时再去获取真正的结果\r\n\t- 另外，在RemotingServer启动时，会启动一个定时的线程任务，不断扫描responseTable，将其中过期的response清除掉\r\n\r\n---\r\n## Producer发送消息过程 \r\n\r\n- Producer有两种\r\n\t- 普通发送者：DefaultMQProducer。只负责发送消息，发送完消息，就可以停止了\r\n\t\t- DefaultMQProducer只需要构建一个Netty客户端，往Broker发送消息就行了\r\n\t\t- 异步回调只是在Producer接收到Broker的响应后自行调整流程，不需要提供Netty服务\r\n\t- 事务消息发送者： TransactionMQProducer。支持事务消息机制。需要在事务消息过程中提供事务状态确认的服务，这就要求事务消息发送者虽然是一个客户端，但是也要完成整个事务消息的确认机制后才能退出\r\n\t\t- TransactionMQProducer由于需要在事务消息机制中给Broker提供状态确认服务，所以在发送消息的同时，还需要保持连接，提供服务\r\n\t\t- TransactionMQProducer的启动过程中，会往RemotingClient中注册相应的Processor，这样RemotingServer和RemotingClient之间就可以通过channel进行双向的服务请求了\r\n- 整个Producer的流程，大致分两个步骤\r\n\t- start方法，进行一大堆的准备工作\r\n\t- 各种各样的send方法，进行消息发送\r\n- 重点关注以下几个问题\r\n\t- Producer的核心启动流程以及两种消息发送者的区别\r\n\t\t- 所有Producer的启动过程，最终都会调用DefaultMQProducerImpl#start方法\r\n\t\t\t- 在start方法中的通过一个mQClientFactory对象，启动生产者的一大堆重要服务\r\n\t\t- 所有客户端的启动流程是固定的，不同客户端的区别只是在于他们在启动前注册的一些信息不同\r\n\t\t\t- 生产者注册到producerTable，消费者注册到consumerTable，管理控制端注册到adminExtTable\r\n\t- Producer如何管理Borker路由信息\r\n\t\t- Producer需要拉取Broker列表，然后跟Broker建立连接等等很多核心的流程，其实都是在发送消息时建立的。因为在启动时，还不知道要拉取哪个Topic的Broker列表呢\r\n\t\t- 对NameServer的地址管理，则是散布在启动和发送的多个过程当中，并且NameServer地址可以通过一个Http服务来获取\r\n\t\t- Send方法中，首先需要获得Topic的路由信息。这会从本地缓存中获取，如果本地缓存中没有，就从NameServer中去申请 DefaultMQProducerImpl#tryToFindTopicPublishIn",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "5.整体架构",
+      "lvl1": "NameServer的结构",
+      "lvl2": "Broker的结构",
+      "lvl3": "Netty服务注册框架",
+      "lvl4": "RocketMQ的同步结果推送与异步结果推送",
+      "lvl5": "Producer发送消息过程",
+      "lvl6": "Consumer拉取消息过程",
+      "lvl7": "文件存储",
+      "lvl8": "延迟消息",
+      "lvl9": "长轮询机制"
+    },
+    "frontmatter": {
+      "title": "5.整体架构",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 1,
+    "contentParts": 3
+  },
+  {
+    "title": "5.整体架构",
+    "path": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "content": "fo 方法\r\n\t\t- ![](static/RocketMQ-整体架构-5.png)\r\n\t- Producer的负载均衡\r\n\t\t- Producer在获取路由信息后，会选出一个MessageQueue去发送消息\r\n\t\t- 这个选MessageQueue的方法就是一个索引自增然后取模的方式\r\n\t\t- 然后根据MessageQueue再找所在的Broker，往Broker发送请求\r\n\t- 在发送Netty请求时，如何制定Broker\r\n\t\t- 实际上是指定的MessageQueue，而不是Topic。Topic只是用来找MessageQueue\r\n\r\n---\r\n## Consumer拉取消息过程 \r\n\r\n- 消费者也是有两种，推模式消费者（用的最多）和拉模式消费者\r\n- 消费者组之间有集群模式和广播模式两种消费模式\r\n- 消费者端的负载均衡的原理。即消费者是如何绑定消费队列的，哪些消费策略到底是如何落地的\r\n- 在推模式的消费者中，MessageListenerConcurrently 和MessageListenerOrderly这两种消息监听器的处理逻辑到底有什么不同，为什么后者能保持消息顺序\r\n-  DefaultMQPushConsumer.start作为入口。最终消费者的启动过程，跟生产者一样，也交由了mQClientFactory\r\n\t- pullMessageService主要处理拉取消息服务；rebalanceService主要处理客户端的负载均衡\r\n- 客户端负载均衡策略\r\n\t- 在消费者示例的start方法中，启动RebalanceService，这个是客户端进行负载均衡策略的启动服务。他只负责根据负载均衡策略获取当前客户端分配到的MessageQueue\r\n\t- 五种负载策略，可以由Consumer的allocateMessageQueueStrategy属性来选择\r\n\t\t- 这个属性可以在DefaultMQPushConsumer的构造方法当中指定。默认是AllocateMessageQueueAveragely策略\r\n\t\t- 最常用的是AllocateMessageQueueAveragely平均分配和AllocateMessageQueueAveragelyByCircle平均轮询分配\r\n\t\t\t- 平均分配是把MessageQueue按组内的消费者个数平均分配\r\n\t\t\t- 平均轮询分配就是把MessageQueue按组内的消费者一个一个轮询分配\r\n- 并发消费与顺序消费的过程\r\n\t- 消费的过程依然是在DefaultMQPushConsumerImpl的 consumeMessageService中\r\n\t- 他有两个子类ConsumeMessageConcurrentlyService和ConsumeMessageOrderlyService\r\n\t- 最主要的差别是ConsumeMessageOrderlyService会在消费前把队列锁起来，优先保证拉取同一个队列里的消息\r\n\t- 消费过程的入口在DefaultMQPushConsumerImpl的pullMessage中定义的PullCallback中\r\n- RocketMQ消息消费方式分别为集群模式、广播模式\r\n- 消息队列负载由RebalanceService线程默认每隔20s进行一次消息队列负载\r\n\t- 根据当前消费者组内消费者个数与主题队列数量按照某一种负载算法进行队列分配\r\n\t- 分配原则为同一个消费者可以分配多个消息消费队列\r\n\t- 同一个消息消费队列同一个时间只会分配给一个消费者\r\n- 消息拉取由PullMessageService线程根据RebalanceService线程创建的拉取任务进行拉取\r\n\t- 默认每次拉取一批消息(可以由业务指定，默认是1)，提交给消费者消费线程后继续下一次消息拉取\r\n\t- 如果消息消费过慢产生消息堆积会触发消息消费拉取流控\r\n- 并发消息消费指消费线程池中的线程可以并发对同一个消息队列的消息进行消费\r\n\t- 消费成功后，取出消息队列中最小的消息偏移量作为消息消费进度偏移量存储在于消息消费进度存储文件中\r\n\t- 集群模式消息消费进度存储在Broker（消息服务器）\r\n\t- 广播模式消息消费进度存储在消费者端\r\n- RocketMQ不支持任意精度的定时调度消息，只支持自定义的消息延迟级别\r\n\t- 可通过在broker配置文件中设置messageDelayLevel\r\n- 顺序消息一般使用集群模式，是指对消息消费者内的线程池中的线程对消息消费队列只能串行消费\r\n\t- 与并发消息消费最本质的区别是消息消费时必须成功锁定消息消费队列\r\n\t- 在Broker端会存储消息消费队列的锁占用情况\r\n- 拉模式核心服务类： PullMessageService\r\n\t- PullRequest里有messageQueue和processQueue，其中messageQueue负责拉取消息，拉取到后，将消息存入processQueue，进行处理。 存入后就可以清空messageQueue，继续拉取了\r\n\t- ![](static/RocketMQ-整体架构-6.png)\r\n\r\n---\r\n## 文件存储\r\n\r\n- Broker接收到消息后是如何把消息进行存储的\r\n- 最终存储的文件\r\n\t- commitLog：消息存储目录\r\n\t- config：运行期间一些配置信息\r\n\t- consumerqueue：消息消费队列存储目录\r\n\t- index：消息索引文件存储目录 \r\n\t- abort：如果存在改文件寿命Broker非正常关闭 \r\n\t- checkpoint：文件检查点，存储CommitLog文件最后一次刷盘时间戳、 consumerquueue最后一次刷盘时间，index索引文件最后一次刷盘时间戳\r\n- messageStore就是负责消息存储的核心组件\r\n- 消息存储的入口在：DefaultMessageStore.putMessage\r\n- commitLog写入\r\n\t- CommitLog的doAppend方法就是Broker写入消息的实际入口\r\n\t- 这个方法最终会把消息追加到MappedFile映射的一块内存里，并没有直接写入磁盘\r\n\t- 写入消息的过程是串行的，一次只会允许一个线程写入\r\n- 分发ConsumeQueue和IndexFile\r\n\t- 当CommitLog写入一条消息后，在DefaultMessageStore的start方法中，会启动一个后台线程reputMessageService每隔1毫秒就会去拉取CommitLog中最新更新的一批消息，然后分别转发到ComsumeQueue和IndexFile里去\r\n\t- 如果服务异常宕机，会造成CommitLog和ConsumeQueue、IndexFile文件不一致，有消息写入CommitLog后，没有分发到索引文件，这样消息就丢失了\r\n\t- DefaultMappedStore的load方法提供了恢复索引文件的方法，入口在load方法\r\n- 文件同步刷盘与异步刷盘：CommitLog.submitFlushRequest\r\n\t- 同步刷盘也是使用异步机制实现的\r\n\t\t- 刷盘是一个很重的操作，所以，RocketMQ即便是同步刷盘，也要对刷盘次数精打细算\r\n\t\t\t- 单条消息，那么直接将commitlog刷盘即可\r\n\t\t\t- 批量消息，RockeMQ会先收集这一批次消息的刷盘请求，再进行一次统一的刷盘操作\r\n\t\t\t- 一",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "5.整体架构",
+      "lvl1": "NameServer的结构",
+      "lvl2": "Broker的结构",
+      "lvl3": "Netty服务注册框架",
+      "lvl4": "RocketMQ的同步结果推送与异步结果推送",
+      "lvl5": "Producer发送消息过程",
+      "lvl6": "Consumer拉取消息过程",
+      "lvl7": "文件存储",
+      "lvl8": "延迟消息",
+      "lvl9": "长轮询机制"
+    },
+    "frontmatter": {
+      "title": "5.整体架构",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 2,
+    "contentParts": 3
+  },
+  {
+    "title": "5.整体架构",
+    "path": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-5.zhengtijiagou.html",
+    "content": "批消息有可能会跨两个commitlog文件，所以在刷盘时，要严格计算commitlog文件的刷盘次数\r\n\t- 异步刷盘\r\n\t\t- 通过RocketMQ自己实现的一个CountDownLatch2提供了线程阻塞，使用CAS来驱动CountDownLatch2的countDown操作\r\n\t\t- 每来一个消息就启动一次CAS，成功后，调用一次countDown\r\n\t\t- 这个CountDownLatch2在CountDownLatch的基础上，增加实现了reset功能，实现了对象的重用\r\n\t- TransientStorePoolEnable。如果开启了堆外内存，会在启动时申请一个跟CommitLog文件大小一致的堆外内存，这部分内存就可以确保不会被交换到虚拟内存中\r\n- CommigLog主从复制：CommitLog.submitReplicaRequest\r\n\t- RocketMQ整体是基于Netty实现的网络请求，而在主从复制这一块，却放弃了Netty框架，转而使用更轻量级的Java的NIO来构建\r\n\t-  在主要的HAService中，会在启动过程中启动三个守护进程\r\n\t\t- 其中与Master相关的是acceptSocketService和groupTransferService\r\n\t\t\t- acceptSocketService主要负责维护Master与Slave之间的TCP连接\r\n\t\t\t- groupTransferService主要与主从同步复制有关\r\n\t\t- 而slave相关的则是haClient\r\n- 过期文件删除：DefaultMessageStore.addScheduleTask -> DefaultMessageStore.this.cleanFilesPeriodically\r\n\t- Broker会启动后台线程，每60秒，检查CommitLog、ConsumeQueue文件\r\n\t\t- 然后对超过72小时的数据进行删除\r\n\t\t- 默认情况下， RocketMQ只会保存3天内的数据\r\n\t\t- 可以通过fileReservedTime来配置\r\n\t- 他删除时，并不会检查消息是否被消费了\r\n- 整个文件存储的核心入口在DefaultMessageStore的start方法中\r\n\r\n![](static/RocketMQ-整体架构-7.png)\r\n\r\n---\r\n## 延迟消息\r\n\r\n- 延迟消息的核心使用方法就是在Message中设定一个MessageDelayLevel参数，对应18个延迟级别\r\n- 然后Broker中会创建一个默认的Schedule_Topic主题，这个主题下有18个队列，对应18个延迟级别\r\n- 消息发过来之后，会先把消息存入Schedule_Topic主题中对应的队列\r\n\t- 等延迟时间到了，再转发到目标队列，推送给消费者进行消费\r\n- 延迟消息的处理入口在scheduleMessageService， 他会在broker启动时也一起加载\r\n- 消息写入：CommitLog.putMessage\r\n\t- 在CommitLog写入消息时，会判断消息的延迟级别，然后修改Message的Topic和Queue，达到转储Message的目的\r\n- 消息转储到目标Topic：scheduleMessageService\r\n\t- 这个服务只在master节点上启动，而在slave节点上会主动关闭这个服务\r\n\t-  由于RocketMQ的主从节点支持切换，所以就需要考虑这个服务的幂等性\r\n\t\t- 在节点切换为slave时就要关闭服务，切换为master时就要启动服务\r\n\t\t- 即便节点多次切换为master，服务也只启动一次：通过一个CAS操作来保证服务的启动状态\r\n\t\t-  这个CAS操作还保证了在后面，同一时间只有一个DeliverDelayedMessageTimerTask执行\r\n\t- ScheduleMessageService会每隔1秒钟执行一个executeOnTimeup任务，将消息从延迟队列中写入正常Topic中：ScheduleMessageService -> DeliverDelayedMessageTimerTask.executeOnTimeup\r\n\r\n![](static/RocketMQ-整体架构-8.png)\r\n\r\n---\r\n## 长轮询机制\r\n\r\n- RocketMQ对消息消费者提供了Push推模式和Pull拉模式两种消费模式\r\n\t- 但是这两种消费模式的本质其实都是Pull拉模式\r\n\t- Push模式可以认为是一种定时的Pull机制\r\n- 长轮询机制简单来说，就是当Broker接收到Consumer的Pull请求时，判断如果没有对应的消息，不用直接给Consumer响应 (给响应也是个空的，没意义)，而是就将这个Pull请求给缓存起来\r\n\t- 当Producer发送消息过来时，增加一个步骤去检查是否有对应的已缓存的Pull请求，如果有，就及时将请求从缓存中拉取出来，并将消息通知给Consumer\r\n\r\n![](static/RocketMQ-整体架构-9.png)\r\n\r\n---\r\n\r\n![](static/RocketMQ-整体架构-10.png)\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "5.整体架构",
+      "lvl1": "NameServer的结构",
+      "lvl2": "Broker的结构",
+      "lvl3": "Netty服务注册框架",
+      "lvl4": "RocketMQ的同步结果推送与异步结果推送",
+      "lvl5": "Producer发送消息过程",
+      "lvl6": "Consumer拉取消息过程",
+      "lvl7": "文件存储",
+      "lvl8": "延迟消息",
+      "lvl9": "长轮询机制"
+    },
+    "frontmatter": {
+      "title": "5.整体架构",
+      "date": "2025/07/03"
+    },
+    "type": "content",
+    "contentPart": 3,
+    "contentParts": 3
+  },
+  {
+    "title": "6.常见问题",
+    "path": "/docs/architect/rocketmq/RocketMQ-6.changjianwenti.html",
+    "url": "/docs/architect/rocketmq/RocketMQ-6.changjianwenti.html",
+    "content": "---\r\ntitle: 6.常见问题\r\ndate: 2025/07/03\r\n---\r\n\r\n:::tip\r\n- 消息零丢失\r\n- 消息顺序\r\n- 消息积压\r\n- 消息轨迹\r\n:::\r\n\r\n---\r\n## 消息零丢失\r\n\r\n- 哪些环节会有丢消息的可能\r\n\t- ![](static/RocketMQ-常见问题-1.png)\r\n\t- 1，2，4 三个场景都是跨网络的，而跨网络就肯定会有丢消息的可能\r\n\t- 通常MQ存盘时都会先写入操作系统的缓存page cache中，然后再由操作系统异步的将消息写入硬盘\r\n\t\t- 这个中间有个时间差，就可能会造成消息丢失\r\n\t\t- 如果服务挂了，缓存中还没有来得及写入硬盘的消息就会丢失\r\n- 生产者使用事务消息机制保证消息零丢失\r\n\t- ![事务消息](static/RocketMQ-常见问题-2.png)\r\n\t- half 消息\r\n\t\t- 这个half消息是在订单系统进行下单操作前发送，并且对下游服务的消费者是不可见的\r\n\t\t- 这个消息的作用更多的体现在确认RocketMQ的服务是否正常\r\n\t\t- half 消息如果写入失败了，可以在下单时给订单一个状态标记，然后等待MQ服务正常后再进行补偿操作，等MQ服务正常后重新下单通知下游服务\r\n\t- 订单系统写数据库失败\r\n\t\t- 可以另外找个地方把订单消息先缓存起来\r\n\t\t- 然后给RocketMQ返回一个UNKNOWN状态\r\n\t\t\t- 这样RocketMQ就会过一段时间来回查事务状态\r\n\t\t- 可以在回查事务状态时再尝试把订单数据写入数据库，如果数据库这时候已经恢复了，那就能完整正常的下单，再继续后面的业务\r\n\t- half消息写入成功后RocketMQ挂了\r\n\t\t- 未知状态的事务状态回查是由RocketMQ的Broker主动发起的\r\n\t\t- 等RocketMQ恢复后，只要存储的消息没有丢失，RocketMQ就会再次继续状态回查的流程\r\n\t- 下单成功后如何优雅的等待支付成功\r\n\t\t- 可以用事务消息的状态回查机制来替代定时的任务\r\n\t\t- 在下单时，给Broker返回一个UNKNOWN的未知状态\r\n\t\t- 在状态回查的方法中去查询订单的支付状态\r\n\t\t- 我们只需要配置RocketMQ中的事务消息回查次数(默认15次)和事务回查间隔时间(messageDelayLevel)\r\n\t- 事务消息机制的作用\r\n\t\t- 保证的是订单系统下单和发消息这两个事件的事务一致性\r\n\t\t- 而对下游服务的事务并没有保证\r\n- RocketMQ配置同步刷盘+Dledger主从架构保证MQ主从同步时不会丢消息\r\n\t- 同步刷盘\r\n\t- Dledger的文件同步：基于Raft协议\r\n\t\t- ![Dledger的文件同步](static/RocketMQ-常见问题-3.png)\r\n\t\t- Dledger会通过两阶段提交的方式保证文件在主从之间成功同步\r\n\t\t\t- uncommitted阶段\r\n\t\t\t\t- Leader Broker上的Dledger收到一条数据后，会标记为uncommitted状态\r\n\t\t\t\t- 然后他通过自己的DledgerServer组件把这个uncommitted数据发给Follower Broker的DledgerServer组件\r\n\t\t\t\t- 接着Follower Broker的DledgerServer收到uncommitted消息之后，必须返回一个ack给Leader Broker的Dledger\r\n\t\t\t- commited阶段\r\n\t\t\t\t- 如果Leader Broker收到超过半数的Follower Broker返回的ack之后，就会把消息标记为committed状态\r\n\t\t\t\t- 再接下来， Leader Broker上的DledgerServer就会发送committed消息给Follower Broker上的DledgerServer\r\n\t\t\t\t- 让他们把消息也标记为committed状态\r\n- 消费者端不要使用异步消费机制\r\n\t- 正常情况下，消费者端都是需要先处理本地事务，然后再给MQ一个ACK响应，这时MQ就会修改Offset，将消息标记为已消费，从而不再往其他消费者推送消息\r\n\t- 所以在Broker的这种重新推送机制下，消息是不会在传输过程中丢失的\r\n\t- 但是如果在开启异步消费线程后，直接返回 `ConsumeConcurrentlyStatus.CONSUME_SUCCESS`\r\n\t\t- 那么一旦消费失败，这个消息就丢失了\r\n- RocketMQ特有的问题，NameServer挂了如何保证消息不丢失\r\n\t- NameServer在RocketMQ中，是扮演的一个路由中心的角色，提供到Broker的路由功能\r\n\t- 集群中任意多的节点挂掉，都不会影响他提供的路由功能\r\n\t- 如果集群中所有的NameServer节点都挂了，生产者和消费者立即就无法工作了\r\n\t\t- RocketMQ相当于整个服务都不可用了，那他本身肯定无法给我们保证消息不丢失了\r\n\t- 降级方案\r\n\t\t- 可以暂存到其他地方，然后起一个线程定时的扫描这些失败的订单消息，尝试往RocketMQ发送\r\n- 这整套的消息零丢失方案，在各个环节都大量的降低了系统的处理性能以及吞吐量\r\n\t- 要根据实际的业务情况来考虑\r\n\t- 在有些对消息可靠性要求没有那么高的场景\r\n\t\t- 在生产者端就可以采用其他一些更简单的方案来提升吞吐\r\n\t\t- 而采用定时对账、补偿的机制来提高消息的可靠性\r\n\r\n---\r\n## 消息顺序\r\n\r\n- 全局有序：整个MQ系统的所有消息严格按照队列先入先出顺序进行消费\r\n\t- 通常意义下，全局有序都可以压缩成局部有序的问题\r\n- 局部有序：只保证一部分关键消息的消费顺序\r\n\t- 在大部分的MQ业务场景，我们只需要能够保证局部有序就可以了\r\n- 通常情况下，发送者发送消息时，会通过MessageQueue轮询的方式保证消息尽量均匀的分布到所有的MessageQueue上，而消费者也就同样需要从多个MessageQueue上消费消息\r\n\t- MessageQueue是RocketMQ存储消息的最小单元，他们之间的消息都是互相隔离的，在这种情况下，是无法保证消息全局有序的\r\n\t\t- 通常所谓的保证Topic全局消息有序的方式，就是将Topic配置成只有一个MessageQueue队列(默认是4个)\r\n\t\t- 对整个Topic的消息吞吐影响是非常大的，如果这样用，基本上就没有用MQ的必要了\r\n\t-  而对于局部有序的要求，只需要将有序的一组消息都存入同一个MessageQueue里，这样MessageQueue的FIFO设计天生就可以保证这一组消息的有序\r\n\t\t- RocketMQ中，可以在发送者发送消息时指定一个MessageSelector对象，让这个对象来决定消息发入哪一个MessageQueue。这样就可以保证一组有序的消息能够发到同一个MessageQueue里\r\n\r\n---\r\n## 消息积压\r\n\r\n- 如何确定RocketMQ有大量的消息积压\r\n\t- 在正常情况下，使用MQ都会要尽量保证他的消息生产速度和消费速度整体上是平衡的\r\n\t- 但是如果部分消费者系统出现故障，就会造成大量的消息积累\r\n\t- 使用web控制台，就能直接看到消息的积压情况\r\n\t- 也可以通过mqadmin指令在后台检查各个Topic的消息延迟情况\r\n\t- RocketMQ也会在他的 ${storePathRootDir}/config目录下落地一系列的json文件，也可以用来跟踪消息积压情况\r\n- 如何处理大量积压的消息\r\n\t- 如果Topic下的MessageQueue配置得是足够多的，那每个Consumer实际上会分配多个MessageQueue来进行消费\r\n\t\t- 可以简单的通过增加Consumer的服务节点数量来加快消息的消费，等积压消息消费完了，再恢复成正常情况\r\n\t\t- 最极限的情况是把Consumer的节点个数设置成跟MessageQueue的个数相同\r\n\t\t\t- 再继续增加Consumer的服务节点就没有用了\r\n\t- 如果Topic下的MessageQueue配置得不够多的话：可以创建一个新的Topic，配置足够多的MessageQueue\r\n\t\t- 然后把所有消费者节点的目标Topic转向新的Topic，并紧急上线一组新的消费者，只负责消费旧Topic中的消息，并转储到新的Topic中，这个速度是可以很快的\r\n\t\t- 然后在新的Topic上，就可以通过增加消费者个数来提高消费速度了。之后再根据情况恢复成正常情况\r\n- 如果RocketMQ原本是采用的普通方式搭建主从架构，而现在想要中途改为使用Dledger高可用集群\r\n\t- 这时候如果不想历史消息丢失，就需要先将消息进行对齐，也就是要消费者把所有的消息都消费完，再来切换主从架构\r\n\t- 因为Dledger集群会接管RocketMQ原有的CommitLog日志，所以切换主从架构时，如果有消息没有消费完，这些消息是存在旧的CommitLog中的，就无法再进行消费了\r\n\t\t- 这个场景下也是需要尽快的处理掉积压的消息\r\n\r\n---\r\n## 消息轨迹\r\n\r\n- `broker.conf -> traceTopicEnable=true`\r\n- 消息轨迹数据存储 \r\n\t- 默认情况下，消息轨迹数据是存于一个系统级别的 Topic (RMQ_SYS_TRACE_TOPIC)\r\n\t\t- 这个Topic在Broker节点启动时，会自动创建出来\r\n\t\t- 也支持客户端自定义轨迹数据存储的 Topic\r\n- 在客户端的两个核心对象 DefaultMQProducer 和 DefaultMQPushConsumer 的构造函数中，都有两个可选的参数来打开消息轨迹存储\r\n\t- enableMsgTrace：是否打开消息轨迹。默认是false\r\n\t- customizedTraceTopic：配置将消息轨迹数据存储到用户指定的Topic\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "6.常见问题",
+      "lvl1": "消息零丢失",
+      "lvl2": "消息顺序",
+      "lvl3": "消息积压",
+      "lvl4": "消息轨迹"
+    },
+    "frontmatter": {
+      "title": "6.常见问题",
+      "date": "2025/07/03"
+    },
+    "type": "content"
+  },
+  {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
     "title": "1.生态",
     "path": "/docs/architect/hadoop/Hadoop-1.shengtai.html",
     "url": "/docs/architect/hadoop/Hadoop-1.shengtai.html",
@@ -1915,25 +2252,6 @@
     "frontmatter": {
       "title": "9. mapreduce YARN 流程",
       "date": "2025/07/02"
-    },
-    "type": "content"
-  },
-  {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
     },
     "type": "content"
   },

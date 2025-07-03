@@ -26,19 +26,25 @@ export default defineUserConfig({
         {
           text: "并发编程",
           children: ["concurrent/JAVA并发-设计模式"],
-          
         }, {
           text: "JVM",
           children: ["jvm/JVM-常量池", "jvm/JVM-内存模型"],
-          
         }, {
           text: "Redis",
           children: ["redis/Redis-持久化"],
-          
         }, {
           text: "Zookeeper",
           children: ["zookeeper/Zookeeper-特性"],
-          
+        }, {
+          text: "RocketMQ",
+          children: [
+            "rocketmq/RocketMQ-1.基础",
+            "rocketmq/RocketMQ-2.消息类型&ACL",
+            "rocketmq/RocketMQ-3.代码示例",
+            "rocketmq/RocketMQ-4.核心原理",
+            "rocketmq/RocketMQ-5.整体架构",
+            "rocketmq/RocketMQ-6.常见问题",
+          ],
         }, {
           text: "Hadoop",
           children: [
@@ -84,7 +90,6 @@ export default defineUserConfig({
             "hadoop/Hadoop-16.2.ClassNotFoundException",
             "hadoop/Hadoop-17.1.常用命令fs",
           ],
-          
         },
       ],
       "/docs/trader/": [
