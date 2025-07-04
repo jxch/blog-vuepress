@@ -36,6 +36,22 @@ export default defineUserConfig({
           text: "Zookeeper",
           children: ["zookeeper/Zookeeper-特性"],
         }, {
+          text: "MongoDB",
+          children: [
+            "mongodb/MongoDB-1.基础操作",
+            "mongodb/MongoDB-2.聚合操作",
+            "mongodb/MongoDB-3.数据模型",
+            "mongodb/MongoDB-4.索引",
+            "mongodb/MongoDB-5.复制集",
+            "mongodb/MongoDB-6.分片集",
+            "mongodb/MongoDB-7.高级集群架构",
+            "mongodb/MongoDB-8.事务",
+            "mongodb/MongoDB-9.调优",
+            "mongodb/MongoDB-10.ChangeStream",
+            "mongodb/MongoDB-11.开发规范",
+            "mongodb/MongoDB-12.SpringBoot集成",
+          ],
+        }, {
           text: "RocketMQ",
           children: [
             "rocketmq/RocketMQ-1.基础",

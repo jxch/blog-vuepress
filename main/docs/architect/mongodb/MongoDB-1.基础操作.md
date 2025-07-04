@@ -1,0 +1,189 @@
+---
+title: 1.基础操作
+date: 2025-07-04
+---
+
+
+- 特性：文档数据库（以 JSON 为数据模型）
+- Mongo shell：基于JavaScript（`interpreterVersion()`）
+- MongoDB 文档操作
+
+---
+## 特性
+
+- 数据格式是BSON，一种类似JSON的二进制形式的存储格式，简称Binary JSON 
+- 集合（collection）：相当于SQL中的表，一个集合可以存放多个不同的文档
+- 文档（document）：一个文档相当于数据表中的一行，由多个不同的字段组成
+-  聚合操作（$lookup）：MongoDB用于实现“类似”表连接（tablejoin）的聚合操作符
+- 半结构化，在一个集合中，文档所拥有的字段并不需要是相同的，而且也不需要对所用的字段进行声明
+	- 文档还可以支持多级的嵌套、数组等灵活的数据类型
+- 弱关系，MongoDB没有外键的约束，也没有非常强大的表连接能力。类似的功能需要使用聚合管道技术来弥补
+- 应用场景：不需要复杂/长事务和join支持
+- MongoDB Database Tools
+	- mongostat 数据库性能监控工具
+	- mongotop 热点表监控工具
+	- mongodump 数据库逻辑备份工具
+	- mongorestore 数据库逻辑恢复工具
+	- mongoexport 数据导出工具
+	- mongoimport 数据导入工具
+	- bsondump BSON格式转换工具
+	- mongofiles GridFS文件工具
+
+## Mongo shell
+
+- `show dbs | show databases`
+- use 数据库名 
+- `db.dropDatabase() `
+- `show collections | show tables`
+- `db.createCollection("集合名", options)`
+	- options
+		- capped：（可选）如果为true，则创建固定集合。固定集合是指有着固定大小的集合，当达到最大值时，它会自动覆盖最早的文档
+			- size：固定集合最大值（以字节计）
+			- max：固定集合中包含文档的最大数量
+	-  当集合不存在时，向集合中插入文档也会创建集合
+- `db.集合名.stats() `
+- `db.集合名.drop() `
+- `db.createUser({user:"jxch",pwd:"jxch",roles:["root"]})` 创建管理员
+	- 常用权限
+		- `read readWrite`
+		- `dbAdmin`  允许用户在指定数据库中执行管理函数，如索引创建、删除，查看统计或访问`system.profile`
+		- `dbOwner` 允许用户在指定数据库中执行任意操作，增、删、改、查等
+		- `userAdmin`  允许用户向system.users集合写入，可以在指定数据库里创建、删除和管理用户
+		- 只在 admin 数据库中可用
+			- `clusterAdmin` 赋予用户所有分片和复制集相关函数的管理权限
+			- `readAnyDatabase readWriteAnyDatabase` 
+			- `userAdminAnyDatabase` 
+			- `dbAdminAnyDatabase`
+			- `root` 超级账号，超级权限
+	- `db.grantRolesToUser( "jxch" , [{ role: "clusterAdmin", db: "admin" }])` 重新赋予用户操作权限
+	- `db.dropUser("jxch")`
+	- `db.dropAllUser()` 删除当前数据库所有用户
+	- `db.auth("jxch", "jxch")` 用户认证，返回1表示认证成功
+		- 默认情况下，MongoDB不会启用鉴权，以鉴权模式启动MongoDB
+			- `mongod ‐f /mongodb/conf/mongo.conf ‐‐auth`
+			- `mongo 192.168.65.174:27017 ‐u jxch ‐p jxch ‐‐authenticationDatabase=admin`
+	- 创建应用数据库用户
+		- `use appdb`
+		- `db.createUser({user:"jxch",pwd:"jxch",roles:["dbOwner"]})`
+- `show users | show roles```
+- `db.system.users.find() ` 显示所有用户
+- `show profile` 显示最近发生的操作
+- `load("xxx.js") `
+- `exit | quit() `
+- `help | db.help() | db.集合名.help()`
+
+## MongoDB 文档操作
+
+- `db.xxxcollection.xxxfunc`
+- 插入文档
+	- 新增单个文档
+		- `insertOne` 支持 writeConcern
+			- writeConcern 决定一个写操作落到多少个节点上才算成功
+				- 0：发起写操作，不关心是否成功
+				- 1~集群最大数据节点数：写操作需要被复制到指定节点数才算成功
+			- majority：写操作需要被复制到大多数节点上才算成功
+		- insert: 若插入的数据主键已经存在，则会抛 DuplicateKeyException 异常，提示主键重复，不保存当前数据
+		- save: 如果 `_id` 主键存在则更新数据，如果不存在就插入数据
+	- 批量新增文档 
+		- `insertMany` 向指定集合中插入多条文档数据
+			- writeConcern：写入策略，默认为 1，即要求确认写操作，0 是不要求
+			- ordered：指定是否按顺序写入，默认 true，按顺序写入
+		- insert和save也可以实现批量插入
+- 查询文档
+	- find 查询集合中的若干文档  `db.collection.find(query, projection)`
+		- query ：可选，使用查询操作符指定查询条件
+			- 查询逻辑运算符
+				- $lt: 存在并小于
+				- $lte: 存在并小于等于
+				- $gt: 存在并大于
+				- $gte: 存在并大于等于
+				- $ne: 不存在或存在但不等于
+				- $in: 存在并在指定数组中
+				- $nin: 不存在或不在指定数组中 
+				- $or: 匹配两个或多个条件中的一个 
+				- $and: 匹配全部条件
+			- 查询条件对照表
+				- `a = 1    {a: 1}`
+				- `a <> 1   {a: {$ne: 1}}`
+				- `a > 1    {a: {$gt: 1}}`
+				- `a >= 1   {a: {$gte: 1}}`
+				- `a < 1    {a: {$lt: 1}}`
+				- `a <= 1   {a: {$lte: 1}}`
+			- 查询逻辑对照表
+				- `a = 1 AND b = 1     {a: 1, b: 1}或{$and: [{a: 1}, {b: 1}]}`
+				- `a = 1 OR b = 1      {$or: [{a: 1}, {b: 1}]}`
+				- `a IS NULL           {a: {$exists: false}}`
+				- `a IN (1, 2, 3)      {a: {$in: [1, 2, 3]}}`
+			- 正则表达式匹配查询： 使用 `$regex` 操作符来设置匹配字符串的正则表达式
+				- `db.xx.find({type:{$regex:"so"}})`
+				- `db.xx.find({type:/so/})`
+		- projection ：可选，使用投影操作符指定返回的键。默认查询时返回文档中所有键值
+			- 投影时，`_id`为1的时候，其他字段必须是1
+			- `_id`是0的时候，其他字段可以是0
+			- 如果没有`_id`字段约束，多个其他字段必须同为0或同为1
+		- `find().pretty()` 格式化
+		- 指定排序 `db.xx.find({type:"value"}).sort({favCount:‐1})`
+			- 1 为升序排列，而 -1 是用于降序排列
+		- 分页查询 `db.xx.find().skip(8).limit(4)` （每页大小为8条，查询第3页）
+			- skip用于指定跳过记录数，limit则用于限定返回结果数量
+		- 巧分页（使用查询条件 + 唯一排序条件）：数据量大的时候，应该避免使用skip/limit形式的分页
+			- 第一页：`db.posts.find({}).sort({_id: 1}).limit(20); `
+			- 第二页：`db.posts.find({_id: {$gt: <第一页最后一个_id>}}).sort({_id: 1}).limit(20);`
+			- 第三页：`db.posts.find({_id: {$gt: <第二页最后一个_id>}}).sort({_id: 1}).limit(20);`
+		- 如果查询返回的条目数量较多，mongo shell 则会自动实现分批显示
+			- 默认情况下每次只显示20条，可以输入it命令读取下一批
+		- 避免使用 count ，特别是数据量大和查询条件不能完整命中索引时
+	- findOne 查询集合中的第一个文档
+- 更新文档
+	- update 命令对指定的数据进行更新 `db.collection.update(query,update,options)`
+		- query：描述更新的查询条件
+		- update：描述更新的动作及新的内容
+			- 更新操作符
+				- `{$set:{field:value}}` 指定一个键并更新值，若键不存在则创建
+				- `{$unset:{field:1}}` 删除一个键
+				- `{$inc:{field:value}}` 对数值类型进行增减
+				- `{$rename:{old_field_name:new_field_name}}` 修改字段名称
+				- `{$push:{field:value}}` 将数值追加到数组中，若数组不存在则会进行初始化
+				- `{$pushAll:{field:value_array}}` 追加多个值到一个数组字段内
+				- `{$pull:{field:_value}}` 从数组中删除指定的元素
+				- `{$addToSet:{field:value}}` 添加元素到数组中，具有排重功能
+				- `{$pop:{field:1}}` 删除数组的第一个或最后一个元素
+				- 如果更新描述中不包含任何操作符，那么MongoDB会实现文档的replace语义
+		- options：描述更新的选项
+			- upsert：可选，如果不存在update的记录，是否插入新的记录。默认false，不插入
+			- multi：可选，是否按条件查询出的多条记录全部更新。 默认false，只更新找到的第一条记录
+			- writeConcern：可选，决定一个写操作落到多少个节点上才算成功
+	- updateOne：更新单个文档
+	- updateMany：更新多个文档
+	- replaceOne：替换单个文档
+	- findAndModify：兼容了查询和修改指定文档的功能，findAndModify 只能更新单个文档
+		- 返回符合查询条件的文档数据，并完成对文档的修改
+		- 默认情况下，findAndModify会返回修改前的“旧”数据
+		- 如果希望返回修改后的数据，则可以指定new选项： `new: true`
+	- findOneAndUpdate：更新单个文档并返回更新前（或更新后）的文档
+	- findOneAndReplace：替换单个文档并返回替换前（或替换后）的文档
+- 删除文档
+	- remove
+		- 匹配查询条件的文档会被删除
+		- 指定一个空文档条件会删除所有文档
+		- 默认会删除匹配条件的全部文档，如果希望明确限定只删除一个文档（首条），则需要指定justOne参数
+			- `db.xxx.remove({type:"cc"}, true)`
+	- deleteOne
+	- deleteMany
+	- findOneAndDelete 返回被删除的文档
+		- 按照指定顺序删除找到的第一个文档
+			- `db.xx.findOneAndDelete({type:"cc"},{sort:{favCount:1}})`
+			- 可以实现队列的先进先出
+	- remove、deleteOne等命令只能按默认顺序删除
+	- remove、deleteMany等命令需要对查询范围内的文档逐个删除，如果希望删除整个集合，则使用drop命令会更加高效
+- 文档操作最佳实践
+	- 关于文档结构 
+		- 防止使用太长的字段名（浪费空间）
+		- 防止使用太深的数组嵌套（超过2层操作比较复杂）
+		- 不使用中文，标点符号等非拉丁字母作为字段名
+	- 关于写操作
+		- update 语句里只包括需要更新的字段 
+		- 尽可能使用批量插入来提升写入性能 
+		- 使用TTL自动过期日志类型的数据
+
+
