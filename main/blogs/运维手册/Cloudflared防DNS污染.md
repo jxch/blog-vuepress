@@ -64,3 +64,16 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
+### 应用
+
+```shell
+# 查看 nameserver 是不是 127.0.0.1，如果是则自动生效
+cat /etc/resolv.conf
+# 如果 nameserver 是 127.0.0.53 说明走的是本地的 systemd-resolved
+# 那么就需要修改 systemd-resolved 上游 DNS
+# 设置 DNS=127.0.0.1
+vi /etc/systemd/resolved.conf
+
+systemctl restart systemd-resolved
+resolvectl status
+```
