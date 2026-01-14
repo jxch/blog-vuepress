@@ -91,5 +91,6 @@ WHERE JSON_CONTAINS(order_id_json, CAST(537 AS JSON));
 ```
 
 :::warn
-- `JSON_TABLE` 的方式，类似连接了一个关联表，会导致展开成多行，需要注意
+- `JSON_TABLE` 的方式，会导致展开成多行，需要注意
+- `JSON_TABLE` 本省不会走索引，只是把json数组在运行时展开成一个派生表
 :::
