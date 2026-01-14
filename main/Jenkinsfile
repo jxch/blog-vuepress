@@ -1,0 +1,64 @@
+pipeline {
+  agent {
+    docker {
+      image 'node:20-bookworm'
+      args  '-u root:root'
+    }
+  }
+
+  options {
+    timestamps()
+    disableConcurrentBuilds()
+    timeout(time: 30, unit: 'MINUTES')
+  }
+
+  environment {
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install') {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euxo pipefail
+
+          node -v
+          npm -v
+
+          # 有 package-lock.json 强烈推荐用 npm ci（更稳定）
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+        '''
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euxo pipefail
+          npm run build
+        '''
+      }
+    }
+
+    stage('Archive') {
+      steps {
+        archiveArtifacts artifacts: 'dist/**', fingerprint: true
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "Build finished: ${currentBuild.currentResult}"
+    }
+  }
+}
