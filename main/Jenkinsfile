@@ -23,17 +23,6 @@ pipeline {
       steps {
         checkout scm
 
-        // 诊断：确认项目在 main/ 下
-        sh '''#!/usr/bin/env bash
-          set -euxo pipefail
-          echo "WORKSPACE=$WORKSPACE"
-          pwd
-          ls -la
-          ls -la main
-          test -f main/package.json
-        '''
-
-        // 等价于：cd main
         dir('main') {
           sh '''#!/usr/bin/env bash
             set -euxo pipefail
@@ -50,13 +39,15 @@ pipeline {
             fi
 
             npm run build
+
+            chmod +x ./deploy.sh
+            ./deploy.sh
           '''
         }
       }
 
       post {
         always {
-          // VuePress 常见输出目录：main/.vuepress/dist
           archiveArtifacts artifacts: 'main/.vuepress/dist/**', fingerprint: true, allowEmptyArchive: true
         }
       }
