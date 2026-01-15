@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:24-slim'
-      args  '-u root:root'
-    }
-  }
+  agent none
 
   options {
     timestamps()
@@ -17,42 +12,50 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
+    stage('Build (Node in Docker)') {
+      agent {
+        docker {
+          image 'node:24-slim'
+          args  '-u root:root'
+        }
       }
-    }
 
-    stage('Install') {
       steps {
+        // 确保源码是在这个 Node 容器里检出
+        checkout scm
+
+        // 诊断：确认 package.json 确实在当前目录
+        sh '''#!/usr/bin/env bash
+          set -euxo pipefail
+          echo "WORKSPACE=$WORKSPACE"
+          pwd
+          ls -la
+          test -f package.json
+        '''
+
         sh '''#!/usr/bin/env bash
           set -euxo pipefail
 
           node -v
           npm -v
 
-          # 有 package-lock.json 强烈推荐用 npm ci（更稳定）
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-        '''
-      }
-    }
+          npm config set cache "$WORKSPACE/.npm-cache" --global
 
-    stage('Build') {
-      steps {
-        sh '''#!/usr/bin/env bash
-          set -euxo pipefail
+          if [ -f package-lock.json ]; then
+            npm ci --prefer-offline --no-audit
+          else
+            npm install --prefer-offline --no-audit
+          fi
+
           npm run build
         '''
       }
-    }
 
-    stage('Archive') {
-      steps {
-        archiveArtifacts artifacts: 'dist/**', fingerprint: true
+      post {
+        always {
+          // 如果你 build 输出不是 dist，而是 .vuepress/dist，需要改这里
+          archiveArtifacts artifacts: 'dist/**', fingerprint: true, allowEmptyArchive: true
+        }
       }
     }
   }
