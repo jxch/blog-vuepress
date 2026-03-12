@@ -152,7 +152,7 @@ public class EmployeeAdjustmentActivitiesImpl implements EmployeeAdjustmentActiv
             error.getData().put("traceId", TraceUtil.getTraceId());
             error.getData().put("stack", ExceptionUtil.stacktraceToString(throwable));
             error.getData().put("cause", ExceptionUtil.getRootCauseMessage(throwable));
-            throw ApplicationFailure.newNonRetryableFailure(throwable.getMessage(), throwable.getClass().getSimpleName(), error);
+            throw ApplicationFailure.newNonRetryableFailure(throwable.getMessage(), throwable.getClass().getSimpleName(), throwable, error);
         }
     }
 
