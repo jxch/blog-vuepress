@@ -9,7 +9,7 @@
     "dev": "vuepress dev .",
     "start": "vuepress dev .",
     "build": "vuepress build .",
-    "deploy-ps1": "powershell deploy.ps1",
+    "deploy-ps1": "powershell ./deploy.ps1",
     "deploy-sh": "sh deploy.sh"
   },
   "dependencies": {
