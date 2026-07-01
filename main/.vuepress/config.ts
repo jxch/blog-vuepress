@@ -140,6 +140,19 @@ export default defineUserConfig({
           children: ["diary/2025"],
         },
       ],
+      "/docs/car/car": [
+        {
+          text: "科目一",
+          children: [
+            "docs/car/subject1/1.法律法规",
+            "docs/car/subject1/2.通行规定",
+            "docs/car/subject1/3.扣分罚款",
+            "docs/car/subject1/4.总结-数字题",
+            "docs/car/subject1/5.速答技巧",
+            "docs/car/subject1/6.总结-速答技巧",
+          ]
+        },
+      ],
     },
     navbar: [
       { text: "首页", link: "/" },
@@ -155,6 +168,7 @@ export default defineUserConfig({
           { text: "计算机", link: "/docs/it/it" },
           { text: "诗集", link: "/docs/poetry/poetry" },
           { text: "日记", link: "/docs/diary/diary" },
+          { text: "汽车", link: "/docs/car/car" },
         ],
       },
       { text: "博客", link: "/posts" },

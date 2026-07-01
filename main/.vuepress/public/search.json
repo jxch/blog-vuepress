@@ -414,22 +414,6 @@
     "type": "content"
   },
   {
-    "title": "JAVA 架构师学习笔记",
-    "path": "/docs/architect/architect.html",
-    "url": "/docs/architect/architect.html",
-    "content": "---\r\ntitle: JAVA 架构师学习笔记\r\ndate: 2025/03/04\r\n---\r\n\r\n## 学习路径\r\n\r\n- 并发编程\r\n- 设计模式\r\n- JAVA反射、流式编程、编码规范\r\n- Spring、SpringBoot（核心启动流程、常见扩展点）\r\n- SpringCloud（微服务、分布式）\r\n- MySQL、MybatisPlus\r\n- 中间件（Redis、Sharding-Sphere、Zookeeper、RabbitMQ、Kafka、RocketMQ、Dubbo）\r\n- 网络编程（Netty）\r\n- JVM（内存模型、垃圾回收、GraalVM）\r\n- 性能调优（数据库、JVM、Tomcat）\r\n- MonoDB、ElasticSearch\r\n- clickhouse、Neo4j\r\n- Docker+K8S\r\n- 架构设计（DDD）\r\n- webflux\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JAVA 架构师学习笔记",
-      "lvl1": "学习路径"
-    },
-    "frontmatter": {
-      "title": "JAVA 架构师学习笔记",
-      "date": "2025/03/04"
-    },
-    "type": "content"
-  },
-  {
     "title": "AMD 架构上运行 ARM 架构的 Docker 容器",
     "path": "/blogs/yunweishouce/AMDjiagoushangyunxingARMjiagoudeDockerrongqi.html",
     "url": "/blogs/yunweishouce/AMDjiagoushangyunxingARMjiagoudeDockerrongqi.html",
@@ -1097,6 +1081,22 @@
     "type": "content"
   },
   {
+    "title": "JAVA 架构师学习笔记",
+    "path": "/docs/architect/architect.html",
+    "url": "/docs/architect/architect.html",
+    "content": "---\r\ntitle: JAVA 架构师学习笔记\r\ndate: 2025/03/04\r\n---\r\n\r\n## 学习路径\r\n\r\n- 并发编程\r\n- 设计模式\r\n- JAVA反射、流式编程、编码规范\r\n- Spring、SpringBoot（核心启动流程、常见扩展点）\r\n- SpringCloud（微服务、分布式）\r\n- MySQL、MybatisPlus\r\n- 中间件（Redis、Sharding-Sphere、Zookeeper、RabbitMQ、Kafka、RocketMQ、Dubbo）\r\n- 网络编程（Netty）\r\n- JVM（内存模型、垃圾回收、GraalVM）\r\n- 性能调优（数据库、JVM、Tomcat）\r\n- MonoDB、ElasticSearch\r\n- clickhouse、Neo4j\r\n- Docker+K8S\r\n- 架构设计（DDD）\r\n- webflux\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JAVA 架构师学习笔记",
+      "lvl1": "学习路径"
+    },
+    "frontmatter": {
+      "title": "JAVA 架构师学习笔记",
+      "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
     "title": "读书笔记",
     "path": "/docs/book/book.html",
     "url": "/docs/book/book.html",
@@ -1108,6 +1108,21 @@
     "frontmatter": {
       "title": "读书笔记",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "汽车",
+    "path": "/docs/car/car.html",
+    "url": "/docs/car/car.html",
+    "content": "---\r\ntitle: 汽车\r\ndate: 2026/07/01\r\n---\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "汽车"
+    },
+    "frontmatter": {
+      "title": "汽车",
+      "date": "2026/07/01"
     },
     "type": "content"
   },
@@ -1128,6 +1143,21 @@
     "type": "content"
   },
   {
+    "title": "感谢打赏",
+    "path": "/docs/others/donate.html",
+    "url": "/docs/others/donate.html",
+    "content": "---\r\ntitle: 感谢打赏\r\ndate: 2025/03/05\r\n---\r\n\r\n<div style=\"display: flex; justify-content: space-around; flex-wrap: wrap;\">\r\n    <img src=\"@source/docs/others/static/收款码-支付宝.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-微信.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-QQ.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n</div>\r\n\r\n::: info \r\n加入群聊一起交流哦！如有错误的地方，欢迎指正！\r\n\r\n<ul>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331\">架构师：961215331</a></li>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984\">操盘手：966469984</a></li>\r\n</ul>\r\n:::\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "感谢打赏"
+    },
+    "frontmatter": {
+      "title": "感谢打赏",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
     "title": "计算机技术栈",
     "path": "/docs/it/it.html",
     "url": "/docs/it/it.html",
@@ -1143,16 +1173,16 @@
     "type": "content"
   },
   {
-    "title": "感谢打赏",
-    "path": "/docs/others/donate.html",
-    "url": "/docs/others/donate.html",
-    "content": "---\r\ntitle: 感谢打赏\r\ndate: 2025/03/05\r\n---\r\n\r\n<div style=\"display: flex; justify-content: space-around; flex-wrap: wrap;\">\r\n    <img src=\"@source/docs/others/static/收款码-支付宝.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-微信.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n    <img src=\"@source/docs/others/static/收款码-QQ.jpg\" alt=\"描述\" width=\"300\" height=\"200\">\r\n</div>\r\n\r\n::: info \r\n加入群聊一起交流哦！如有错误的地方，欢迎指正！\r\n\r\n<ul>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=_8OK2fsmwKYXliSoqszUCHZ_RnMmcZsm&authKey=KEju9D76HcqTr3vuFLbdkamaqpGVYcvfo%2F%2BlLd04GucOwH0XnMZjeg0a0WUJ7OwQ&noverify=0&group_code=961215331\">架构师：961215331</a></li>\r\n    <li><a target=\"_blank\" href=\"http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=1CRaLYPuesGlWXEPQmqwmi2UsTgXebSz&authKey=EReo0mUHRG9%2FGdYsRLClzizP%2BcRIzQCVIIHjfMLUmX%2FpoV4RIoAnQBktkimpKqdD&noverify=0&group_code=966469984\">操盘手：966469984</a></li>\r\n</ul>\r\n:::\r\n",
+    "title": "操盘手学习笔记",
+    "path": "/docs/trader/trader.html",
+    "url": "/docs/trader/trader.html",
+    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
     "lang": "zh-CN",
     "hierarchy": {
-      "lvl0": "感谢打赏"
+      "lvl0": "操盘手学习笔记"
     },
     "frontmatter": {
-      "title": "感谢打赏",
+      "title": "操盘手学习笔记",
       "date": "2025/03/05"
     },
     "type": "content"
@@ -1184,21 +1214,6 @@
     "frontmatter": {
       "title": "交易笔记",
       "date": "2025/03/08"
-    },
-    "type": "content"
-  },
-  {
-    "title": "操盘手学习笔记",
-    "path": "/docs/trader/trader.html",
-    "url": "/docs/trader/trader.html",
-    "content": "---\r\ntitle: 操盘手学习笔记\r\ndate: 2025/03/05\r\n---\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "操盘手学习笔记"
-    },
-    "frontmatter": {
-      "title": "操盘手学习笔记",
-      "date": "2025/03/05"
     },
     "type": "content"
   },
@@ -1319,44 +1334,6 @@
     "frontmatter": {
       "title": "JAVA并发-设计模式",
       "date": "2025/04/22"
-    },
-    "type": "content"
-  },
-  {
-    "title": "JVM-内存模型",
-    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
-    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-内存模型",
-      "lvl1": "JVM 内存模型",
-      "lvl2": "JVM 内存核心参数",
-      "lvl3": "内存调优案例"
-    },
-    "frontmatter": {
-      "title": "JVM-内存模型",
-      "date": "2025/03/04"
-    },
-    "type": "content"
-  },
-  {
-    "title": "JVM-常量池",
-    "path": "/docs/architect/jvm/JVM-changliangchi.html",
-    "url": "/docs/architect/jvm/JVM-changliangchi.html",
-    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "JVM-常量池",
-      "lvl1": "Class 常量池与运行时常量池",
-      "lvl2": "字符串常量池",
-      "lvl3": "八种基本类型的包装类和对象池",
-      "lvl4": "字符串常量池示例",
-      "lvl5": "包装类对象池示例"
-    },
-    "frontmatter": {
-      "title": "JVM-常量池",
-      "date": "2025/03/04"
     },
     "type": "content"
   },
@@ -1570,6 +1547,44 @@
     "frontmatter": {
       "title": "4.优化",
       "date": "2025/07/03"
+    },
+    "type": "content"
+  },
+  {
+    "title": "JVM-内存模型",
+    "path": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "url": "/docs/architect/jvm/JVM-nacunmoxing.html",
+    "content": "---\r\ntitle: JVM-内存模型\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. JVM 内存模型\r\n2. JVM 内存核心参数\r\n3. 存调优案例\r\n:::\r\n\r\n## JVM 内存模型\r\n\r\n![JVM 内存模型](static/JVM-内存模型-内存模型.png)\r\n\r\n## JVM 内存核心参数\r\n\r\n![JVM 核心参数](static/JVM-内存模型-核心参数.png)\r\n\r\n- 关于元空间的JVM参数有两个：`-XX:MetaspaceSize=N` 和 `-XX:MaxMetaspaceSize=N`\r\n\t- `-XX:MaxMetaspaceSize` ： 设置元空间最大值， 默认是 -1， 即不限制， 或者说只受限于本地内存大小\r\n\t- `-XX:MetaspaceSize`： 指定元空间触发Fullgc的初始阈值(元空间无固定初始大小)， 以字节为单位，默认是21M，达到该值就会触发full gc进行类型卸载\r\n\t\t- 同时收集器会对该值进行调整： 如果释放了大量的空间， 就适当降低该值； 如果释放了很少的空间， 那么在不超过 `-XX:MaxMetaspaceSize`（如果设置了的话） 的情况下， 适当提高该值\r\n\t\t- 这个跟早期jdk版本的 `-XX:PermSize` 参数意思不一样，`-XX:PermSize` 代表永久代的初始容量\r\n\t- 由于调整元空间的大小需要Full GC，这是非常昂贵的操作，如果应用在启动的时候发生大量Full GC，通常都是由于永久代或元空间发生了大小调整，基于这种情况，一般建议在JVM参数中将 MetaspaceSize 和 MaxMetaspaceSize 设置成一样的值，并设置得比初始值要大，对于 8G 物理内存的机器来说，一般我会将这两个值都设置为 256M\r\n- `-Xss` 设置越小，说明一个线程栈里能分配的栈帧就越少，但是对 JVM 整体来说能开启的线程数会更多\r\n- 尽可能让对象都在新生代里分配和回收，尽量别让太多对象频繁进入老年代，避免频繁对老年代进行垃圾回收，同时给系统充足的内存大小，避免新生代频繁的进行垃圾回收\r\n\r\n## 内存调优案例\r\n\r\n![JVM 内存调优案例](static/JVM-内存模型-案例.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-内存模型",
+      "lvl1": "JVM 内存模型",
+      "lvl2": "JVM 内存核心参数",
+      "lvl3": "内存调优案例"
+    },
+    "frontmatter": {
+      "title": "JVM-内存模型",
+      "date": "2025/03/04"
+    },
+    "type": "content"
+  },
+  {
+    "title": "JVM-常量池",
+    "path": "/docs/architect/jvm/JVM-changliangchi.html",
+    "url": "/docs/architect/jvm/JVM-changliangchi.html",
+    "content": "---\r\ntitle: JVM-常量池\r\ndate: 2025/03/04\r\n---\r\n\r\n::: tip 介绍\r\n1. Class 常量池与运行时常量池\r\n2. 字符串常量池\r\n3. 八种基本类型的包装类和对象池\r\n:::\r\n\r\n## Class 常量池与运行时常量池\r\n\r\n- Class 常量池与运行时常量池（`javap -v Xxx.class` -> Constant pool）：常量池中主要存放字面量和符号引用\r\n\t- Class常量池可以理解为是Class文件中的资源仓库\r\n\t\t- Class文件中除了包含类的版本、字段、方法、接口等描述信息外， 还有一项信息就是常量池(constant pool table)，用于存放编译期生成的各种字面量(Literal)和符号引用(Symbolic References)\r\n\t- 字面量：就是指由字母、数字等构成的字符串或者数值常量\r\n\t\t- 字面量只可以右值出现，所谓右值是指等号右边的值，如：int a=1 这里的a为左值，1为右值\r\n\t- 符号引用：是编译原理中的概念，是相对于直接引用来说的\r\n\t\t- 主要包括了三类常量：类和接口的全限定名；字段的名称和描述符；方法的名称和描述符\r\n\t- 运行时常量池：这些常量池现在是静态信息，只有到运行时被加载到内存后，这些符号才有对应的内存地址信息，这些常量池一旦被装入内存就变成运行时常量池\r\n\t\t- 例如，compute()这个符号引用在运行时就会被转变为compute()方法具体代码在内存中的 地址，主要通过对象头里的类型指针去转换直接引用\r\n\r\n## 字符串常量池\r\n- 字符串常量池\r\n\t- 设计思想\r\n\t\t- 字符串的分配，和其他的对象分配一样，耗费高昂的时间与空间代价，作为最基础的数据类型，大量频繁的创建字符串，极大程度地影响程序的性能\r\n\t\t- JVM为了提高性能和减少内存开销，在实例化字符串常量的时候进行了一些优化\r\n\t\t\t- 为字符串开辟一个字符串常量池，类似于缓存区\r\n\t\t\t- 创建字符串常量时，首先查询字符串常量池是否存在该字符串\r\n\t\t\t- 存在该字符串，返回引用实例，不存在，实例化该字符串并放入池中\r\n\t- 三种字符串操作\r\n\t\t- 直接赋值字符串（指向常量池中的引用）：`String s = \"jxch\";`\r\n\t\t\t- 这种方式创建的字符串对象，只会在常量池中\r\n\t\t\t- 创建对象s的时候，JVM会先去常量池中通过 equals(key) 方法，判断是否有相同的对象\r\n\t\t\t\t- 如果有，则直接返回该对象在常量池中的引用\r\n\t\t\t\t- 如果没有，则会在常量池中创建一个新对象，再返回引用\r\n\t\t- `String s = new String(\"jxch\");` （指向内存中的对象引用）\r\n\t\t\t- 这种方式会保证字符串常量池和堆中都有这个对象，没有就创建，最后返回堆内存中的对象引用\r\n\t\t\t- 先检查字符串常量池中是否存在字符串\r\n\t\t\t\t- 不存在，先在字符串常量池里创建一个字符串对象；再去内存中创建一个字符串对象\r\n\t\t\t\t- 存在的话，就直接去堆内存中创建一个字符串对象\r\n\t\t\t- 最后，将内存中的引用返回\r\n\t\t- `intern` 方法是一个 native 的方法\r\n\t\t\t- 如果池已经包含一个等于此String对象的字符串（equals(oject)），则返回池中的字符串\r\n\t\t\t- 否则，将intern返回的引用指向当前字符串\r\n\t\t\t\t- 在 JDK 1.7 (及以上版本) 中，由于字符串池不在永久代了，intern() 做了一些修改，更方便地利用堆中的对象（字符串不存在时不再需要重新创建实例，可以直接指向堆上的实例）\r\n\t\t\t\t- jdk1.6版本需要将字符串复制到字符串常量池里\r\n\t- 常量池的位置\r\n\t\t- Jdk1.6及之前： 有永久代, 运行时常量池在永久代，运行时常量池包含字符串常量池\r\n\t\t- Jdk1.7：有永久代，但已经逐步“去永久代”，字符串常量池从永久代里的运行时常量池分离到堆里\r\n\t\t- Jdk1.8及之后： 无永久代，运行时常量池在元空间，字符串常量池里依然在堆里\r\n\t- 设计原理：类似 HashTable ，本质上是字符串对象的引用\r\n\r\n## 八种基本类型的包装类和对象池\r\n- 八种基本类型的包装类和对象池\r\n\t- java中基本类型的包装类的大部分都实现了常量池技术 (严格来说应该叫对象池，在堆上)\r\n\t- Byte,Short,Integer,Long,Character,Boolean （另外两种浮点数类型的包装类则没有实现对象池）\r\n\t- Byte,Short,Integer,Long,Character这5种整型的包装类也只是在对应值小于等于127时才可使用对象池\r\n\t\t- 即对象不负责创建和管理大于127的这些类的对象\r\n\t\t- 一般这种比较小的数用到的概率相对较大\r\n\r\n\r\n## 字符串常量池示例\r\n\r\n```java\r\nString s1 = new String(\"he\") + new String(\"llo\");\r\nString s2 = s1.intern();\r\n \r\nSystem.out.println(s1 == s2);\r\n// 在 JDK 1.6 下输出是 false，创建了 6 个对象\r\n// 在 JDK 1.7 及以上的版本输出是 true，创建了 5 个对象 \r\n// 当然我们这里没有考虑GC，但这些对象确实存在或存在过\r\n```\r\n\r\n![字符串常量池-JDK1.7+](static/JVM-常量池-字符串常量池-JDK1.7+.png)\r\n\r\n\r\n![字符串常量池-JDK1.6](static/JVM-常量池-字符串常量池-JDK1.6.png)\r\n\r\n```java\r\nString s0=\"zhuge\"; \r\nString s1=\"zhuge\"; \r\nString s2=\"zhu\" + \"ge\";\r\nSystem.out.println( s0==s1 ); //true \r\nSystem.out.println( s0==s2 ); //true\r\n\r\nString s0=\"zhuge\";\r\nString s1=new String(\"zhuge\");\r\nString s2=\"zhu\" + new String(\"ge\");\r\nSystem.out.println( s0==s1 ); // false \r\nSystem.out.println( s0==s2 )； // false \r\nSystem.out.println( s1==s2 ); // false\r\n\r\nString a = \"a1\";\r\nString b = \"a\" + 1;\r\nSystem.out.println(a == b); // true\r\nString a = \"atrue\";\r\nString b = \"a\" + \"true\";\r\nSystem.out.println(a == b); // true\r\nString a = \"a3.4\";\r\nString b = \"a\" + 3.4;\r\nSystem.out.println(a == b); // true\r\n\r\nString a = \"ab\"; \r\nString bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false 由于在字符串的\"+\"连接中，有字符串引用存在，而引用的值在程序编译期是无法确定的\r\n\r\nString a = \"ab\";\r\nfinal String bb = \"b\"; \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // true 对于final修饰的变量，它在编译时被解析为常量值的一个本地拷贝存储到自己的常量池中或嵌入到它的字节码流中\r\n\r\nprivate static String getBB() { return \"b\"; }\r\nString a = \"ab\";\r\nfinal String bb = getBB(); \r\nString b = \"a\" + bb;\r\nSystem.out.println(a == b); // false JVM对于字符串引用bb，它的值在编译期无法确定，只能在程序运行期调用方法后，将方法的返回值和\"a\"来动态连接并分配地址为b\r\n\r\nString str1 = new StringBuilder(\"ja\").append(\"va\").toString();\r\nSystem.out.println(str1 == str1.intern()); //false java是关键字，在JVM初始化的相关类里肯定早就放进字符串常量池了\r\n```\r\n\r\n::: info 注意\r\nString是不可变的\r\n:::\r\n\r\n```java\r\nString s = \"a\" + \"b\" + \"c\"; //就等价于String s = \"abc\";\r\nString a = \"a\";\r\nString b = \"b\";\r\nString c = \"c\";\r\nString s1 = a + b + c;\r\n\r\n// `s1` 这个就不一样了，可以通过观察其 `JVM` 指令码发现 `s1` 的 `+` 操作会变成如下操作\r\nStringBuilder temp = new StringBuilder(); \r\ntemp.append(a).append(b).append(c);\r\nString s = temp.toString();\r\n```\r\n\r\n## 包装类对象池示例\r\n\r\n```java\r\n //5种整形的包装类Byte,Short,Integer,Long,Character的对象，\r\n //在值小于127时可以使用对象池\r\n Integer i1 = 127; //这种调用底层实际是执行的Integer.valueOf(127)，里面用到了IntegerCache对象池 \r\n Integer i2 = 127;\r\n System.out.println(i1 == i2);//输出true\r\n \r\n //值大于127时，不会从对象池中取对象\r\n Integer i3 = 128;\r\n Integer i4 = 128;\r\n System.out.println(i3 == i4);//输出false\r\n \r\n //用new关键词新生成对象不会使用对象池\r\n Integer i5 = new Integer(127);\r\n Integer i6 = new Integer(127);\r\n System.out.println(i5 == i6);//输出false\r\n \r\n //Boolean类也实现了对象池技术\r\n Boolean bool1 = true;\r\n Boolean bool2 = true;\r\n System.out.println(bool1 == bool2);//输出true\r\n \r\n //浮点类型的包装类没有实现对象池技术\r\n Double d1 = 1.0;\r\n Double d2 = 1.0;\r\n System.out.println(d1 == d2);//输出false\r\n```\r\n\r\n\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "JVM-常量池",
+      "lvl1": "Class 常量池与运行时常量池",
+      "lvl2": "字符串常量池",
+      "lvl3": "八种基本类型的包装类和对象池",
+      "lvl4": "字符串常量池示例",
+      "lvl5": "包装类对象池示例"
+    },
+    "frontmatter": {
+      "title": "JVM-常量池",
+      "date": "2025/03/04"
     },
     "type": "content"
   },
@@ -2742,6 +2757,25 @@
     "type": "content"
   },
   {
+    "title": "Redis-持久化",
+    "path": "/docs/architect/redis/Redis-chijiuhua.html",
+    "url": "/docs/architect/redis/Redis-chijiuhua.html",
+    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "Redis-持久化",
+      "lvl1": "RDB: dump.rdb",
+      "lvl2": "AOF: appendonly.aof",
+      "lvl3": "混合持久化",
+      "lvl4": "数据备份策略"
+    },
+    "frontmatter": {
+      "title": "Redis-持久化",
+      "date": "2025/03/05"
+    },
+    "type": "content"
+  },
+  {
     "title": "1. 基础",
     "path": "/docs/architect/rocketmq/RocketMQ-1.jichu.html",
     "url": "/docs/architect/rocketmq/RocketMQ-1.jichu.html",
@@ -3060,25 +3094,6 @@
     "type": "content"
   },
   {
-    "title": "Redis-持久化",
-    "path": "/docs/architect/redis/Redis-chijiuhua.html",
-    "url": "/docs/architect/redis/Redis-chijiuhua.html",
-    "content": "---\r\ntitle: Redis-持久化\r\ndate: 2025/03/05\r\n---\r\n\r\n::: tip 介绍\r\n1. RDB：dump.rdb （二进制文件）\r\n2. AOF（append-only file）：appendonly.aof（resp协议格式）\r\n3. 混合持久化：RDB+AOF\r\n4. 数据备份策略\r\n:::\r\n\r\n## RDB: dump.rdb\r\n\r\n- RDB：dump.rdb （二进制文件）\r\n\t- 配置文件：`bgsave` 方式\r\n\t\t- `save 60 1000`  关闭RDB只需要将所有的 `save` 保存策略注释掉即可\r\n\t\t\t- 60 秒内有至少有 1000 个键被改动， 则进行一次 RDB 持久化\r\n\t- 命令：覆盖原有 rdb 快照文件\r\n\t\t- `save`：同步\r\n\t\t- `bgsave`：异步，写时复制 - COW机制\r\n\t\t\t- `bgsave` 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据\r\n\t\t\t\t- 在生成子进程执行调用fork函数时会有短暂阻塞\r\n\t\t\t- 如果主线程要修改一块数据，那么，这块数据就会被复制一份，生成该数据的副本。然后，`bgsave` 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据\r\n\r\n::: danger 缺点\r\n宕机后，服务器将丢失最近写入、且仍未保存到快照中的数据\r\n:::\r\n\r\n## AOF: appendonly.aof\r\n\r\n- AOF（append-only file）：appendonly.aof（resp协议格式）\r\n\t- 将修改的每一条指令记录进文件appendonly.aof中（先写入os cache，每隔一段时间fsync到磁盘）\r\n\t- 命令：`bgrewriteaof`  （fork出一个子进程去做）\r\n\t- 配置文件\r\n\r\n|配置文件|介绍|\r\n|-|-|\r\n|`appendonly yes`|开启AOF模式|\r\n|`appendfsync always`|每条命令都fsync一次，拉低性能|\r\n|`appendfsync everysec`|每秒fsync一次，推荐，缺点是宕机后会丢失1秒的数据，但可以从数据库恢复|\r\n|`appendfsync no`|让操作系统决定fsync的时机，快但不安全|\r\n|`auto‐aof‐rewrite‐min‐size 64mb`|AOF文件超过64M时，重写AOF文件（整合命令）|\r\n|`auto‐aof‐rewrite‐percentage 100`|自上一次重写后文件大小增长了100%则再次触发重写|\r\n\r\n::: warning 缺点\r\n体积大，恢复慢\r\n:::\r\n\r\n## 混合持久化\r\n\r\n- 混合持久化：RDB+AOF\r\n\t- 配置文件（必须先开启AOF）：`aof‐use‐rdb‐preamble yes`\r\n\t- 将重写这一刻之前的内存做RDB快照处理，并且将RDB快照内容和增量的AOF修改内存数据的命令（生成RDB过程中产生的命令）存在一起，都写入新的AOF文件\r\n\t- 新的文件一开始不叫appendonly.aof，等到重写完新的AOF文件才会进行改名，覆盖原有的AOF文件，完成新旧两个AOF文件的替换\r\n\r\n::: info 优点\r\n在 Redis 重启的时候，可以先加载 RDB 的内容，然后再重放增量 AOF 日志就可以完全替代之前的AOF 全量文件重放，因此重启效率大幅得到提升\r\n:::\r\n\r\n![混合持久化](static/Redis-持久化-appendonly.aof.png)\r\n\r\n## 数据备份策略\r\n\r\n- 数据备份策略：\r\n\t1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48小时的备份\r\n\t2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\r\n\t3. 每次copy备份的时候，删除一些旧备份\r\n\t4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "Redis-持久化",
-      "lvl1": "RDB: dump.rdb",
-      "lvl2": "AOF: appendonly.aof",
-      "lvl3": "混合持久化",
-      "lvl4": "数据备份策略"
-    },
-    "frontmatter": {
-      "title": "Redis-持久化",
-      "date": "2025/03/05"
-    },
-    "type": "content"
-  },
-  {
     "title": "Zookeeper-特性",
     "path": "/docs/architect/zookeeper/Zookeeper-texing.html",
     "url": "/docs/architect/zookeeper/Zookeeper-texing.html",
@@ -3187,6 +3202,96 @@
     "contentParts": 4
   },
   {
+    "title": "1. 法律法规",
+    "path": "/docs/car/subject1/1.falvfagui.html",
+    "url": "/docs/car/subject1/1.falvfagui.html",
+    "content": "---\r\ntitle: 1. 法律法规\r\ndate: 2026/07/01\r\n---\r\n\r\nC1 准驾驶 C2 C3 C4\r\n\r\nC6 轻型牵引挂车\r\n\r\n年龄：20-70周岁\r\n\r\n增加需要小型汽车、小型自动挡汽车驾驶证一年以上\r\n\r\n精神病，癫痫病，红绿色盲等不能申请驾驶证\r\n\r\n饮酒，吃管制药品，任何特殊情况不能开车\r\n\r\nB1 中型客车\r\n\r\nB2 大型货车\r\n\r\nA1 大型客车\r\n\r\nA2 重型牵引挂车\r\n\r\n---\r\n\r\n申请小型汽车驾驶证年龄要求：18周岁-无上限\r\n\r\n驾驶证有效期口诀：6-10-长\r\n\r\n70周岁，记忆力、判断力、反应力（三力测试，每年体检）\r\n\r\n只要提到2年体检的题目都是错误的，体检放宽到乡镇社区服务医院体检机构等\r\n\r\n大型客货车每1年体检\r\n\r\n非营运小客车、摩托车只需要自注册登记之日起第6年、第10年到检验机构上线检验，在10年内每两年向公安机关申领一次检验合格标志。超过10年的非营运小客车和摩托车，每年上线检验1次\r\n\r\n---\r\n\r\n关于时间：**满9变3**\r\n\r\n有90选90，没有90选30\r\n\r\n判断题出现30或者三十绝大多数都是正确的\r\n\r\n驾驶证周期：12个月\r\n\r\n驾驶证实习期：12个月\r\n\r\n驾驶证满分：12分\r\n\r\n有效期3年：\r\n\r\n准考证3年\r\n\r\n实习期上高速，老司机带带我（3年的老司机）\r\n\r\n因XX原因不能审验3年\r\n\r\n年龄20岁能考货车 （2货）\r\n\r\n20岁不能申请大型客车\r\n\r\n申请大中型客货车，年龄不能超过63周岁（延时退休）\r\n\r\n驾驶人在实习期不可以单独驾驶机动车上高速公路行驶，在增加准驾车型后的实习期内，驾驶原准驾车型的机动车时不受上述限制\r\n\r\n---\r\n\r\n满分教育问题\r\n\r\n科目一：法律法规\r\n\r\n科目二：场地驾驶技能\r\n\r\n科目三：道路驾驶技能\r\n\r\n满12分：科目一\r\n\r\n满24-36分：科目一，科目三\r\n\r\n满36分：科目一，科目二，科目三\r\n\r\n满12分教育日期（参加科目一考试）\r\n\r\n小车：现场2天；网络3天；自主2天；共计7天\r\n\r\n大车：现场5天；网络5天；自主20天；共计30天\r\n\r\n每增加12分，小车加7天（最多60），大车加30天（最多120），但现场和网络天数不变\r\n\r\n---\r\n\r\n学法减分 （交通安全教育扣减交通违法行为记分）\r\n\r\n不能申请的\r\n\r\n实习期不能申请\r\n\r\n二次以上参加满分教育记录的\r\n\r\n酒驾被处罚的3个记分周期内\r\n\r\n学法减分时间（每个周期最多减6分）\r\n\r\n网络学习：学习时间30分钟；需要考试；扣减1分；网络找30和1\r\n\r\n现场学习：学习时间1小时；需要考试；扣减2分；现场找1和2\r\n\r\n公益活动：学习时间1小时；需要考试；扣减1分；公益找1和1\r\n\r\n---\r\n\r\n科目二+科目三 = 预约次数 5 次\r\n\r\n出现“科目二/科目三字眼”\r\n\r\n题目中没有分数的判断题都是正确的\r\n\r\n有分数的就是错误的\r\n\r\n单选题：\r\n\r\n行为前面，找违法（ ~~ 违法行为）\r\n\r\n责任前面找刑事 或者全部（刑事责任，全部责任）\r\n\r\n---\r\n\r\n驾驶证有关考点\r\n\r\n车登记、证随意\r\n\r\n只有驾驶证其余之外其他的都是车的，比如号牌等\r\n\r\n驾驶证遗失、损毁需要补领\r\n\r\n核发地、居住地、所在地、户籍地\r\n\r\n颜色变、车架变、发动机 （要登记）；加防撞（不用登）\r\n\r\n只有防撞不用登记，剩下不用登记就错\r\n\r\n不正常就不能开车\r\n\r\n驾驶证没带、丢失、损毁、过期、延期审验、被吊销、被扣押\r\n\r\n被依法扣押扣留都不能再申请补发\r\n\r\n被注销，被吊销正确；不注销，不吊销错误\r\n\r\n---\r\n\r\n不得申请驾驶证的时间\r\n\r\n假1 骗3 毒3 醉5 逃罪终生\r\n\r\n作弊 = 假\r\n\r\n不正当 = 欺骗\r\n\r\n---\r\n\r\n安全常识\r\n\r\nABS车轮防抱死，ABS找紧急制动都有的字眼判断题是正确的。需要用力踏\r\n\r\n安全带：安全带在紧急情况下，可以迅速拉紧把人束缚在座椅上，保证安全。可以减轻对驾乘人员的伤害（安全带找减轻）\r\n\r\n安全头枕是保护颈部的。但是需要放在支撑头部的位置才可以发挥作用保护到颈部。（安全头枕保护颈部，放在头后）\r\n\r\n安全气囊，辅助可充气约束系统。（看到辅助就选择）\r\n\r\n安全带的作用是70%，气囊的作用是30%。双重保护作用就是与安全带一起。\r\n\r\n醉驾：80毫克/100毫升\r\n\r\n---\r\n\r\n英文字母题\r\n\r\n以下缩写中表示车道偏离预警系统系统缩写的是什么：LDW\r\n\r\n偏离：离道 LD\r\n\r\n以下缩写中表示车辆自适应巡航系统缩写的是什么：ACC\r\n\r\n---\r\n\r\n驾驶机动车不得有下列行为：\r\n\r\n在车门、车厢没有关好时行车\r\n\r\n在禁止鸣喇叭的区域或者路段鸣喇叭\r\n\r\n拨打接听手持电话、观看电视等妨碍安全驾驶的行为\r\n\r\n熄火/空挡/惯性滑行；只要滑行就错\r\n\r\n向道路上抛撒物品\r\n\r\n安全带无论前后排无论大人儿童都要系\r\n\r\n在机动车驾驶室的前后窗范围内悬挂、放置妨碍驾驶人视线的物品\r\n\r\n连续驾驶机动车超过4小时未停车休息或者停车休息时间少于20分钟（420法则）\r\n\r\n冬季给电动汽车充电前，应提前预热电池\r\n\r\n驾驶电动汽车出行前，应检查剩余电量\r\n\r\n提前/检查都是对的，电动车有普通灭火器就错\r\n\r\n---\r\n\r\n扣留扣车选择题\r\n\r\n两证：驾驶证、行驶证\r\n\r\n两标：保险标志、检验合格标志\r\n\r\n一牌：车牌\r\n\r\n扣留判断题 （只有两种情况错误，剩下的都对）\r\n\r\n扣留行驶证\r\n\r\n没带身份证\r\n\r\n拘留判断题\r\n\r\n跟钱在一起的拘留就是对的\r\n\r\n没有钱的拘留就是错误的\r\n\r\n---\r\n\r\n判刑\r\n\r\n7个字（拘役/刑/且/组织/因）\r\n\r\n出现重大事故致人重伤、死亡，3年以下或者拘役\r\n\r\n出现重大事故致人重伤、死亡且逃逸，3年以上7年以下\r\n\r\n申请人在机动车驾驶人考试过程中组织作弊的，情节严重构成犯罪\r\n\r\n出现重大事故因逃逸致人死亡的，7年以上\r\n\r\n有拘役优先选拘役，有拘役就对，遇到有期徒刑结尾的判断题为错\r\n\r\n且 / （组织作弊） 找3-7，因找7以上\r\n\r\n---\r\n\r\n事故处理\r\n\r\n有争议、有人员伤亡、有喝酒司机、有违法行为都是立刻报警\r\n\r\n判断有报警就对\r\n\r\n无争议、无人员伤亡（轻微 刮擦等） 撤离现场自行协商，不要影响交通，不要死等警察或者保险公司，警察来了责令你撤离，并且罚款200元\r\n\r\n交通肇事罪\r\n\r\n选项里三个未开头的不选，选那个不一样的\r\n\r\n---\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "1. 法律法规"
+    },
+    "frontmatter": {
+      "title": "1. 法律法规",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "2. 通行规定",
+    "path": "/docs/car/subject1/2.tongxingguiding.html",
+    "url": "/docs/car/subject1/2.tongxingguiding.html",
+    "content": "---\r\ntitle: 2. 通行规定\r\ndate: 2026/07/01\r\n---\r\n\r\n通行规定\r\n\r\n只要有加速XX都是错的，因为都是为了安全，减速慢行才是王道\r\n\r\n通行的时候，只要让人家就对了，吃亏是福，反正各种礼让各种让\r\n\r\n减速慢行、减速靠右、减速或停车、停车避让就直接选对\r\n\r\n只要提到不用减速慢行，无需减速，不必减速都是错的\r\n\r\n不得两个字在判断题中绝大多数都是正确的\r\n\r\n减少并行时间、就是对的，因为并行很危险\r\n\r\n主动、依次、顺序、有序、礼让、注意避让、确认安全、安全距离、减少并行，都是正确的\r\n\r\n持续/连续/长按喇叭都是错的，催促，逼迫，迫使，抢，占，保持原速的意思都是错的\r\n\r\n---\r\n\r\n顺序通行的三大原则\r\n\r\n转弯让直行\r\n\r\n右转弯让左转弯\r\n\r\n同样直行让右侧先行\r\n\r\n不得超车的情况有：超车只能从左侧\r\n\r\n前车正在左转弯、掉头、超车的；与对面来车有会车可能的\r\n\r\n前车为执行紧急任务的警车、消防车、救护车、工程救险车的\r\n\r\n特殊道路（行经铁路道口、交叉路口、窄桥、陡坡、隧道、人行横道、市区交通流量大的路段等没有超车条件的。而且也不能倒车停车）\r\n\r\n---\r\n\r\n看线\r\n\r\n只要提到虚线才可以越线掉头超车等，实线坚决不可以过线不可以压线\r\n\r\n铁路道口/满水路/漫水桥三原则：（1停2看3通过）\r\n\r\n1 停下来\r\n\r\n2 看：观察确认安全\r\n\r\n3 低速通过进入铁路道口后，不能变换挡位（因为你已经抵挡低速在通过）\r\n\r\n---\r\n\r\n出现故障\r\n\r\n1 开启危险报警闪光灯\r\n\r\n2 移到不妨碍交通的地方，如果无法移动就继续第三步\r\n\r\n3 放置警告标志 （普通道路 50-100 米之间，高速 150 米以外）\r\n\r\n4 人得下车去安全的地带（右侧路肩）报警等待救援\r\n\r\n超车只能从左侧超车\r\n\r\n超车时，如果无法保证与被超车辆的安全间距，应主动放弃超车，停止超车\r\n\r\n道路没有划分机动车道、非机动车道和人行道的，在道路中间同行，给行人非机动车在两侧留有充足的空间\r\n\r\n---\r\n\r\n变道（交汇合流，变更车道）\r\n\r\n变更车道的顺序：\r\n\r\n1 打开转向灯\r\n\r\n2 观察确认安全\r\n\r\n3 平稳变（直接驶入，迅速转的就错），完成后关闭转向灯即可\r\n\r\n关于停车距离考点：（口5站3）\r\n\r\n交叉路口、铁路道口、急弯路、窄路、桥梁、陡坡、隧道 50米以内的路段，不得停车\r\n\r\n公共汽车站、急救站、加油站、消防栓或者消防队（站）门前以及距离上述地点30米以内\r\n\r\n只要没提站就找50，有站就找30\r\n\r\n---\r\n\r\n驾驶机动车遇到有前方交叉路口交通阻塞，或者看到图中堵车，我们只能依次排队在路口外，坚决不能进入路口\r\n\r\n有依次、有顺序直接选，没有选路口外\r\n\r\n狭窄山路会车，靠山体的一方要让不靠山体的一方先行、环岛外的车让环岛内的车先行、有障碍的一方让无障碍的一方先行、辅路车让主路车先行。（主路车流大 速度快）\r\n\r\n看到随意通行，随意二字的或者看到说不用减速的题目都直接判断错误就可以（只有行人具有随意性的特点是正确的）\r\n\r\n---\r\n\r\n校车\r\n\r\n两条车道，前方有校车，停下来等待\r\n\r\n三条车道，提前变道最左侧超越\r\n\r\n---\r\n\r\n没事不能去紧急停车道（应急车道）去行驶，除非警察安排或者急救别人，剩下的没事去走（比如堵车去那边超越）绝对不行\r\n\r\n---\r\n\r\n灯光\r\n\r\n近光灯：有车，有人，都需要，照明条件良好 隧道\r\n\r\n远光灯：照明条件不好，可以开。\r\n\r\n判断题开远光灯，使用远光灯都是错误的\r\n\r\n交替使用远近光灯：有远近的判断题就对\r\n\r\n1 超车（用于提醒前车）\r\n\r\n2 夜间特殊道路（举例 交叉路口，急转弯，人行横道等）\r\n\r\n3 用来提醒开远光灯的人\r\n\r\n雾灯：只有雾天开雾灯，其他天气开都是错误的\r\n\r\n危险报警闪光灯：\r\n\r\n1 临时停车\r\n\r\n2 故障\r\n\r\n3 雾天\r\n\r\n4 牵引故障车\r\n\r\n左转向灯：只要有向左的动作，就得开\r\n\r\n左转弯，掉头，超车，向左变道，进高速口\r\n\r\n右转向灯：只要有向右的动作，就得开\r\n\r\n右转弯，向右变道，靠边停车，出环岛，出高速口\r\n\r\n高速口左进右出，但是环岛不一样，只有出需要开右\r\n\r\n只要图中或题中遇到有人的时候，有车的时候，需要将远近光灯转换近光灯\r\n\r\n跟车，尾随车，会车（图中无论下雪下雨前面有车）禁止使用远光灯，避免灯光照射至前车后视镜造成前车驾驶人炫目\r\n\r\n这种字眼都不能用远光灯，只能用近光灯\r\n\r\n夜间会车遇到对向来车需要在150米以外的距离就要变成近光灯\r\n\r\n总结\r\n\r\n远近在一起就对\r\n\r\n只要题目中说开/使用远光灯就是错误的\r\n\r\n只要有人，有车，跟车，会车，必须使用近光灯\r\n\r\n临时停车找危险\r\n\r\n答案中交替远近光灯就选交替，没有交替就选近光灯\r\n\r\n夜间特殊路（只要不提正常路）叫替变化远近光灯\r\n\r\n隧道就找开灯近光灯也行\r\n\r\n夜间视距找变短，远光变近光找150米以外\r\n\r\n判断题有 易 绝大多数都对\r\n\r\n---\r\n\r\n特殊天气\r\n\r\n特殊天气的灯光，只有雾天雾灯，没有特殊的灯光\r\n\r\n关键字：\r\n\r\n雨天找滑字\r\n\r\n冰雪找制动问题，制动变长，雪天找车辙\r\n\r\n泥泞找车轮\r\n\r\n雾天夜晚都找能见度问题，并且回应喇叭正确\r\n\r\n水淹路面找观察路面问题\r\n\r\n车辆涉水找间断轻踏，没有间断轻踏就找轻踏\r\n\r\n看到题目中有困难/无法两个字找停车\r\n\r\n特殊情况和特殊天气都应该发动机制动减速，看到紧急制动减速错误\r\n\r\n有车辙就对，特殊路面，选择坚实的路面行驶，缓慢通过对，大安全距离对\r\n\r\n---\r\n\r\n交警手势\r\n\r\n手心高举，停止等待 (科一没有靠边停车，直接停止等待）\r\n\r\n双臂伸直，直行\r\n\r\n回弯，变道信号\r\n\r\n两只手一高一低找转弯，哪个手在下面就是哪个方向的转弯\r\n\r\n左手越过伞杆找代转，左转弯待转\r\n\r\n一只手一高一低找慢，减速慢行\r\n\r\n秘诀\r\n\r\n看到手心找停止通行\r\n\r\n两手伸直找直行\r\n\r\n捂住胸口/（回弯）找变道\r\n\r\n左手越过伞杆找待转\r\n\r\n一只手一高一低找减速\r\n\r\n两只手一高一低找转弯，看哪个手在下面，就是哪个方向的转弯\r\n\r\n---\r\n\r\n速度\r\n\r\n不得超过每小时30公里的：\r\n\r\n机动车行驶中在冰雪、泥泞的道路上行驶时\r\n\r\n遇到进出非机动车道，通过铁路道口、急弯陆、窄路、窄桥时\r\n\r\n遇到掉头、转弯、下陡坡时\r\n\r\n遇到雾、雨、雪、沙尘、冰雹，能见度在50米以内时\r\n\r\n只要不是普通道路，特殊道路都是30公里/小时\r\n\r\n关于判断题中出现 xx公里/小时，公里前面数字不是30或者100就是错的\r\n\r\n选择题问最高速度不能超过多少，题目没有图片的，就选30\r\n\r\n---\r\n\r\n高速公路能见度、速度、距离的知识点总结\r\n\r\n2 6 1；1 4 5；5 2 离\r\n\r\n驾驶机动车在高速公路上行驶，遇低能见度气象条件时，能见度在200米以下，车速不得超过每小时60公里，与同车道前车至少保持100米以上的距离\r\n\r\n驾驶机动车在高速公路上行驶，遇低能见度气象条件时，能见度在100米以下，车速不得超过每小时40公里，与同车道前车至少保持50米以上的距离\r\n\r\n驾驶机动车在高速公路上行驶，遇低能见度气象条件时，能见度在50米以下，车速不得超过每小时20公里，尽快驶离高速公路\r\n\r\n高速速度：红高蓝低黄建议\r\n\r\n路面速度：黄高白低\r\n\r\n安全距离\r\n\r\n速度高于100，找距离100米以上\r\n\r\n速度低于100，找距离50米以上\r\n\r\n高速上车道速度限制\r\n\r\n三条车道\r\n\r\n60-90\r\n\r\n90-110\r\n\r\n110-120\r\n\r\n两条车道\r\n\r\n60-100\r\n\r\n100-120\r\n\r\n没有中心线：城3公4\r\n\r\n城市30；公路40\r\n\r\n有中心线：城5公7\r\n\r\n城市50；公路70\r\n\r\n---\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "2. 通行规定"
+    },
+    "frontmatter": {
+      "title": "2. 通行规定",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "3. 扣分罚款",
+    "path": "/docs/car/subject1/3.koufenfakuan.html",
+    "url": "/docs/car/subject1/3.koufenfakuan.html",
+    "content": "---\r\ntitle: 3. 扣分罚款\r\ndate: 2026/07/01\r\n---\r\n\r\n\r\n超速扣分：\r\n\r\nxx以外的其他机动车（3 6 6 12）\r\n\r\n超速：20%-50%，普通道路3；高速公路6\r\n\r\n超速：50%以上，普通道路6；高速公路12\r\n\r\n驾驶校车、中型以上载客载货汽车、危险品运输车辆（91）\r\n\r\n超速：10%-20%，普通道路1\r\n\r\n超速：50%以上，普通道路9\r\n\r\n---\r\n\r\n超员扣分：\r\n\r\n驾驶校车、公路客运汽车、旅游客运汽车（大汽车）6/12\r\n\r\n核定人数：20%以上；12分\r\n\r\n核定人数：20%以下；6分\r\n\r\n驾驶7座以上载客汽车载人（69）\r\n\r\n核定人数：50%-100%；9分\r\n\r\n核定人数：20%-50%；6分\r\n\r\n以外其他载客汽车 6/12\r\n\r\n核定人数：100%；12分\r\n\r\n核定人数：50%-100%；6分\r\n\r\n---\r\n\r\n超载扣分\r\n\r\n驾驶载货汽车载物 1 6\r\n\r\n核定人数：50%；6分\r\n\r\n核定人数：30%-50%/违反规定载客；3分\r\n\r\n30%以下：1分\r\n\r\n---\r\n\r\n扣 1 分（检标会带长灯）\r\n\r\n检：未按规定年检；驾驶未按规定定期进行安全技术检验的公路客运汽车、旅游客运汽车、危险物品运输车辆以外的机动车上道路行驶的\r\n\r\n标：违反禁令标志禁止标线\r\n\r\n会：不按规定会车\r\n\r\n带：未系安全带\r\n\r\n长：长宽高超过规定\r\n\r\n灯：不按规定使用灯光\r\n\r\n扣3分 （让按/安低 穿警打 普逆）\r\n\r\n让：不避让校车/人\r\n\r\n安：不按规定安装号牌\r\n\r\n按：不按规定车道/超车让行/减速停车让行人\r\n\r\n低：高速低于规定最低时速\r\n\r\n穿：借道占道对面车道穿插\r\n\r\n警：出现事故故障停车后，没有按规定使用灯光和放置警告标志\r\n\r\n打：拨打接听手持电话\r\n\r\n逆：普通道路上逆行/告诉以外的道路逆行\r\n\r\n扣6分 （急信轻品扣）\r\n\r\n急：违法占用应急车道\r\n\r\n信：没有遵守交通信号灯\r\n\r\n轻：逃逸无死亡  轻伤\r\n\r\n品：驾驶机动车运载超限不可解体的物品/化学品/爆炸品等各种品，未按指定时间路线行驶或者未悬挂警示标识\r\n\r\n扣：驾驶证被暂扣扣留期间驾驶机动车\r\n\r\n扣9分 （不未停资）\r\n\r\n不：准驾车型不符\r\n\r\n未：未悬/遮挡/污损机动车号牌\r\n\r\n停：高速、城市快速路违法停车\r\n\r\n资：未得校车驾驶资格驾驶校车\r\n\r\n扣12分 （亡伪代逆酒 使用）\r\n\r\n亡：致人轻伤以上或死亡逃逸\r\n\r\n伪：伪造、变造的机动车号牌\r\n\r\n代：卖分牟利\r\n\r\n逆：高速、城市快速路倒车掉头逆行\r\n\r\n酒：饮酒、醉酒开车\r\n\r\n使：使用xx\r\n\r\n---\r\n\r\n罚款\r\n\r\n1罚2吊：罚款、吊销驾驶证\r\n\r\n顺序优先选，罚款有20元不选\r\n\r\n未按xx找200元；喷涂找200\r\n\r\n贿赂舞弊、代替的都找2000\r\n\r\n请他人、替他人都找三倍五万\r\n\r\n假教育找1000，假申请驾驶证资格找500\r\n\r\n组织10万2万都对\r\n\r\n判断题罚款只有一千错；剩下的选对\r\n\r\n醉酒饮酒同时出现，选饮酒\r\n\r\n---",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "3. 扣分罚款"
+    },
+    "frontmatter": {
+      "title": "3. 扣分罚款",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "4. 总结-数字题",
+    "path": "/docs/car/subject1/4.zongjie-shuziti.html",
+    "url": "/docs/car/subject1/4.zongjie-shuziti.html",
+    "content": "---\r\ntitle: 4. 总结-数字题\r\ndate: 2026/07/01\r\n---\r\n\r\n![](static/总结-数字题.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "4. 总结-数字题"
+    },
+    "frontmatter": {
+      "title": "4. 总结-数字题",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "5. 速答技巧",
+    "path": "/docs/car/subject1/5.sudajiqiao.html",
+    "url": "/docs/car/subject1/5.sudajiqiao.html",
+    "content": "---\r\ntitle: 5. 速答技巧\r\ndate: 2026/07/01\r\n---\r\n\r\n看到加速，滑行，迅速超越，迅速通过，直接驶入/通过，可以不，可不，只，只需，无需不用。\r\n\r\n判断为错\r\n\r\n看到连续持续长按鸣喇叭/催促/逼迫/迫使的字眼\r\n\r\n判断为错\r\n\r\n轻按喇叭回应喇叭正确\r\n\r\n只要提到油耗/节油/省油/美观/天气对车的影响，电子设备对车信号影响，都是错的\r\n\r\n看到开（使用）远光灯，错的\r\n\r\n看到人/非机动车/机动车 都要让。停车让/减速靠右，减速慢行，减速避让，等让字意思都对\r\n\r\n不能立即停车迅速停车，会追尾\r\n\r\n看到安全距离，大距离，提前，观察，谨慎，保持安全距离，都对\r\n\r\n看到30，确保确认安全的，易，不得，据大多数都对，选择题也可以直接选\r\n\r\n判断题中出现数字200，对\r\n\r\n看到主动，排队，依次，交替，有序，礼让，都对\r\n\r\n判断题有远近光灯，对\r\n\r\nABS和紧急制动四个字在一起的判断题就对，没有紧急制动就错\r\n\r\n看到“双引号”的判断题，对\r\n\r\n醉酒与饮酒同时出现，选饮酒，没有饮酒选醉酒\r\n\r\n紧急制动减速就是错误的\r\n\r\n不要紧急制动，不要冒险，不要随意，都对\r\n\r\n利用发动机制动减速，对\r\n\r\n禁止去红灯亮的地方，绿灯通行\r\n\r\n一个黄灯的不断闪烁，是注意危险\r\n\r\n三个黄灯中间黄灯不断闪烁，是信号暂时解除\r\n\r\n转弯让直行，右转让左转，同样直行让右方先行\r\n\r\n有障碍一方让无障碍一方，靠山体一方让不靠山体一方先行\r\n\r\n实线禁止跨越，虚线可以跨越\r\n\r\n追求就是正确的，不追究就是错误的\r\n\r\n重踏持续踏踏板（制动踏板），都错\r\n\r\n只有间断轻踏或者轻踏是对的\r\n\r\n有间断轻踏直接选\r\n\r\n准驾车型是小型汽车（手动挡）可以开自动\r\n\r\n准驾车型自动挡xx必须开自动，不能开没有自动2个字的车\r\n\r\n不得超车：前车正在左向动作不能超，交通流量大，人行横道，铁路道口，隧道，弯道，窄路等特殊道路，执行任务的车不能超\r\n\r\n黄色警告标志，优先考虑注意；红色警告禁止限制；蓝色指示标志\r\n\r\n看到报警的判断题，都对\r\n\r\n超车只能从左侧超车，不能借用右侧公交车道\r\n\r\n圆形红黄绿灯都不影响右转\r\n\r\n爆胎找气压问题，需要紧握转向盘，看到紧握转向盘的判断题正确，选择题就选\r\n\r\n增驾C6，找一年\r\n\r\n在高速公路或者十字路口疏忽过了，就只能找继续向前。不能折回\r\n\r\n繁变道就错\r\n\r\n迅速转向迅速驶入迅速提速都错\r\n\r\n行为前面找违法，其他的违规违章违纪都错\r\n\r\n拼装、报废、上路，就错\r\n\r\n十字路口内的网状线，人行横道都不能停车\r\n\r\n只要堵车，坚决不能进入路口内，只能在路口外等待，或者疏通后绿灯亮了再走\r\n\r\n混淆你的：保证安全进入路口，也错\r\n\r\n停车的技巧：站30，没有站就50\r\n\r\n放弃超车，停止超车，就对\r\n\r\n只有加防撞不用登记，剩下什么颜色发动机车身变都需要登记\r\n\r\n自学直考的人只能符合自学直考的标准，只能和教练一辆蓝色的牌子车学习，不能用黄色牌子教练车\r\n\r\n减少并行就对\r\n\r\n特殊天气：雨天找滑字，冰雪道路找制动问题，水淹路面找观察路面，山区找弯，雾天夜晚都找能见度问题，泥泞找车轮问题\r\n\r\nA车掉东西砸别人车了，A的责任\r\n\r\n有累加累积的，记分转入四个字就对；2起以上违法行为是可以累积计算分值的\r\n\r\n扣分罚款题目别着急，瞄准关键字\r\n\r\n直接驶入就错，箭头压实线也是错\r\n\r\n带图的题，图中有字去答案找字\r\n\r\n未满xx肯定不对，所以未满xx不得做什么，对\r\n\r\n电动汽车里面提前/检查，都对；电动车有普通灭火器就错\r\n\r\n醉驾找危险，危险驾驶罪\r\n\r\n丢失的号牌补领后不可以继续使用，继续用就错\r\n\r\n只要没扣满12分可以扣分处理违法行为，扣满12分以后都要考试，有法律法规的直接选，一个记分周期未满12分，下一个周期就解除了\r\n\r\n不予办理的判断题，对\r\n\r\n电子版，电子警察的，都对\r\n\r\n特殊情况特殊天气道路意外，都不要着急，轻踏制动踏板，缓慢减速，不要立刻减速停车，容易翻车\r\n\r\n酒精80毫克/100毫升就是醉酒",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "5. 速答技巧"
+    },
+    "frontmatter": {
+      "title": "5. 速答技巧",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
+    "title": "6. 总结-速答技巧",
+    "path": "/docs/car/subject1/6.zongjie-sudajiqiao.html",
+    "url": "/docs/car/subject1/6.zongjie-sudajiqiao.html",
+    "content": "---\r\ntitle: 6. 总结-速答技巧\r\ndate: 2026/07/01\r\n---\r\n\r\n![](static/总结-速答技巧.png)\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "6. 总结-速答技巧"
+    },
+    "frontmatter": {
+      "title": "6. 总结-速答技巧",
+      "date": "2026/07/01"
+    },
+    "type": "content"
+  },
+  {
     "title": "2025-03",
     "path": "/docs/diary/2025/2025-03.html",
     "url": "/docs/diary/2025/2025-03.html",
@@ -3221,22 +3326,6 @@
     "type": "content"
   },
   {
-    "title": "实盘日记 - 2025 年",
-    "path": "/docs/trading_journal/diary/2025.html",
-    "url": "/docs/trading_journal/diary/2025.html",
-    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
-    "lang": "zh-CN",
-    "hierarchy": {
-      "lvl0": "实盘日记 - 2025 年",
-      "lvl1": "2025/3/19 TQQQ CALL"
-    },
-    "frontmatter": {
-      "title": "实盘日记 - 2025 年",
-      "date": "2025/03/19"
-    },
-    "type": "content"
-  },
-  {
     "title": "期权交易策略",
     "path": "/docs/trader/options/qiquanjiaoyicelue.html",
     "url": "/docs/trader/options/qiquanjiaoyicelue.html",
@@ -3265,6 +3354,22 @@
     "frontmatter": {
       "title": "期权交易策略收益图表",
       "date": "2025/03/08"
+    },
+    "type": "content"
+  },
+  {
+    "title": "实盘日记 - 2025 年",
+    "path": "/docs/trading_journal/diary/2025.html",
+    "url": "/docs/trading_journal/diary/2025.html",
+    "content": "---\r\ntitle: 实盘日记 - 2025 年\r\ndate: 2025/03/19\r\n---\r\n\r\n## 2025/3/19 TQQQ CALL\r\n\r\n:::info\r\n- 策略类型：看涨期权（短期反弹博弈）\r\n- 期权类型：买入TQQQ Call期权\r\n- 行权价：61-62美元附近\r\n- 到期日：2-4周\r\n- 仓位：500美元以内\r\n- 止盈目标：EMA20（68美元附近）\r\n- 止损位：57美元以下\r\n\r\n|情境|股价目标|期权预估价值|盈亏金额|盈亏百分比|\r\n|-|-|-|-|-|\r\n|止盈|68美元|约6.2美元|盈利740美元|+148%|\t\t\t\t\r\n|止损|57美元|约0.8美元|亏损340美元|-68%|\r\n\r\n盈亏比大于2，属于较好的盈亏比\r\n:::\r\n\r\n预计收益计算（止盈情境）：假设未来1-2周内TQQQ上涨到EMA20附近（约68美元）\r\n- 行权价：62美元\r\n- 股价上涨到：68美元\r\n- 期权的内在价值 = 股票价格 – 行权价格 = 68 – 62 = 6美元\r\n- 期权买入成本：2.5美元/张\r\n- 期权到期时预估的价值：6美元（内在价值）+ 0.2美元左右的时间价值估计（由于临近到期，时间价值不多）= 约6.2美元\r\n- 每张期权盈利 = 6.2美元 - 2.5美元 = 3.7美元\r\n- 2张期权总盈利 = 3.7美元 × 2张 × 100股 = 740美元\r\n\r\n止盈情境下的收益率：\r\n- 总盈利 = 740美元\r\n- 总成本 = 500美元\r\n- 净利润 = 740美元\r\n- 盈利比例 = (740 ÷ 500) × 100% = 148%\r\n\r\n预计亏损计算（止损情境）：假设未来几天内TQQQ下跌到57美元以下\r\n- 行权价：62美元（看涨期权）\r\n- 跌破支撑位到57美元甚至更低，此时期权变为深度价外，价值快速缩水。\r\n- 假设跌破57美元时，看涨期权的价值大幅缩水到0.8美元左右（甚至更低），此时及时止损：\r\n- 每张期权亏损 = 买入成本 - 期权剩余价值 = 2.5美元 - 0.8美元 = 1.7美元\r\n- 2张期权总亏损 = 1.7美元 × 2张 × 100股 = 340美元\r\n\r\n止损情境下的亏损率：\r\n- 总亏损 = 340美元\r\n- 总成本 = 500美元\r\n- 亏损比例 = (340 ÷ 500) × 100% = 68%\r\n\r\n盈亏比评估：盈亏比大于2，属于较好的盈亏比\r\n- 盈利情境预期盈利 = 740美元\r\n- 亏损情境预期亏损 = 340美元\r\n- 盈亏比 = 740 ÷ 340 ≈ 2.18\r\n\r\n\r\n\r\n",
+    "lang": "zh-CN",
+    "hierarchy": {
+      "lvl0": "实盘日记 - 2025 年",
+      "lvl1": "2025/3/19 TQQQ CALL"
+    },
+    "frontmatter": {
+      "title": "实盘日记 - 2025 年",
+      "date": "2025/03/19"
     },
     "type": "content"
   }
